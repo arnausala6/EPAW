@@ -49,6 +49,22 @@ public class HelloWorld extends HttpServlet {
         }
 
         out.println("</table>");
+        // Codigo Marti
+        out.println("<h2>New User</h2>");
+        out.println("<form action='hello' method='POST'");
+        out.println("  <div>");
+        out.println("    <label for='name'>Name:</label><br>");
+        out.println("    <input type='text' id='name' name='name' required>");
+        out.println("  </div>");
+        out.println("  <div style='margin-top: 10px;'>");
+        out.println("    <label for='description'>Description:</label><br>");
+        out.println("    <input type='text' id='description' name='description' required>");
+        out.println("  </div>");
+        out.println("  <div style='margin-top: 15px;'>");
+        out.println("    <button type='submit'>Save</button>");
+        out.println("  </div>");
+        out.println("</form>");
+        //.
         out.println("</body>");
         out.println("</html>");
     }
@@ -56,6 +72,22 @@ public class HelloWorld extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    //codigo Marti
+    String name = request.getParameter("name");
+    String description = request.getParameter("description");
+
+    try (DBManager db = new DBManager()) {
+        String sql = "INSERT INTO users (name, description) VALUES (?, ?)";
+        PreparedStatement stmt = db.prepareStatement(sql);
+        stmt.setString(1, name);
+        stmt.setString(2, description);
+        
+        stmt.executeUpdate();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    response.sendRedirect("hello");
     }
 }
