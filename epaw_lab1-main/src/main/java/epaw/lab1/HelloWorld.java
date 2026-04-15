@@ -49,7 +49,7 @@ public class HelloWorld extends HttpServlet {
         }
 
         out.println("</table>");
-        // Codigo Marti
+        // cambiado aqui
         out.println("<h2>New User</h2>");
         out.println("<form action='hello' method='POST'");
         out.println("  <div>");
@@ -72,7 +72,7 @@ public class HelloWorld extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    //codigo Marti
+    //cambiado aqui
     String name = request.getParameter("name");
     String description = request.getParameter("description");
 
