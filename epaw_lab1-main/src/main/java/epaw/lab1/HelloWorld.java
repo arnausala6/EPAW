@@ -22,10 +22,10 @@ public class HelloWorld extends HttpServlet {
         
         out.println("<!DOCTYPE html>");
         out.println("<html>");
-        out.println("<head><title>Users List</title></head>");
-        out.println("<body>");
+        out.println("<head><title>Users List</title><link rel='stylesheet' href='hello.css'></head>");
+        out.println("<body><div class='container'>");
         out.println("<h1>Users from Database</h1>");
-        out.println("<table border='1'>");
+        out.println("<table>");
         out.println("<tr><th>ID</th><th>Name</th><th>Description</th></tr>");
 
         try (DBManager db = new DBManager()) {
@@ -49,23 +49,15 @@ public class HelloWorld extends HttpServlet {
         }
 
         out.println("</table>");
-        // cambiado aqui
+        out.println("<div class='card'>");
         out.println("<h2>New User</h2>");
-        out.println("<form action='hello' method='POST'");
-        out.println("  <div>");
-        out.println("    <label for='name'>Name:</label><br>");
-        out.println("    <input type='text' id='name' name='name' required>");
-        out.println("  </div>");
-        out.println("  <div style='margin-top: 10px;'>");
-        out.println("    <label for='description'>Description:</label><br>");
-        out.println("    <input type='text' id='description' name='description' required>");
-        out.println("  </div>");
-        out.println("  <div style='margin-top: 15px;'>");
-        out.println("    <button type='submit'>Save</button>");
-        out.println("  </div>");
+        out.println("<form action='hello' method='POST'>");
+        out.println("  <div class='field'><label for='name'>Name</label><input type='text' id='name' name='name' required></div>");
+        out.println("  <div class='field'><label for='description'>Description</label><input type='text' id='description' name='description' required></div>");
+        out.println("  <button type='submit'>Save</button>");
         out.println("</form>");
-        //.
-        out.println("</body>");
+        out.println("</div>");
+        out.println("</div></body>");
         out.println("</html>");
     }
 
