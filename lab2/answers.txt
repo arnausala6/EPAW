@@ -1,0 +1,50 @@
+1) Perform a request directly to the servlet. What happens?
+Quan accedim directament a /Register s'executa el mètode doGet() i es mostra la pàgina de registre, que es Register.jsp 
+Si s'envia un post manualment, el servlet valida les dades igualment i, si són correctes, mostra el Login.jsp mentre que si no ho són torna a la pàgina de registre.
+
+2) Fill in the form and press the submit button. What happens?
+El primer que es fa és validar al client amb funcions de JS i si passa aquesta validació, aleshores es comprova al servidor.
+En cas de passar aquesta segona fase de comprovació es crea l'usuari i s'avisa al user de l'èxit.
+
+3) Fill in the form with the same name as before. What happens?
+En cas que s'intenti crear un usuari amb les mateixes dades, es detecta i es para. Llavors, s'avisa a l'usuari.
+El problema és que el camp del username no pot ser el mateix d'un usuari ja existent, per tant, no podem crear dos comptes amb les mateixes dades.
+
+4) What is done in the Servlet?
+El servlet fa el següent: 
+1. Rep la petició HTTP
+2. Llegeix els camps d'entrada del formulari
+3. Crida a la capa de servei per validar l'input
+4. Si el resultat és correcte continua. Si hi ha errors, reenvia els camps entrats al jsp per reomplir el formulari i avisar a l'usuari de l'error.
+
+5) What is done in the Repository Class?
+El repositori connecta directament amb la base de dades i fa el següent:
+- Fa consultes
+- Verifica que un usuari existeix 
+- Guarda nous usuaris
+
+6) What is done in the Service Class?
+La capa de servei s'ocupa de la lògica de negoci.
+Valida les regles lògiques i coordina el repositori preparant els errors o el resultat final per enviar al servlet.
+
+7) What is done in the JSP?
+La JSP s'encarrega de pintar el formulari, mostrar els valors d'entrada i mostrar els missatges de feedback a l'usuari.
+
+8) What this code will look like in the DOM of the browser if I've tried to register the same user?
+
+<script>
+  const serverErrors = {
+    <c:forEach var="error" items="${errors}">
+      "${error.propertyPath}": "${error.message}",
+    </c:forEach>
+  };
+</script>
+
+El bloc serà un objecte de JavaScript amb els errors del servidor. 
+si el nom ja existeix, quedaria algo així:
+
+<script>
+  const serverErrors = {
+    "username": "Aquest nom d'usuari ja existeix"
+  };
+</script>

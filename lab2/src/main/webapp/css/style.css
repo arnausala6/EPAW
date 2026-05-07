@@ -1,0 +1,96 @@
+@charset "UTF-8";
+input.w3-input:valid,
+select.w3-input:valid,
+textarea.w3-input:valid {
+	border-left: 4px solid green !important;
+}
+input.w3-input:invalid,
+select.w3-input:invalid,
+textarea.w3-input:invalid {
+	border-left: 4px solid red !important;
+}
+ body {
+	background-color: #f1f1f1;
+}
+.main-container {
+	max-width: 500px;
+	margin: 50px auto;
+}
+
+.preview-container {
+	margin-top: 8px;
+	margin-bottom: 16px;
+}
+
+.profile-preview {
+	max-width: 160px;
+	max-height: 160px;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	display: block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background: #fafafa;
+}
+
+.profile-file-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	min-height: 39px;
+}
+
+.profile-file-native {
+	font-size: 0;
+	border: none;
+	padding: 4px 0;
+	background: transparent;
+	max-width: 100%;
+}
+
+.profile-file-native::file-selector-button {
+	-webkit-appearance: none;
+	appearance: none;
+	font-size: 14px;
+	font-family: inherit;
+	line-height: normal;
+	padding: 0.25em 0.75em;
+	border: 1px solid #767676;
+	border-radius: 2px;
+	background-color: #f0f0f0;
+	cursor: pointer;
+	margin-right: 0;
+}
+
+.profile-file-native::file-selector-button:hover {
+	background-color: #e5e5e5;
+}
+
+.profile-file-remove {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	font-size: 14px;
+	font-family: inherit;
+	line-height: normal;
+	padding: 0.25em 0.75em;
+	border: 1px solid #767676;
+	border-radius: 2px;
+	background-color: #f0f0f0;
+	cursor: pointer;
+	flex-shrink: 0;
+	color: inherit;
+}
+
+.profile-file-remove:hover {
+	background-color: #e5e5e5;
+}
+
+.profile-file-hint {
+	font-size: 14px;
+	color: #666;
+	flex: 1;
+	min-width: 120px;
+}

@@ -1,0 +1,30 @@
+CREATE TABLE groups (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO groups (name) VALUES ('Tech Community');
+INSERT INTO groups (name) VALUES ('Gaming Hub');
+INSERT INTO groups (name) VALUES ('Music Lovers');
+INSERT INTO groups (name) VALUES ('Sports Fans');
+INSERT INTO groups (name) VALUES ('Travel Tips');
+INSERT INTO groups (name) VALUES ('Foodies');
+INSERT INTO groups (name) VALUES ('Art & Design');
+INSERT INTO groups (name) VALUES ('Science News');
+INSERT INTO groups (name) VALUES ('Memes');
+INSERT INTO groups (name) VALUES ('Local Meetups');
+
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username VARCHAR(30) NOT NULL UNIQUE,
+  name VARCHAR(30) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  gender VARCHAR(20) NOT NULL,
+  description VARCHAR(300),
+  profile_picture_path VARCHAR(255),
+  group_id INTEGER,
+  age INTEGER NOT NULL,
+  country VARCHAR(100),
+  password VARCHAR(255) NOT NULL,
+  FOREIGN KEY (group_id) REFERENCES groups(id)
+);
