@@ -1,0 +1,158 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+	<!DOCTYPE html>
+	<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="icon" href="assets/upf.png">
+		<title> U </title>
+		<!-- jQuery removed -->
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+		<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-red.css">
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script>
+			window.App = window.App || {};
+			App.Errors = App.Errors || {};
+		</script>
+		<script src="js/LoginValidation.js"></script>
+		<script src="js/RegisterValidation.js"></script>
+
+		<script>
+			// Helper to execute scripts in loaded HTML
+			App.executeScripts = function (container) {
+				const scripts = container.querySelectorAll("script");
+				Array.from(scripts).forEach(script => {
+					const newScript = document.createElement("script");
+					Array.from(script.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+					if (script.src) {
+						// Use synchronous-like behavior for external scripts if needed, but here we just append
+						newScript.src = script.src;
+					} else {
+						newScript.appendChild(document.createTextNode(script.innerHTML));
+					}
+					script.parentNode.replaceChild(newScript, script);
+				});
+			};
+
+			// Helper to load content via fetch
+			App.loadContent = async function (url, targetId, callback) {
+				try {
+					const response = await fetch(url, { cache: 'no-store' });
+					if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+					const html = await response.text();
+					const container = document.getElementById(targetId);
+					container.innerHTML = html;
+
+					// Execute any scripts found in the loaded HTML
+					App.executeScripts(container);
+
+					if (callback) callback();
+				} catch (e) {
+					console.error("Could not load content:", e);
+					document.getElementById(targetId).innerHTML = `<div class="w3-panel w3-red"><h3>Error</h3><p>Could not load ${url}</p></div>`;
+				}
+			};
+
+			App.init = function () {
+				// Load initial content
+				App.loadContent("Menu", "navigation");
+				App.loadContent("Content", "content");
+				document.getElementById('lcolumn').innerHTML = "<p/>";
+				document.getElementById('rcolumn').innerHTML = "<p/>";
+
+				// Attach global events
+				App.bindEvents();
+			};
+
+			App.bindEvents = function () {
+				// Deal with menu clicks via event delegation
+				document.addEventListener("click", function (event) {
+					const menuLink = event.target.closest(".menu");
+					if (menuLink) {
+						event.preventDefault();
+						const href = menuLink.getAttribute('href');
+						App.loadContent(href, "content", function () {
+							App.loadContent("Menu", "navigation");
+						});
+					}
+				});
+
+				// Deal with form submission via fetch
+				document.addEventListener("submit", async function (event) {
+					const form = event.target;
+					if (form.tagName === 'FORM') {
+						event.preventDefault();
+						const data = new FormData(form);
+						const action = form.getAttribute('action');
+
+						try {
+							const response = await fetch(action, {
+								method: 'POST',
+								body: data
+								// browser automatically sets the correct boundary for multipart/form-data
+							});
+							if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+							const html = await response.text();
+
+							const container = document.getElementById("content");
+							container.innerHTML = html;
+							App.executeScripts(container);
+
+							App.loadContent("Menu", "navigation");
+						} catch (e) {
+							console.error("Form submission failed:", e);
+						}
+					}
+				});
+			};
+
+			App.stack = function () {
+				const stack = document.getElementById("stack");
+				stack.classList.toggle("w3-show");
+			};
+
+			// Ensure `App.init` runs correctly on DOM ready
+			document.addEventListener("DOMContentLoaded", function () {
+				App.init();
+			});
+
+		</script>
+
+	</head>
+
+	<body>
+
+		<!-- Begin Navigation -->
+		<div class="w3-theme w3-top" id="navigation"> </div>
+		<!-- End Navigation -->
+
+		<!-- Begin Content -->
+		<div class="w3-row-padding" style="margin-top: 50px;margin-bottom: 75px">
+
+			<!-- Left Column -->
+			<div class="w3-container w3-col m3 w3-hide-small">
+				<div id="lcolumn"> </div>
+			</div>
+			<!-- Middle Column -->
+			<div class="w3-container w3-col m6">
+				<div id="content"> </div>
+			</div>
+			<!-- Right Column -->
+			<div class="w3-container w3-col m3 w3-hide-small">
+				<div id="rcolumn"> </div>
+			</div>
+
+		</div>
+		<!-- End Content -->
+		<!-- Footer -->
+		<footer class="w3-container w3-theme w3-bottom">
+			<p>Pompeu Fabra University @2026</p>
+		</footer>
+
+	</body>
+
+	</html>
