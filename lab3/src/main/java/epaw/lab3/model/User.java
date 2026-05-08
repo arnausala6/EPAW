@@ -13,6 +13,7 @@ public class User implements Serializable {
 	private String gender;
 	private String description;
 	private String profilePicturePath;
+	private String picture;
 	private Integer groupId;
 	private Integer age;
 	private String country;
@@ -76,6 +77,15 @@ public class User implements Serializable {
 
 	public void setProfilePicturePath(String profilePicturePath) {
 		this.profilePicturePath = profilePicturePath;
+	}
+
+	public String getPicture() {
+		return picture != null ? picture : profilePicturePath;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+		this.profilePicturePath = picture;
 	}
 
 	public Integer getGroupId() {
