@@ -28,7 +28,8 @@ public class UserService {
         return instance;
     }
 
-    private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     public Map<String, String> validate(User user) {
         Map<String, String> errors = new HashMap<>();
@@ -36,8 +37,8 @@ public class UserService {
         String name = user.getName();
         if (name == null || name.trim().isEmpty()) {
             errors.put("name", "Username cannot be empty.");
-        } else if (name.length() < 5 || name.length() > 20) {
-            errors.put("name", "Username must be between 5 and 20 characters.");
+        } else if (name.length() > 30) {
+            errors.put("name", "Username must have less than 30 characters");
         } else if (userRepository.existsByUsername(name)) {
             errors.put("name", "Username already exists.");
         }
@@ -45,8 +46,34 @@ public class UserService {
         String password = user.getPassword();
         if (password == null || !password.matches(PASSWORD_REGEX)) {
             errors.put("password",
-                    "Minimum 8 characters, including uppercase, numbers, and a special character (@#$%^&*).");
+                    "Minimum requirements: 8 characters, one uppercase letter, and one number.");
         }
+
+        // 3. EMAIL
+        String email = user.getEmail();
+        if (email == null || email.trim().isEmpty()) {
+            errors.put("email", "Email is required.");
+        } else if (!email.matches(EMAIL_REGEX)){
+            errors.put("email", "This must have email form.");
+        } else if (email.length() > 255) {
+            errors.put("email", "Maxlength reached.");
+        }
+
+        // 4. GENDER
+        String gender = user.getGender();
+        if (gender == null || gender.trim().isEmpty()) {
+            errors.put("gender", "Gender is required.");
+        } else if (gender.equals("Male") || gender.equals("Female") || gender.equals("Other")) {
+            errors.put("gender", "Not a valid gender");
+        }
+
+        // 5. AGE
+        Integer age = user.getAge();
+        if (age == null) {
+            errors.put("age", "Age is required.");
+        } else if (age < 16){
+            errors.put("age", "You must be at least 16 to register");
+        }       
 
         return errors;
     }
