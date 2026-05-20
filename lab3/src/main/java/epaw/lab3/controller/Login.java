@@ -48,6 +48,7 @@ public class Login extends HttpServlet {
 		if (errors.isEmpty()) {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
+			session.setAttribute("role", user.getRole()); // Guardamos el rol del usuario en la sesión
 			request.getRequestDispatcher("Welcome.jsp").forward(request, response);
 		} else {
 			user.setPassword("");

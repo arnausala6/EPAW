@@ -37,7 +37,7 @@ public class UserRepository extends BaseRepository {
     }
 
     public boolean checkLogin(User user) {
-        String query = "SELECT id, picture from users where name=? AND password=?";
+        String query = "SELECT id, picture, role from users where name=? AND password=?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPassword());
@@ -45,6 +45,7 @@ public class UserRepository extends BaseRepository {
                 if (rs.next()) {
                     user.setId(rs.getInt("id"));
                     user.setPicture(rs.getString("picture"));
+                    user.setRole(rs.getString("role")); // Cargamos el rol del usuario
                     return true;
                 }
             }
@@ -55,11 +56,12 @@ public class UserRepository extends BaseRepository {
     }
 
     public void save(User user) {
-        String query = "INSERT INTO users (name, password, picture) VALUES (?, ?, ?)";
+        String query = "INSERT INTO users (name, password, picture, role) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPassword());
             statement.setString(3, user.getPicture());
+            statement.setString(4, user.getRole());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,7 +69,7 @@ public class UserRepository extends BaseRepository {
     }
 
     public Optional<User> findByName(String name) {
-        String query = "SELECT id, name, password, picture FROM users WHERE name = ?";
+        String query = "SELECT id, name, password, picture, role FROM users WHERE name = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
@@ -77,6 +79,7 @@ public class UserRepository extends BaseRepository {
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
                 user.setPicture(rs.getString("picture"));
+                user.setRole(rs.getString("role")); // Cargamos el rol del usuario
                 return Optional.of(user);
             }
         } catch (SQLException e) {

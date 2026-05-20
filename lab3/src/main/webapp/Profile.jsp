@@ -8,7 +8,8 @@
   <p><img src="${user.picture}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
   <hr>
   <p class="w3-left-align"> <i class="fa fa-id-card fa-fw w3-margin-right"></i> ${user.name} </p>
- </div>
+  <a class="menu w3-left-align" href="EditProfile.html"><i class="fa fa-pencil fa-fw w3-margin-right"></i>Edit profile</a> 
+</div>
 <br>
 </c:when>
 <c:otherwise>

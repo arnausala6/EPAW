@@ -20,6 +20,8 @@ public class User implements Serializable {
 	private String password;
 	private String confirmPassword;
 
+	private String role;
+
 	public User() {
 	}
 
@@ -126,6 +128,14 @@ public class User implements Serializable {
 
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }
