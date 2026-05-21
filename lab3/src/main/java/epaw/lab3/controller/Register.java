@@ -29,6 +29,8 @@ public class Register extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		request.setAttribute("countries", userService.getAvailableCountries());
+		request.setAttribute("groups", userService.getTopTenGroups());
 		request.getRequestDispatcher("Register.jsp").forward(request, response);
 
 	}
@@ -53,6 +55,8 @@ public class Register extends HttpServlet {
 		} else {
 			request.setAttribute("user", user);
 			request.setAttribute("errors", errors);
+			request.setAttribute("countries", userService.getAvailableCountries());
+			request.setAttribute("groups", userService.getTopTenGroups());
 			request.getRequestDispatcher("Register.jsp").forward(request, response);
 		}
 

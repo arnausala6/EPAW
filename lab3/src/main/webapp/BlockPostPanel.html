@@ -1,0 +1,24 @@
+<div class="w3-card w3-white">
+	<header class="w3-container w3-theme">
+		<span onclick="$('#rcolumn').html('<p/>')" class="w3-button w3-display-topright">&times;</span>
+		<h5><i class="fa fa-ban"></i> Block post</h5>
+	</header>
+	<div class="w3-container w3-padding">
+		<form>
+			<div class="w3-section">
+				<label class="w3-text-grey">Reason</label>
+				<textarea class="w3-input w3-border" style="height:80px" placeholder="Explain why this post violates the rules..."></textarea>
+			</div>
+			<div class="w3-section">
+				<label><input type="checkbox" class="w3-check"> Also block the author</label>
+			</div>
+			<div class="w3-section">
+				<label class="w3-text-grey">Your password</label>
+				<input type="password" class="w3-input w3-border">
+			</div>
+			<button type="button" class="w3-button w3-theme w3-block"><i class="fa fa-ban"></i> Confirm block</button>
+			<button type="button" class="w3-button w3-light-grey w3-block w3-margin-top" onclick="$('#rcolumn').html('<p/>')">Cancel</button>
+			<p class="w3-small w3-text-grey w3-margin-top">Mockup only.</p>
+		</form>
+	</div>
+</div>

@@ -7,3 +7,10 @@ input.w3-input:valid {
 input.w3-input:invalid {
 	border-left: 4px solid red !important;
 }
+
+#lcolumn, #content, #rcolumn {
+	max-height: calc(100vh - 140px);
+	overflow-y: auto;
+	padding: 2px 14px 16px 2px;
+	box-sizing: border-box;
+}

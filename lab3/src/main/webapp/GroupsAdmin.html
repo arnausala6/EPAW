@@ -1,0 +1,105 @@
+<div class="w3-card w3-white">
+	<header class="w3-container w3-theme">
+		<h3><i class="fa fa-users"></i> Groups</h3>
+	</header>
+
+	<div class="w3-container w3-padding">
+		<div class="w3-card w3-margin-bottom">
+			<div class="w3-container w3-padding">
+				<h4>Create group</h4>
+				<div class="w3-section">
+					<label for="groupName" class="w3-text-grey">Group name</label>
+					<input class="w3-input w3-border" type="text" id="groupName" placeholder="Example: Web Engineering Lab 3">
+				</div>
+				<div class="w3-section">
+					<label for="groupDescription" class="w3-text-grey">Description</label>
+					<textarea class="w3-input w3-border" id="groupDescription" style="height: 80px;" placeholder="What is this group about?"></textarea>
+				</div>
+				<button type="button" class="w3-button w3-theme"><i class="fa fa-plus"></i> Create group</button>
+			</div>
+		</div>
+
+		<div class="w3-card w3-margin-bottom">
+			<div class="w3-container w3-padding">
+				<h4>Available groups</h4>
+				<ul class="w3-ul w3-border">
+					<li>
+						<div style="display:flex; justify-content:space-between; align-items:center">
+							<div>
+								<strong>Web Engineering</strong>
+								<span class="w3-small w3-text-grey"> · 5 members</span>
+							</div>
+							<div>
+								<button type="button" class="w3-button w3-small w3-light-grey"><i class="fa fa-sign-in"></i> Join</button>
+								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="carlos,laura,miguel,emma,jordi"><i class="fa fa-ban"></i> Block</button>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div style="display:flex; justify-content:space-between; align-items:center">
+							<div>
+								<strong>AI Projects</strong>
+								<span class="w3-small w3-text-grey"> · 4 members · Joined</span>
+							</div>
+							<div>
+								<button type="button" class="w3-button w3-small w3-light-grey"><i class="fa fa-sign-out"></i> Leave</button>
+								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="pau,alice,marc,sofia"><i class="fa fa-ban"></i> Block</button>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div style="display:flex; justify-content:space-between; align-items:center">
+							<div>
+								<strong>Campus Events</strong>
+								<span class="w3-small w3-text-grey"> · 7 members</span>
+							</div>
+							<div>
+								<button type="button" class="w3-button w3-small w3-light-grey"><i class="fa fa-sign-in"></i> Join</button>
+								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="daniel,marta,tom,anna,pere,james,lucia"><i class="fa fa-ban"></i> Block</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+document.querySelectorAll('.btn-block-group').forEach(function(btn) {
+	btn.addEventListener('click', function() {
+		var users = btn.getAttribute('data-users').split(',');
+		var checkboxes = users.map(function(u) {
+			return '<label class="w3-block w3-margin-bottom"><input type="checkbox" class="w3-check"> ' + u + '</label>';
+		}).join('');
+
+		$('#rcolumn').html(
+			'<div class="w3-card w3-white">' +
+				'<header class="w3-container w3-theme">' +
+					'<span onclick="$(\'#rcolumn\').html(\'<p/>\')" class="w3-button w3-display-topright">&times;</span>' +
+					'<h5><i class="fa fa-ban"></i> Block group</h5>' +
+				'</header>' +
+				'<div class="w3-container w3-padding">' +
+					'<form>' +
+						'<div class="w3-section">' +
+							'<label class="w3-text-grey">Reason</label>' +
+							'<textarea class="w3-input w3-border" style="height:80px" placeholder="Explain why this group violates the rules..."></textarea>' +
+						'</div>' +
+						'<div class="w3-section">' +
+							'<label class="w3-text-grey">Also block these members</label>' +
+							'<div class="w3-card w3-padding" style="max-height:350px; overflow-y:auto">' + checkboxes + '</div>' +
+						'</div>' +
+						'<div class="w3-section">' +
+							'<label class="w3-text-grey">Your password</label>' +
+							'<input type="password" class="w3-input w3-border">' +
+						'</div>' +
+						'<button type="button" class="w3-button w3-theme w3-block"><i class="fa fa-ban"></i> Confirm block</button>' +
+						'<button type="button" class="w3-button w3-light-grey w3-block w3-margin-top" onclick="$(\'#rcolumn\').html(\'<p/>\')">Cancel</button>' +
+						'<p class="w3-small w3-text-grey w3-margin-top">Mockup only.</p>' +
+					'</form>' +
+				'</div>' +
+			'</div>'
+		);
+	});
+});
+</script>
