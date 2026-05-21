@@ -74,3 +74,11 @@ CREATE TABLE IF NOT EXISTS Vote (
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS UserInGroup (
+    user_id INTEGER,
+    group_id INTEGER,
+    PRIMARY KEY (user_id, group_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
+);
