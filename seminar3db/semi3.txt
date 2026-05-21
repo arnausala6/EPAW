@@ -41,15 +41,6 @@ CREATE TABLE IF NOT EXISTS Comment (
     FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Repost (
-    user_id INTEGER,
-    post_id INTEGER,
-    date_of_repost TEXT DEFAULT (datetime('now')),
-    PRIMARY KEY (user_id, post_id),
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS Block (
     blocker_id INTEGER,
     blocked_id INTEGER,
