@@ -5,6 +5,9 @@ App.initRegisterValidation = function (serverErrors)  {
 	const password = document.getElementById('password');
 	const confirmPassword = document.getElementById('confirmPassword');
 	
+	const profilePicture = document.getElementById('profilePicture');
+    const btnRemoveProfile = document.getElementById('btnRemoveProfile');
+
 	// check passwords are equal
 	confirmPassword.addEventListener('input', () => {
 	  confirmPassword.setCustomValidity(
@@ -12,7 +15,23 @@ App.initRegisterValidation = function (serverErrors)  {
 	  );
 	});
 	
-	
+	if (profilePicture) {
+        profilePicture.addEventListener('change', () => {
+            const file = profilePicture.files[0];
+            if (file) {
+                const maxSize = 2 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    profilePicture.setCustomValidity("The profile picture cannot exceed 2MB.");
+                    profilePicture.reportValidity();
+                    if (btnRemoveProfile) btnRemoveProfile.style.display = 'none';
+                } else {
+                    profilePicture.setCustomValidity('');
+                    if (btnRemoveProfile) btnRemoveProfile.style.display = 'inline-block';
+                }
+            }
+        });
+    }
+
 	Object.entries(serverErrors).forEach(([field, message]) => {
 	  const input = document.getElementsByName(field)[0];
 	  if (input) {

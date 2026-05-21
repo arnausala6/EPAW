@@ -23,6 +23,38 @@ public class GroupRepository extends BaseRepository {
         return instance;
     }
 
+    public boolean groupExists(String name){
+        String query = "SELECT COUNT(*) FROM groups WHERE name = ?";
+        
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, name);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean groupIdExists(Integer Id){
+        String query = "SELECT COUNT(*) FROM groups WHERE id = ?";
+        
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, String.valueOf(Id));
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<Group> findTopTen() {
         List<Group> list = new ArrayList<>();
         String query = "SELECT id, name FROM groups ORDER BY id ASC LIMIT 10";

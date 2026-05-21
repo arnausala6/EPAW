@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 import epaw.lab3.model.Group;
 import epaw.lab3.model.User;
 import epaw.lab3.repository.UserRepository;
+import epaw.lab3.repository.GroupRepository;
 import jakarta.servlet.http.Part;
 
 import java.io.InputStream;
@@ -24,6 +26,7 @@ public class UserService {
 
     private static UserService instance;
     private UserRepository userRepository;
+    private GroupRepository groupRepository;
 
     private static final List<String> SORTED_COUNTRIES = buildSortedCountries();
 
@@ -54,6 +57,7 @@ public class UserService {
 
     private UserService() {
         this.userRepository = UserRepository.getInstance();
+        this.groupRepository = GroupRepository.getInstance();
     }
 
     public static synchronized UserService getInstance() {
@@ -119,6 +123,26 @@ public class UserService {
             errors.put("age", "You must be at least 16 to register");
         }
 
+        String country = user.getCountry();
+        int index = Collections.binarySearch(SORTED_COUNTRIES, country);
+        if (index < 0 && country.equals("-")) {
+            errors.put("country", "Not a valid country");
+        }
+
+        String description = user.getDescription();
+        if (description.length() > 300){
+            errors.put("descrption", "Maximum length is 300 characters");
+        }
+
+        //!!!CODIGO PARA METER CUANDO EL DB ESTÉ BIEN HECHO!!!
+
+        // Integer groupId = user.getGroupId();
+        // if(!groupRepository.groupIdExists(groupId) && groupId!=0){
+        //     System.err.println("Group:");
+        //     System.err.println(groupId);
+        //     errors.put("groupId", "Group does not exist");
+        // }
+
         return errors;
     }
 
@@ -139,9 +163,17 @@ public class UserService {
     }
 
     public String saveProfilePicture(Part filePart, String username) {
+        Map<String, String> errors = new HashMap<>();
         if (filePart == null || filePart.getSize() <= 0) {
             return null;
         }
+
+        long maxBytes = 2 * 1024 * 1024; // 2MB
+        if (filePart.getSize() > maxBytes) {
+            errors.put("profilePicture", "The profile picture cannot exceed 2MB.");
+            return null; 
+        }
+        
         try {
             String fileName = filePart.getSubmittedFileName();
             String extension = fileName.substring(fileName.lastIndexOf("."));
