@@ -1,0 +1,76 @@
+CREATE TABLE IF NOT EXISTS User (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE, --sa de fer al codi
+    encrypted_password TEXT NOT NULL, --sa de fer al codi
+    register_date TEXT DEFAULT (datetime('now')),
+    description TEXT,
+    profile_picture TEXT,
+    country TEXT,
+    role TEXT DEFAULT 'user',
+    group_id INTEGER,
+);
+
+CREATE TABLE IF NOT EXISTS "Group" (
+    group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_name TEXT NOT NULL,
+    description TEXT,
+    group_picture TEXT,
+    date_of_creation TEXT DEFAULT (datetime('now')),
+    creator_id INTEGER,
+    FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS Post (
+    post_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    date_of_creation TEXT DEFAULT (datetime('now')),
+    votes INTEGER DEFAULT 0,
+    user_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Comment (
+    comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Repost (
+    user_id INTEGER,
+    post_id INTEGER,
+    date_of_repost TEXT DEFAULT (datetime('now')),
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Block (
+    blocker_id INTEGER,
+    blocked_id INTEGER,
+    PRIMARY KEY (blocker_id, blocked_id),
+    FOREIGN KEY (blocker_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Follows (
+    follower_id INTEGER,
+    followed_id INTEGER,
+    PRIMARY KEY (follower_id, followed_id),
+    FOREIGN KEY (follower_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Vote (
+    user_id INTEGER,
+    post_id INTEGER,
+    type_of_vote TEXT, -- can be 'upvote' or 'downvote'
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES Post(post_id) ON DELETE CASCADE
+);
