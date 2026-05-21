@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserService {
 
     private static UserService instance;
@@ -78,7 +80,7 @@ public class UserService {
         return MOCK_GROUPS;
     }
 
-    public Map<String, String> validate(User user) {
+    public Map<String, String> validate(User user, Part filePart) {
         Map<String, String> errors = new HashMap<>();
 
         String username = user.getUsername();
@@ -145,12 +147,28 @@ public class UserService {
         //     errors.put("groupId", "Group does not exist");
         // }
 
+        if (filePart != null && filePart.getSize() > 0) {
+            long maxBytes = 2 * 1024 * 1024; // 2MB
+            if (filePart.getSize() > maxBytes) {
+                errors.put("profilePicture", "The profile picture cannot exceed 2MB.");
+            }
+        }
+
         return errors;
     }
 
-    public Map<String, String> register(User user) {
-        Map<String, String> errors = validate(user);
+    public Map<String, String> register(User user, Part filePart) {
+        Map<String, String> errors = validate(user, filePart);
         if (errors.isEmpty()) {
+            if (filePart != null && filePart.getSize() > 0) {
+                String picturePath = saveProfilePicture(filePart, user.getUsername());
+                user.setPicture(picturePath);
+            }
+
+            String plainPassword = user.getPassword();
+            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+            user.setPassword(hashedPassword);
+
             userRepository.save(user);
         }
         return errors;
@@ -165,17 +183,9 @@ public class UserService {
     }
 
     public String saveProfilePicture(Part filePart, String username) {
-        Map<String, String> errors = new HashMap<>();
         if (filePart == null || filePart.getSize() <= 0) {
             return null;
-        }
-
-        long maxBytes = 2 * 1024 * 1024; // 2MB
-        if (filePart.getSize() > maxBytes) {
-            errors.put("profilePicture", "The profile picture cannot exceed 2MB.");
-            return null; 
-        }
-        
+        }        
         try {
             String fileName = filePart.getSubmittedFileName();
             String extension = fileName.substring(fileName.lastIndexOf("."));

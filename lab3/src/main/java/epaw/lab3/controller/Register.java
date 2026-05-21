@@ -42,15 +42,13 @@ public class Register extends HttpServlet {
 
 		try {
 			BeanUtils.populate(user, request.getParameterMap());
-			String picturePath = userService.saveProfilePicture(request.getPart("profilePicture"), user.getName());
-			user.setPicture(picturePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		user.setRole("user"); // Por defecto, el usuario es un usuario normal
-		Map<String, String> errors = userService.register(user);
+		jakarta.servlet.http.Part filePart = request.getPart("profilePicture");
+		Map<String, String> errors = userService.register(user,filePart);
 		if (errors.isEmpty()) {
-			request.setAttribute("user", user);
 			request.getRequestDispatcher("Login.jsp").forward(request, response);
 		} else {
 			request.setAttribute("user", user);

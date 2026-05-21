@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import epaw.lab3.model.User;
 
 public class UserRepository extends BaseRepository {
@@ -51,23 +53,25 @@ public class UserRepository extends BaseRepository {
     }
 
     public boolean checkLogin(User user) {
-        String query = "SELECT id, name, username, email, age, gender, description, country, picture, role FROM users WHERE username=? AND password=?";
+        String query = "SELECT id, name, username, email, age, gender, description, country, picture, role, password FROM users WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    user.setId(rs.getInt("id"));
-                    user.setName(rs.getString("name"));
-                    user.setUsername(rs.getString("username"));
-                    user.setEmail(rs.getString("email"));
-                    user.setAge(rs.getInt("age"));
-                    user.setGender(rs.getString("gender"));
-                    user.setDescription(rs.getString("description"));
-                    user.setCountry(rs.getString("country"));
-                    user.setPicture(rs.getString("picture"));
-                    user.setRole(rs.getString("role"));
-                    return true;
+                    String storedHash = rs.getString("password");
+                    if (BCrypt.checkpw(user.getPassword(), storedHash)) {
+                        
+                        user.setId(rs.getInt("id"));
+                        user.setName(rs.getString("name"));
+                        user.setEmail(rs.getString("email"));
+                        user.setAge(rs.getInt("age"));
+                        user.setGender(rs.getString("gender"));
+                        user.setDescription(rs.getString("description"));
+                        user.setCountry(rs.getString("country"));
+                        user.setPicture(rs.getString("picture"));
+                        user.setRole(rs.getString("role"));
+                        return true; 
+                    }
                 }
             }
         } catch (SQLException e) {
