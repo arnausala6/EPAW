@@ -36,6 +36,20 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
+        public boolean existsEmail(String email) {
+        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean checkLogin(User user) {
         String query = "SELECT id, name, username, email, age, gender, description, country, picture, role FROM users WHERE username=? AND password=?";
         try (PreparedStatement statement = db.prepareStatement(query)) {

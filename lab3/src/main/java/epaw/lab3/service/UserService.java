@@ -109,6 +109,8 @@ public class UserService {
             errors.put("email", "This must have email form.");
         } else if (email.length() > 255) {
             errors.put("email", "Maxlength reached.");
+        } else if (userRepository.existsEmail(email)) {
+            errors.put("email", "This email is already registered");
         }
 
         String gender = user.getGender();

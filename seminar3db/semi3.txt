@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS User (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
-    email TEXT NOT NULL UNIQUE, --sa de fer al codi
+    email TEXT NOT NULL UNIQUE,
     encrypted_password TEXT NOT NULL, --sa de fer al codi
     register_date TEXT DEFAULT (datetime('now')),
     description TEXT,
