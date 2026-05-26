@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang=en>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" href="assets/upf.png">
+	<title> U </title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+	<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script>
+		window.App = window.App || {};
+		App.Errors = App.Errors || {};
+	</script>
+	<script src="js/LoginValidation.js"></script>
+	<script src="js/RegisterValidation.js"></script>
+
+	<script>
+		App.init = function () {
+
+			$.ajaxSetup({ cache: false });
+			// Load initial content
+			$('#navigation').load("Menu");
+			$('#content').load("Content");
+			$('#lcolumn').load("Profile");
+			$('#rcolumn').load("NotFollowed");
+			// Attach global events
+			App.bindEvents();
+
+		};
+
+		App.bindEvents = function () {
+			// Deal with menu clicks
+			$(document).on("click", ".menu", function (event) {
+				event.preventDefault();
+				$('#content').load($(this).attr('href'));
+				App.stack();
+			});
+			// Deal with form submission via AJAX
+			$(document).on("submit", "form", function (event) {
+				// sovles the bug of passwore fiels not being validated
+				if (event.isDefaultPrevented() || !this.checkValidity()) {
+					return;
+				}
+				event.preventDefault();
+				const form = this;
+				const data = new FormData(form);
+				$.ajax({
+					type: 'POST',
+					enctype: 'multipart/form-data',
+					url: $(form).attr('action'),
+					data: data,
+					processData: false,
+					contentType: false
+				}).done(function (html) {
+					$('#navigation').load("Menu");
+					$("#content").html(html);
+				});
+			});
+			/* Follow user */
+			$(document).on("click", ".followUser", function(event) {
+				var user = $(this).parent();
+				$.post("Follow", {
+					id : $(this).parent().attr("id")
+				}, function(event) {
+					$("#content").load("Followed");
+					$("#rcolumn").load("NotFollowed");
+				});
+				event.preventDefault();
+			});
+			/* UnFollow user */
+			$(document).on("click", ".unfollowUser", function(event) {
+				var user = $(this).parent();
+				$.post("Unfollow", {
+					id : $(this).parent().attr("id")
+				}, function(event) {
+					$("#content").load("Followed");
+					$("#rcolumn").load("NotFollowed");
+				});
+				event.preventDefault();
+			});
+			/* Add tweet */
+			$(document).on("click", "#addTweet", function(event) {
+				$.post("AddTweet", {
+					content : $("#tweetContent").text()
+				}, function(event) {
+					$("#content").load("Timeline");
+				});
+				event.preventDefault();
+			});
+			/* Delete tweet */
+			$(document).on("click", ".delTweet", function(event) {
+				var tweet = $(this).parent();
+				$.post("DelTweet", {
+					id : $(this).parent().attr("id")
+				}, function(event) {
+					$("#content").load("Timeline");
+				});
+				event.preventDefault();
+			});
+
+		};
+
+		App.stack = function () {
+			$("#stack").toggleClass("w3-show");
+		};
+
+		// Ensure `App.init` runs correctly
+		$(document).ready(function () {
+			App.init();
+		});
+
+	</script>
+
+</head>
+
+<body>
+
+	<!-- Begin Navigation -->
+	<div class="w3-theme w3-top" id="navigation"> </div>
+	<!-- End Navigation -->
+
+	<!-- Begin Content -->
+	<div class="w3-row-padding" style="margin-top: 50px;margin-bottom: 75px">
+
+		<!-- Left Column -->
+		<div class="w3-container w3-col m3 w3-hide-small">
+			<div id="lcolumn"> </div>
+		</div>
+		<!-- Middle Column -->
+		<div class="w3-container w3-col m6">
+			<div id="content"> </div>
+		</div>
+		<!-- Right Column -->
+		<div class="w3-container w3-col m3 w3-hide-small">
+			<div id="rcolumn"> </div>
+		</div>
+
+	</div>
+	<!-- End Content -->
+	<!-- Footer -->
+	<footer class="w3-container w3-theme w3-bottom">
+		<p>Pompeu Fabra University @2026</p>
+	</footer>
+
+</body>
+
+</html>
