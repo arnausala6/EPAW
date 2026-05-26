@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>\r\n
 
 <script type="text/javascript">
-$(document).ready(function(){
-	$('#rcolumn').html('<p/>');
-	$('#lcolumn').html('<p/>');
+document.addEventListener("DOMContentLoaded", function() {
+    // Código compatible tanto con Fetch API como con jQuery
+    var rcol = document.getElementById('rcolumn');
+    var lcol = document.getElementById('lcolumn');
+    if (rcol) rcol.innerHTML = '<p/>';
+    if (lcol) lcol.innerHTML = '<p/>';
 });
 </script>
 

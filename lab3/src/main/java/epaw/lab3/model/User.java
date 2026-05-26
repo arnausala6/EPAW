@@ -1,141 +1,113 @@
 package epaw.lab3.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private String username;
-	private String name;
-	private String email;
-	private String gender;
-	private String description;
-	private String profilePicturePath;
-	private String picture;
-	private Integer groupId;
-	private Integer age;
-	private String country;
-	private String password;
-	private String confirmPassword;
+    private Integer userId;          
+    private String username;         
+    private String email;            
+    private String encryptedPassword;
+    private Timestamp registerDate;  
+    private String description;      
+    private String profilePicture;   
+    private String country;          
+    private String role;     
+	private String gender;        
 
-	private String role;
+    private String confirmPassword; 
 
-	public User() {
-	}
+    public User() {
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getUserId() {
+        return userId;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public Timestamp getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Timestamp registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
 	public String getGender() {
-		return gender;
+    	return gender;
 	}
 
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getProfilePicturePath() {
-		return profilePicturePath;
-	}
-
-	public void setProfilePicturePath(String profilePicturePath) {
-		this.profilePicturePath = profilePicturePath;
-	}
-
-	public String getPicture() {
-		return picture != null ? picture : profilePicturePath;
-	}
-
-	public void setPicture(String picture) {
-		this.picture = picture;
-		this.profilePicturePath = picture;
-	}
-
-	public Integer getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
 }

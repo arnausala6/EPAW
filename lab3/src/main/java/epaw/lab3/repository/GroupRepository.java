@@ -24,7 +24,7 @@ public class GroupRepository extends BaseRepository {
     }
 
     public boolean groupExists(String name){
-        String query = "SELECT COUNT(*) FROM groups WHERE name = ?";
+        String query = "SELECT COUNT(*) FROM \"Group\" WHERE group_name = ?";
         
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, name);
@@ -39,11 +39,11 @@ public class GroupRepository extends BaseRepository {
         return false;
     }
 
-    public boolean groupIdExists(Integer Id){
-        String query = "SELECT COUNT(*) FROM groups WHERE id = ?";
+    public boolean groupIdExists(Integer id){
+        String query = "SELECT COUNT(*) FROM \"Group\" WHERE group_id = ?";
         
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setString(1, String.valueOf(Id));
+            statement.setInt(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0;
@@ -57,13 +57,17 @@ public class GroupRepository extends BaseRepository {
 
     public List<Group> findTopTen() {
         List<Group> list = new ArrayList<>();
-        String query = "SELECT id, name FROM groups ORDER BY id ASC LIMIT 10";
+        String query = "SELECT group_id, group_name, description, group_picture, date_of_creation, creator_id FROM \"Group\" ORDER BY group_id ASC LIMIT 10";
         try (PreparedStatement statement = db.prepareStatement(query);
                 ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 Group g = new Group();
-                g.setId(rs.getInt("id"));
-                g.setName(rs.getString("name"));
+                g.setGroupId(rs.getInt("group_id"));
+                g.setGroupName(rs.getString("group_name"));
+                g.setDescription(rs.getString("description"));
+                g.setGroupPicture(rs.getString("group_picture"));
+                g.setDateOfCreation(rs.getTimestamp("date_of_creation"));
+                g.setCreatorId(rs.getInt("creator_id"));
                 list.add(g);
             }
         } catch (SQLException e) {

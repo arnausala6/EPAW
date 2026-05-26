@@ -40,8 +40,8 @@ public class UserService {
 
     private static Group group(int id, String name) {
         Group g = new Group();
-        g.setId(id);
-        g.setName(name);
+        g.setGroupId(id);
+        g.setGroupName(name);
         return g;
     }
 
@@ -77,7 +77,7 @@ public class UserService {
     }
 
     public List<Group> getTopTenGroups() {
-        return MOCK_GROUPS;
+        return groupRepository.findTopTen().isEmpty() ? MOCK_GROUPS : groupRepository.findTopTen();
     }
 
     public Map<String, String> validate(User user, Part filePart) {
@@ -92,14 +92,7 @@ public class UserService {
             errors.put("username", "Username already exists.");
         }
 
-        String name = user.getName();
-        if (name == null || name.trim().isEmpty()) {
-            errors.put("name", "Name cannot be empty.");
-        } else if (name.length() > 30) {
-            errors.put("name", "Name must have less than 30 characters.");
-        }
-
-        String password = user.getPassword();
+        String password = user.getConfirmPassword();
         if (password == null || !password.matches(PASSWORD_REGEX)) {
             errors.put("password", "Minimum requirements: 8 characters, one uppercase letter, and one number.");
         }
@@ -115,43 +108,31 @@ public class UserService {
             errors.put("email", "This email is already registered");
         }
 
-        String gender = user.getGender();
-        if (gender == null || gender.trim().isEmpty()) {
-            errors.put("gender", "Gender is required.");
-        }
-
-        Integer age = user.getAge();
-        if (age == null) {
-            errors.put("age", "Age is required.");
-        } else if (age < 16) {
-            errors.put("age", "You must be at least 16 to register");
-        }
-
         String country = user.getCountry();
-        int index = Collections.binarySearch(SORTED_COUNTRIES, country);
-        if (index < 0 && country.equals("-")) {
-            errors.put("country", "Not a valid country");
+        if (country != null) {
+            int index = Collections.binarySearch(SORTED_COUNTRIES, country);
+            if (index < 0 && country.equals("-")) {
+                errors.put("country", "Not a valid country");
+            }
         }
 
         String description = user.getDescription();
-        if (description.length() > 300){
-            errors.put("descrption", "Maximum length is 300 characters");
+        if (description != null && description.length() > 300){
+            errors.put("description", "Maximum length is 300 characters");
         }
 
-        //!!!CODIGO PARA METER CUANDO EL DB ESTÉ BIEN HECHO!!!
-
-        // Integer groupId = user.getGroupId();
-        // if(!groupRepository.groupIdExists(groupId) && groupId!=0){
-        //     System.err.println("Group:");
-        //     System.err.println(groupId);
-        //     errors.put("groupId", "Group does not exist");
-        // }
-
         if (filePart != null && filePart.getSize() > 0) {
-            long maxBytes = 2 * 1024 * 1024; // 2MB
+            long maxBytes = 2 * 1024 * 1024;
             if (filePart.getSize() > maxBytes) {
                 errors.put("profilePicture", "The profile picture cannot exceed 2MB.");
             }
+        }
+
+        String gender = user.getGender();
+        if (gender == null || gender.trim().isEmpty()) {
+            errors.put("gender", "Gender is required.");
+        } else if (!gender.equals("male") && !gender.equals("female") && !gender.equals("other")) {
+            errors.put("gender", "Invalid gender selection.");
         }
 
         return errors;
@@ -162,12 +143,16 @@ public class UserService {
         if (errors.isEmpty()) {
             if (filePart != null && filePart.getSize() > 0) {
                 String picturePath = saveProfilePicture(filePart, user.getUsername());
-                user.setPicture(picturePath);
+                user.setProfilePicture(picturePath);
             }
 
-            String plainPassword = user.getPassword();
+            String plainPassword = user.getConfirmPassword();
             String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
-            user.setPassword(hashedPassword);
+            user.setEncryptedPassword(hashedPassword);
+
+            if (user.getRole() == null) {
+                user.setRole("user");
+            }
 
             userRepository.save(user);
         }
@@ -201,5 +186,4 @@ public class UserService {
             return null;
         }
     }
-
 }

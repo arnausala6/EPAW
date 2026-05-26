@@ -15,12 +15,6 @@
             </div>
 
             <div class="w3-section">
-                <label for="name" class="w3-text-grey">Name</label>
-                <input class="w3-input w3-border" type="text" id="name" name="name" required maxlength="30"
-                    value="${user.name}" />
-            </div>
-
-            <div class="w3-section">
                 <label for="email" class="w3-text-grey">Email</label>
                 <input class="w3-input w3-border" type="email" id="email" name="email" required maxlength="255"
                     value="${user.email}" />
@@ -81,28 +75,17 @@
                 </div>
             </div>
 
-            <div class="w3-section">
-                <label for="groupId" class="w3-text-grey">Group to join (optional)</label>
-                <select class="w3-input w3-border" id="groupId" name="groupId">
-                    <option value="">—</option>
-                    <c:forEach var="g" items="${groups}">
-                        <option value="${g.id}" ${user.groupId == g.id ? 'selected' : ''}>${g.name}</option>
-                    </c:forEach>
-                </select>
-            </div>
-
             <button type="submit" class="w3-button w3-theme w3-section">Submit Registration</button>
 
         </form>
     </div>
 </div>
 
-
 <script>
-	App.Errors = {
-	  <c:forEach var="error" items="${errors}">
-	    "${error.key}": "${error.value}",
-	  </c:forEach>
-	};
-	App.initRegisterValidation(App.Errors);
+    App.Errors = {
+      <c:forEach var="error" items="${errors}">
+        "${error.key}": "${error.value}",
+      </c:forEach>
+    };
+    App.initRegisterValidation(App.Errors);
 </script>

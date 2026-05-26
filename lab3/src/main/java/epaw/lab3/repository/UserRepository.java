@@ -25,7 +25,7 @@ public class UserRepository extends BaseRepository {
     }
 
     public boolean existsByUsername(String username) {
-        String query = "SELECT COUNT(*) FROM users WHERE username = ?";
+        String query = "SELECT COUNT(*) FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
@@ -38,8 +38,8 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
-        public boolean existsEmail(String email) {
-        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+    public boolean existsEmail(String email) {
+        String query = "SELECT COUNT(*) FROM User WHERE email = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
@@ -52,23 +52,22 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
-    public boolean checkLogin(User user) {
-        String query = "SELECT id, name, username, email, age, gender, description, country, picture, role, password FROM users WHERE username = ?";
+public boolean checkLogin(User user) {
+        String query = "SELECT user_id, username, email, encrypted_password, register_date, gender, description, profile_picture, country, role FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, user.getUsername());
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    String storedHash = rs.getString("password");
-                    if (BCrypt.checkpw(user.getPassword(), storedHash)) {
+                    String storedHash = rs.getString("encrypted_password");
+                    if (BCrypt.checkpw(user.getConfirmPassword(), storedHash)) {
                         
-                        user.setId(rs.getInt("id"));
-                        user.setName(rs.getString("name"));
+                        user.setUserId(rs.getInt("user_id"));
                         user.setEmail(rs.getString("email"));
-                        user.setAge(rs.getInt("age"));
-                        user.setGender(rs.getString("gender"));
+                        user.setRegisterDate(rs.getTimestamp("register_date"));
+                        user.setGender(rs.getString("gender")); // Añadido
                         user.setDescription(rs.getString("description"));
                         user.setCountry(rs.getString("country"));
-                        user.setPicture(rs.getString("picture"));
+                        user.setProfilePicture(rs.getString("profile_picture"));
                         user.setRole(rs.getString("role"));
                         return true; 
                     }
@@ -81,41 +80,38 @@ public class UserRepository extends BaseRepository {
     }
 
     public void save(User user) {
-        String query = "INSERT INTO users (name, password, picture, role, username, email, age, gender, description, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO User (username, email, encrypted_password, gender, description, profile_picture, country, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setString(1, user.getName());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getPicture());
-            statement.setString(4, user.getRole());
-            statement.setString(5, user.getUsername());
-            statement.setString(6, user.getEmail());
-            statement.setObject(7, user.getAge());
-            statement.setString(8, user.getGender());
-            statement.setString(9, user.getDescription());
-            statement.setString(10, user.getCountry());
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getEncryptedPassword());
+            statement.setString(4, user.getGender()); // Añadido
+            statement.setString(5, user.getDescription());
+            statement.setString(6, user.getProfilePicture());
+            statement.setString(7, user.getCountry());
+            statement.setString(8, user.getRole());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Optional<User> findByName(String name) {
-        String query = "SELECT id, name, username, email, age, gender, description, country, password, picture, role FROM users WHERE name = ?";
+    public Optional<User> findByUsername(String username) {
+        String query = "SELECT user_id, username, email, encrypted_password, register_date, gender, description, profile_picture, country, role FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setString(1, name);
+            statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
+                user.setUserId(rs.getInt("user_id"));
                 user.setUsername(rs.getString("username"));
                 user.setEmail(rs.getString("email"));
-                user.setAge(rs.getInt("age"));
-                user.setGender(rs.getString("gender"));
+                user.setRegisterDate(rs.getTimestamp("register_date"));
+                user.setGender(rs.getString("gender")); // Añadido
                 user.setDescription(rs.getString("description"));
                 user.setCountry(rs.getString("country"));
-                user.setPassword(rs.getString("password"));
-                user.setPicture(rs.getString("picture"));
+                user.setEncryptedPassword(rs.getString("encrypted_password"));
+                user.setProfilePicture(rs.getString("profile_picture"));
                 user.setRole(rs.getString("role"));
                 return Optional.of(user);
             }
@@ -124,4 +120,3 @@ public class UserRepository extends BaseRepository {
         }
         return Optional.empty();
     }
-}
