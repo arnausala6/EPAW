@@ -14,11 +14,6 @@
 			</div>
 
 			<div class="w3-section">
-				<label for="editName" class="w3-text-grey">Name</label>
-				<input class="w3-input w3-border" type="text" id="editName" name="name" maxlength="30" value="${user.name}">
-			</div>
-
-			<div class="w3-section">
 				<label for="editEmail" class="w3-text-grey">Email</label>
 				<input class="w3-input w3-border" type="email" id="editEmail" name="email" maxlength="255" value="${user.email}">
 			</div>

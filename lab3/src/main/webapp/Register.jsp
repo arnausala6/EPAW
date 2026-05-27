@@ -15,12 +15,6 @@
             </div>
 
             <div class="w3-section">
-                <label for="name" class="w3-text-grey">Name</label>
-                <input class="w3-input w3-border" type="text" id="name" name="name" required maxlength="30"
-                    value="${user.name}" />
-            </div>
-
-            <div class="w3-section">
                 <label for="email" class="w3-text-grey">Email</label>
                 <input class="w3-input w3-border" type="email" id="email" name="email" required maxlength="255"
                     value="${user.email}" />

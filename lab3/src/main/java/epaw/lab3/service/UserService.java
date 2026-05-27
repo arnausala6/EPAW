@@ -92,13 +92,6 @@ public class UserService {
             errors.put("username", "Username already exists.");
         }
 
-        String name = user.getName();
-        if (name == null || name.trim().isEmpty()) {
-            errors.put("name", "Name cannot be empty.");
-        } else if (name.length() > 30) {
-            errors.put("name", "Name must have less than 30 characters.");
-        }
-
         String password = user.getPassword();
         if (password == null || !password.matches(PASSWORD_REGEX)) {
             errors.put("password", "Minimum requirements: 8 characters, one uppercase letter, and one number.");
@@ -135,17 +128,8 @@ public class UserService {
 
         String description = user.getDescription();
         if (description.length() > 300){
-            errors.put("descrption", "Maximum length is 300 characters");
+            errors.put("description", "Maximum length is 300 characters");
         }
-
-        //!!!CODIGO PARA METER CUANDO EL DB ESTÉ BIEN HECHO!!!
-
-        // Integer groupId = user.getGroupId();
-        // if(!groupRepository.groupIdExists(groupId) && groupId!=0){
-        //     System.err.println("Group:");
-        //     System.err.println(groupId);
-        //     errors.put("groupId", "Group does not exist");
-        // }
 
         if (filePart != null && filePart.getSize() > 0) {
             long maxBytes = 2 * 1024 * 1024; // 2MB

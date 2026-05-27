@@ -7,7 +7,7 @@
   <h1 class="w3-text-theme">${user.username}</h1>
   <p><img src="${not empty user.picture ? user.picture : 'assets/default-avatar.svg'}" class="w3-circle" style="height:150px;width:150px" alt="Avatar"></p>
   <hr>
-  <p class="w3-left-align" title="Name"> <i class="fa fa-user fa-fw w3-margin-right"></i>${user.name}</p>
+  <p class="w3-left-align" title="Name"> <i class="fa fa-user fa-fw w3-margin-right"></i>${user.username}</p>
   <p class="w3-left-align" title="Email"> <i class="fa fa-envelope fa-fw w3-margin-right"></i>${user.email}</p>
   <p class="w3-left-align" title="Age"> <i class="fa fa-calendar fa-fw w3-margin-right"></i>${user.age}</p>
   <p class="w3-left-align" title="Description"> <i class="fa fa-info-circle fa-fw w3-margin-right"></i>${user.description != null ? user.description : 'No descripción'}</p>
