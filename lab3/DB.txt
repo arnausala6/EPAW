@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS "Group" (
     group_picture TEXT,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     creator_id INTEGER,
+    participants INTEGER,
     FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE SET NULL
 );
 
@@ -75,4 +76,8 @@ CREATE TABLE IF NOT EXISTS UserInGroup (
     FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
 );
 
-INSERT INTO User (username, email, password, description, profile_picture, country, age, gender) VALUES ('Jordi', 'A@A', 'hashed_password', 'desc', 'pfp', 'Pernambuco', 23, 'male');
+INSERT INTO User (username, email, password, description, profile_picture, country, age, gender, role) VALUES ('Admin', 'Admin@Admin', 'hashed_password(ya miraremos como implementarlo bien)', 'descripction', 'tambien mirar como implementar', 'España', 23, 'other', 'admin');
+
+INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Web Engineering', 'We are a group dedicated to web engineering!', 1, 100);
+INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Pompeu Farra', 'We go party and drink a lot. The best thing in the world is a cubata and a birra', 1, 10000);
+INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Running Nou Barris', 'Apunta''t al nostre grup de Running de Nou Barris', 1, 80);

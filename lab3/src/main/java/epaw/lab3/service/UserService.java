@@ -14,6 +14,7 @@ import java.util.Collections;
 import epaw.lab3.model.Group;
 import epaw.lab3.model.User;
 import epaw.lab3.repository.UserRepository;
+import epaw.lab3.util.DBManager;
 import epaw.lab3.repository.GroupRepository;
 import jakarta.servlet.http.Part;
 
@@ -21,6 +22,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -32,18 +37,6 @@ public class UserService {
 
     private static final List<String> SORTED_COUNTRIES = buildSortedCountries();
 
-    private static final List<Group> MOCK_GROUPS = Arrays.asList(
-        group(1, "Web Engineering"),
-        group(2, "AI Projects"),
-        group(3, "Campus Events")
-    );
-
-    private static Group group(int id, String name) {
-        Group g = new Group();
-        g.setId(id);
-        g.setName(name);
-        return g;
-    }
 
     private static List<String> buildSortedCountries() {
         Set<String> countries = new HashSet<>();
@@ -74,10 +67,6 @@ public class UserService {
 
     public List<String> getAvailableCountries() {
         return SORTED_COUNTRIES;
-    }
-
-    public List<Group> getTopTenGroups() {
-        return MOCK_GROUPS;
     }
 
     public Map<String, String> validate(User user, Part filePart) {

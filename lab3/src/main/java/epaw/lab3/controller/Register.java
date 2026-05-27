@@ -6,7 +6,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import epaw.lab3.model.Group;
 import epaw.lab3.model.User;
+import epaw.lab3.service.GroupService;
 import epaw.lab3.service.UserService;
 
 import java.io.IOException;
@@ -20,17 +22,19 @@ public class Register extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private UserService userService;
+	private GroupService groupService;
 
 	@Override
 	public void init() throws ServletException {
 		userService = UserService.getInstance();
+		groupService = GroupService.getInstance();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		request.setAttribute("countries", userService.getAvailableCountries());
-		request.setAttribute("groups", userService.getTopTenGroups());
+		request.setAttribute("groups", groupService.getTopTenGroups());
 		request.getRequestDispatcher("Register.jsp").forward(request, response);
 
 	}
@@ -54,7 +58,7 @@ public class Register extends HttpServlet {
 			request.setAttribute("user", user);
 			request.setAttribute("errors", errors);
 			request.setAttribute("countries", userService.getAvailableCountries());
-			request.setAttribute("groups", userService.getTopTenGroups());
+			request.setAttribute("groups", groupService.getTopTenGroups());
 			request.getRequestDispatcher("Register.jsp").forward(request, response);
 		}
 

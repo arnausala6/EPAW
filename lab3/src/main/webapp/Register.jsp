@@ -80,7 +80,9 @@
                 <select class="w3-input w3-border" id="groupId" name="groupId">
                     <option value="">—</option>
                     <c:forEach var="g" items="${groups}">
-                        <option value="${g.id}" ${user.groupId == g.id ? 'selected' : ''}>${g.name}</option>
+                        <option value="${g.groupId}" ${user.groupId == g.groupId ? 'selected' : ''}>
+                            ${g.groupName}
+                        </option>
                     </c:forEach>
                 </select>
             </div>
