@@ -1,6 +1,6 @@
-# 🚀 Lab 1 - EPAW (Estructura principal amb AJAX i MVC)
+# 🚀 Lab 4 - EPAW (Exemple de funcionalitats bàsiques)
 
-Aquesta és la plantilla base per a la Pràctica 3 de l'assignatura d'EPAW. Està configurada perquè puguis començar a programar el teu backend en Java immediatament.
+Aquesta és la plantilla base per a la Pràctica 4 de l'assignatura d'EPAW. Està configurada perquè puguis veure com programar les funcionalitats bàsiques necessàries per a assolir els objectius de l'assignatura.
 
 ---
 
