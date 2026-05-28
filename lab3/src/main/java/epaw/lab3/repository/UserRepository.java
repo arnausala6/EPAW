@@ -82,7 +82,8 @@ public class UserRepository extends BaseRepository {
 
     public void save(User user) {
         String query = "INSERT INTO User (username, email, password, description, profile_picture, country, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = db.prepareStatement(query)) {
+        String queryGroup = "INSERT INTO UserInGroup (user_id, group_id) VALUES (?, ?)";
+        try (PreparedStatement statement = db.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPassword());
@@ -92,6 +93,20 @@ public class UserRepository extends BaseRepository {
             statement.setObject(7, user.getAge());
             statement.setString(8, user.getGender());
             statement.executeUpdate();
+
+            if (user.getGroupId() != null && user.getGroupId() != 0) {
+                int generatedUserId = 0;
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedUserId = generatedKeys.getInt(1);
+                    }
+                }
+                try (PreparedStatement stmtGroup = db.prepareStatement(queryGroup)) {
+                    stmtGroup.setInt(1, generatedUserId); // El ID recién creado
+                    stmtGroup.setInt(2, user.getGroupId()); // El grupo que venía del desplegable
+                    stmtGroup.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
