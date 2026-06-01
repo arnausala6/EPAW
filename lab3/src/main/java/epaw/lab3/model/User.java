@@ -8,15 +8,15 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private int id;
 	private String username;
 	private String email;
 	private String gender;
 	private String description;
 	private String profilePicturePath;
 	private String picture;
-	private Integer groupId;
-	private Integer age;
+	private int groupId;
+	private int age;
 	private String country;
 	private String password;
 	private String confirmPassword;
@@ -25,11 +25,11 @@ public class User implements Serializable {
 	public User() {
 	}
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -82,19 +82,19 @@ public class User implements Serializable {
 		this.profilePicturePath = picture;
 	}
 
-	public Integer getGroupId() {
+	public int getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(Integer groupId) {
+	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
 
-	public Integer getAge() {
+	public int getAge() {
 		return age;
 	}
 
-	public void setAge(Integer age) {
+	public void setAge(int age) {
 		this.age = age;
 	}
 

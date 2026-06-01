@@ -13,8 +13,8 @@ public class Post implements Serializable {
     private String content;
     private LocalDateTime dateOfCreation;
     private int votes;
-    private Integer user_id;
-    private Integer group_id;
+    private int userId;
+    private int groupId;
 
     public Post() {}
     
@@ -55,21 +55,21 @@ public class Post implements Serializable {
     }
 
     // UserId
-    public Integer getUserId() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserId(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(int user_id) {
+        this.userId = user_id;
     }
 
     // GroupId
-    public Integer getGroupId() {
-        return group_id;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroupId(Integer group_id) {
-        this.group_id = group_id;
+    public void setGroupId(int group_id) {
+        this.groupId = group_id;
     }
 
 }

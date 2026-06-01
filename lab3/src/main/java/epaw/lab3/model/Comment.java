@@ -11,8 +11,8 @@ public class Comment implements Serializable {
 
     private int commentId;
     private String content;
-    private Integer userId;
-    private Integer groupId;
+    private int userId;
+    private int groupId;
 
     // Constructor vacío
     public Comment() {}
@@ -38,20 +38,20 @@ public class Comment implements Serializable {
     }
 
     // UserId
-    public Integer getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
     // GroupId
-    public Integer getGroupId() {
+    public int getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(Integer groupId) {
+    public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
 }
