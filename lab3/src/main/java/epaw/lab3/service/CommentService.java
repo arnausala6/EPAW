@@ -29,7 +29,7 @@ public class CommentService {
             errors.put("user_id", "Comment must come from a user");
         }
 
-        CommentRepository.publishComment(comment);
+        commentRepository.publishComment(comment);
         return errors;
     }
 }

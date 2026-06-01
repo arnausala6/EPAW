@@ -27,7 +27,7 @@ public class CommentRepository extends BaseRepository {
         return instance;
     }
 
-    public void publishPost(Comment comment) {
+    public void publishComment(Comment comment) {
         String query = "INSERT INTO Comment (content, user_id, post_id) VALUES (?, ?, ?)";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, comment.getContent());
