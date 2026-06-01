@@ -8,12 +8,13 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 
 import epaw.lab3.model.User;
+import epaw.lab3.model.Group;
 
 public class UserRepository extends BaseRepository {
 
     private static UserRepository instance;
 
-    private UserRepository() {
+    public UserRepository() {
         super();
     }
 
@@ -135,5 +136,21 @@ public class UserRepository extends BaseRepository {
             e.printStackTrace();
         }
         return Optional.empty();
+    }
+
+    public boolean checkUserInGroup(Integer user_id, Integer group_id){
+        String query = "SELECT 1 FROM userInGroup WHERE user_id = ? AND group_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            statement.setInt(2, group_id);
+            
+            // 3. Uso de try-with-resources para el ResultSet
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
