@@ -38,7 +38,7 @@ public class UserService {
     private static final List<String> SORTED_COUNTRIES = buildSortedCountries();
 
 
-    private static List<String> buildSortedCountries() {
+    public static List<String> buildSortedCountries() {
         Set<String> countries = new HashSet<>();
         for (String code : Locale.getISOCountries()) {
             String name = new Locale("", code).getDisplayCountry(Locale.ENGLISH);
@@ -50,7 +50,7 @@ public class UserService {
         return countries.stream().sorted(collator).toList();
     }
 
-    private UserService() {
+    public UserService() {
         this.userRepository = UserRepository.getInstance();
         this.groupRepository = GroupRepository.getInstance();
     }

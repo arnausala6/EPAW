@@ -16,7 +16,7 @@ public class User implements Serializable {
 	private String profilePicturePath;
 	private String picture;
 	private int groupId;
-	private int age;
+	private Integer age;
 	private String country;
 	private String password;
 	private String confirmPassword;
@@ -90,11 +90,11 @@ public class User implements Serializable {
 		this.groupId = groupId;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 

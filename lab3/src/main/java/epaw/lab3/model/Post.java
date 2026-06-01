@@ -12,7 +12,7 @@ public class Post implements Serializable {
     private int postId;
     private String content;
     private LocalDateTime dateOfCreation;
-    private int votes;
+    private Integer votes;
     private int userId;
     private int groupId;
 
@@ -46,11 +46,11 @@ public class Post implements Serializable {
     }
 
     // Votes
-    public int getVotes() {
+    public Integer getVotes() {
         return votes;
     }
 
-    public void setVotes(int votes) {
+    public void setVotes(Integer votes) {
         this.votes = votes;
     }
 

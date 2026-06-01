@@ -15,7 +15,7 @@ public class Group implements Serializable {
     private String groupPicture;
     private LocalDateTime dateOfCreation;
     private int creatorId;
-    private int participants;
+    private Integer participants;
 
     private Set<User> groupParticipants = new HashSet<>();
 
@@ -76,11 +76,11 @@ public class Group implements Serializable {
     }
 
     // Participants
-    public int getParticipants() {
+    public Integer getParticipants() {
         return participants;
     }
 
-    public void setParticipants(int participants) {
+    public void setParticipants(Integer participants) {
         this.participants = participants;
     }
 
