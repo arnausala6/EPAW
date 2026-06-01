@@ -2,6 +2,8 @@ package epaw.lab3.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Group implements Serializable {
 
@@ -14,6 +16,8 @@ public class Group implements Serializable {
     private LocalDateTime dateOfCreation;
     private Integer creatorId;
     private int participants;
+
+    private Set<User> groupParticipants = new HashSet<>();
 
     public Group() {}
 
@@ -78,5 +82,13 @@ public class Group implements Serializable {
 
     public void setParticipants(int participants) {
         this.participants = participants;
+    }
+
+    public Set<User> getGroupParticipants() {
+        return groupParticipants;
+    }
+
+    public void setGroupParticipants(Set<User> groupParticipants) {
+        this.groupParticipants = groupParticipants;
     }
 }

@@ -1,6 +1,8 @@
 package epaw.lab3.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User implements Serializable {
 
@@ -18,7 +20,6 @@ public class User implements Serializable {
 	private String country;
 	private String password;
 	private String confirmPassword;
-
 	private String role;
 
 	public User() {
@@ -128,5 +129,4 @@ public class User implements Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
 }
