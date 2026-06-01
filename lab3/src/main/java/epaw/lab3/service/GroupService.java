@@ -18,11 +18,11 @@ public class GroupService {
         return groupRepository.getTopTenGroups();
     }
 
-    public Group getGroupById(int id) {
+    public Group getGroupById(Integer id) {
         return groupRepository.findById(id);
     }
 
-    public void createGroup(Group group, int creatorId) {
+    public void createGroup(Group group, Integer creatorId) {
 
         group.setCreatorId(creatorId);
 

@@ -9,12 +9,12 @@ public class Group implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int groupId;
+    private Integer groupId;
     private String groupName;
     private String description;
     private String groupPicture;
     private LocalDateTime dateOfCreation;
-    private int creatorId;
+    private Integer creatorId;
     private Integer participants;
 
     private Set<User> groupParticipants = new HashSet<>();
@@ -22,11 +22,11 @@ public class Group implements Serializable {
     public Group() {}
 
     // ID
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 
@@ -67,11 +67,11 @@ public class Group implements Serializable {
     }
 
     // Creator
-    public int getCreatorId() {
+    public Integer getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(int creatorId) {
+    public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
     }
 

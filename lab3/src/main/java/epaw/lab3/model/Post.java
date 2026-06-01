@@ -9,21 +9,21 @@ public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int postId;
+    private Integer postId;
     private String content;
     private LocalDateTime dateOfCreation;
     private Integer votes;
-    private int userId;
-    private int groupId;
+    private Integer userId;
+    private Integer groupId;
 
     public Post() {}
     
     // PostId
-    public int getPostId() {
+    public Integer getPostId() {
         return postId;
     }
 
-    public void setPostId(int postId) {
+    public void setPostId(Integer postId) {
         this.postId = postId;
     }
 
@@ -55,20 +55,20 @@ public class Post implements Serializable {
     }
 
     // UserId
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int user_id) {
+    public void setUserId(Integer user_id) {
         this.userId = user_id;
     }
 
     // GroupId
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int group_id) {
+    public void setGroupId(Integer group_id) {
         this.groupId = group_id;
     }
 

@@ -9,10 +9,10 @@ public class Comment implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    private int commentId;
+    private Integer commentId;
     private String content;
-    private int userId;
-    private int groupId;
+    private Integer userId;
+    private Integer groupId;
 
     // Constructor vacío
     public Comment() {}
@@ -20,11 +20,11 @@ public class Comment implements Serializable {
     // --- GETTERS & SETTERS ---
 
     // CommentId
-    public int getCommentId() {
+    public Integer getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(Integer commentId) {
         this.commentId = commentId;
     }
 
@@ -38,20 +38,20 @@ public class Comment implements Serializable {
     }
 
     // UserId
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
     // GroupId
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 }
