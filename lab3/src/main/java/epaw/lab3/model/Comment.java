@@ -12,7 +12,7 @@ public class Comment implements Serializable {
     private Integer commentId;
     private String content;
     private Integer userId;
-    private Integer groupId;
+    private Integer postId;
 
     // Constructor vacío
     public Comment() {}
@@ -46,12 +46,12 @@ public class Comment implements Serializable {
         this.userId = userId;
     }
 
-    // GroupId
-    public Integer getGroupId() {
-        return groupId;
+    // PostId
+    public Integer getPostId() {
+        return postId;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 }

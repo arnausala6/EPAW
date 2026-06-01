@@ -25,11 +25,14 @@ public class PostService {
         if (post.getGroupId() == null) {
             errors.put("group_id", "Post must be part of a group");
         }
+        if (post.getUserId() == null) {
+            errors.put("user_id", "User cannot be null");
+        }
         if (post.getContent() == null || post.getContent().trim().isEmpty()) {
             errors.put("content", "You cannot publish a post without content");
         }
         if(!userRepository.checkUserInGroup(post.getUserId(), post.getGroupId())){
-            errors.put("user_id", "user is not part of the group");
+            errors.put("group_id", "user is not part of the group");
         }
 
         postRepository.publishPost(post);

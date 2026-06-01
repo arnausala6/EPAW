@@ -1,6 +1,7 @@
 package epaw.lab3.repository;
 
 import epaw.lab3.model.Comment;
+import epaw.lab3.model.Post;
 import epaw.lab3.util.DBManager;
 
 import java.sql.Connection;
@@ -24,6 +25,18 @@ public class CommentRepository extends BaseRepository {
             instance = new CommentRepository();
         }
         return instance;
+    }
+
+    public void publishPost(Comment comment) {
+        String query = "INSERT INTO Comment (content, user_id, post_id) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, comment.getContent());
+            statement.setInt(2, comment.getUserId());
+            statement.setInt(3, comment.getPostId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
