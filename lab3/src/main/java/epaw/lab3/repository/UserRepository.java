@@ -39,10 +39,24 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
-        public boolean existsEmail(String email) {
+    public boolean existsEmail(String email) {
         String query = "SELECT COUNT(*) FROM User WHERE email = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean existsById(Integer userId) {
+        String query = "SELECT COUNT(*) FROM User WHERE user_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1) > 0;
@@ -152,5 +166,15 @@ public class UserRepository extends BaseRepository {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void saveBlock(Integer blockerId, Integer blockedId){
+        String query = "INSERT INTO Block(blocker_id, blocked_id) VALUES (?, ?)";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, blockerId);
+            statement.setObject(2, blockedId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

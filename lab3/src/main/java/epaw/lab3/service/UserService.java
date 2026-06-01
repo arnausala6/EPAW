@@ -175,4 +175,23 @@ public class UserService {
         }
     }
 
+    public Map<String, String> checkBlock(Integer blockerId, Integer blockedId){
+        Map<String, String> errors = new HashMap<>();
+        if(!userRepository.existsById(blockedId)){
+            errors.put("blocked_id", "Blocked user does not exist");
+        }
+        if(!userRepository.existsById(blockerId)){
+            errors.put("blocker_id", "Blocker user does not exist");
+        }
+        return errors;
+    }
+
+    public Map<String, String> block(Integer blockerId, Integer blockedId){
+        Map<String, String> errors = checkBlock(blockerId, blockedId);
+        if(errors.isEmpty()){
+            userRepository.saveBlock(blockerId, blockedId);
+        }
+        return errors;
+    }
+
 }
