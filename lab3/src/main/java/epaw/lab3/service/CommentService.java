@@ -25,7 +25,7 @@ public class CommentService {
         if (comment.getContent() == null || comment.getContent().trim().isEmpty()) {
             errors.put("content", "You cannot publish a comment without content");
         }
-        if(comment.getUserId() == null){
+        if(comment.getUserId() == null){ //MIRAR SEGURIDAD DE ESTO
             errors.put("user_id", "Comment must come from a user");
         }
 

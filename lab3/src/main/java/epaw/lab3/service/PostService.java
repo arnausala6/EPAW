@@ -25,7 +25,7 @@ public class PostService {
         if (post.getGroupId() == null) {
             errors.put("group_id", "Post must be part of a group");
         }
-        if (post.getUserId() == null) {
+        if (post.getUserId() == null) { //MIRAR SEGURIDAD DE ESTO
             errors.put("user_id", "User cannot be null");
         }
         if (post.getContent() == null || post.getContent().trim().isEmpty()) {

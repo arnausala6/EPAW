@@ -180,7 +180,7 @@ public class UserService {
         if(!userRepository.existsById(blockedId)){
             errors.put("blocked_id", "Blocked user does not exist");
         }
-        if(!userRepository.existsById(blockerId)){
+        if(!userRepository.existsById(blockerId)){ //MIRAR SEGURIDAD DE ESTO
             errors.put("blocker_id", "Blocker user does not exist");
         }
         return errors;
@@ -190,6 +190,41 @@ public class UserService {
         Map<String, String> errors = checkBlock(blockerId, blockedId);
         if(errors.isEmpty()){
             userRepository.saveBlock(blockerId, blockedId);
+        }
+        return errors;
+    }
+
+    public Map<String, String> unblock(Integer blockerId, Integer blockedId){
+        Map<String, String> errors = checkBlock(blockerId, blockedId);
+        if(errors.isEmpty()){
+            userRepository.saveUnblock(blockerId, blockedId);
+        }
+        return errors;
+    }
+
+    public Map<String, String> follow(Integer followerId, Integer followedId){
+        Map<String, String> errors = checkFollow(followerId, followedId);
+        if(errors.isEmpty()){
+            userRepository.saveFollow(followerId, followedId);
+        }
+        return errors;
+    }
+
+    public Map<String, String> checkFollow(Integer followerId, Integer followedId){
+        Map<String, String> errors = new HashMap<>();
+        if(!userRepository.existsById(followedId)){
+            errors.put("blocked_id", "Followed user does not exist");
+        }
+        if(!userRepository.existsById(followerId)){ //MIRAR SEGURIDAD DE ESTO
+            errors.put("blocker_id", "Follower user does not exist");
+        }
+        return errors;
+    }
+
+    public Map<String, String> unfollow(Integer followerId, Integer followedId){
+        Map<String, String> errors = checkFollow(followerId, followedId);
+        if(errors.isEmpty()){
+            userRepository.saveUnfollow(followerId, followedId);
         }
         return errors;
     }

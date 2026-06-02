@@ -170,9 +170,52 @@ public class UserRepository extends BaseRepository {
 
     public void saveBlock(Integer blockerId, Integer blockedId){
         String query = "INSERT INTO Block(blocker_id, blocked_id) VALUES (?, ?)";
+        String del_query = "DELETE FROM Follows WHERE follower_id = ? AND followed_id = ?";
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, blockerId);
             statement.setObject(2, blockedId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //Si el servidor se apaga aqui hay un desync pero no se como hacerlo bien
+        try (PreparedStatement statement = db.prepareStatement(del_query)){
+            statement.setObject(1, blockerId);
+            statement.setObject(2, blockedId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveUnblock(Integer blockerId, Integer blockedId){
+        String query = "DELETE FROM Block WHERE blocker_id = ? AND blocked_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, blockerId);
+            statement.setObject(2, blockedId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveFollow(Integer followerId, Integer followedId){
+        String query = "INSERT INTO Follows(follower_id, followed_id) VALUES (?, ?)";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, followerId);
+            statement.setObject(2, followedId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveUnfollow(Integer followerId, Integer followedId){
+        String query = "DELETE FROM Follows WHERE follower_id = ? AND followed_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, followerId);
+            statement.setObject(2, followedId);
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

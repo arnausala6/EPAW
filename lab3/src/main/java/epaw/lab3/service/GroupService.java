@@ -22,7 +22,7 @@ public class GroupService {
         return groupRepository.findById(id);
     }
 
-    public void createGroup(Group group, Integer creatorId) {
+    public void createGroup(Group group, Integer creatorId) { //MIRAR SEGURIDAD DE FUNCION
 
         group.setCreatorId(creatorId);
 
