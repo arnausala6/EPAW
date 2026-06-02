@@ -194,4 +194,30 @@ public class GroupRepository extends BaseRepository {
         }
     }
 
+    public List<Group> findingGroup(String search){
+        List<Group> groups = new ArrayList<>();
+        String sql = "SELECT * FROM \'Group\' WHERE group_name LIKE ? ORDER BY participants DESC LIMIT 8";
+        try (PreparedStatement statement = db.prepareStatement(sql)){
+            statement.setString(1, "%" + search + "%");
+            try (ResultSet rs = statement.executeQuery()){
+                while (rs.next()){
+                    Group g = new Group();
+                    g.setGroupId(rs.getInt("group_id"));
+                    g.setGroupName(rs.getString("group_name"));
+                    g.setDescription(rs.getString("description"));
+                    g.setGroupPicture(rs.getString("group_picture"));
+                    if (rs.getTimestamp("date_of_creation") != null) {
+                        g.setDateOfCreation(rs.getTimestamp("date_of_creation").toLocalDateTime());
+                    }
+                    g.setCreatorId(rs.getInt("creator_id"));
+                    g.setParticipants(rs.getInt("participants"));
+                    
+                    groups.add(g);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groups;
+    }
 }
