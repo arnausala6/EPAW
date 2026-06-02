@@ -220,4 +220,26 @@ public class UserRepository extends BaseRepository {
             e.printStackTrace();
         }
     }
+
+    public void saveUserJoiningGroup(Integer userId, Integer groupId){
+        String query = "INSERT INTO UserInGroup(user_id, group_id) VALUES (?, ?)";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, userId);
+            statement.setObject(2, groupId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveUserLeavingGroup(Integer userId, Integer groupId){
+        String query = "DELETE FROM UserInGroup WHERE user_id = ? AND group_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, userId);
+            statement.setObject(2, groupId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

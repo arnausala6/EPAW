@@ -229,4 +229,30 @@ public class UserService {
         return errors;
     }
 
+    public Map<String, String> joinGroup(Integer userId, Integer groupId){
+        Map<String, String> errors = checkUserInGroup(userId, groupId);
+        if(errors.isEmpty()){
+            userRepository.saveUserJoiningGroup(userId, groupId);
+        }
+        return errors;
+    }
+
+    public Map<String, String> checkUserInGroup(Integer userId, Integer groupId){
+        Map<String, String> errors = new HashMap<>();
+        if(!userRepository.existsById(userId)){ //MIRAR SEGURIDAD DE ESTO
+            errors.put("user_id", "User does not exist");
+        }
+        if(!groupRepository.groupIdExists(groupId)){ 
+            errors.put("group_id", "Group does not exist");
+        }
+        return errors;
+    }
+
+    public Map<String, String> leaveGroup(Integer userId, Integer groupId){
+        Map<String, String> errors = checkUserInGroup(userId, groupId);
+        if(errors.isEmpty()){
+            userRepository.saveUserLeavingGroup(userId, groupId);
+        }
+        return errors;
+    }
 }
