@@ -15,8 +15,11 @@ public class Post implements Serializable {
     private Integer votes;
     private Integer userId;
     private Integer groupId;
+    private Integer responseId;
 
-    public Post() {}
+    public Post() {
+        responseId = null;
+    }
     
     // PostId
     public Integer getPostId() {
@@ -25,6 +28,15 @@ public class Post implements Serializable {
 
     public void setPostId(Integer postId) {
         this.postId = postId;
+    }
+
+    // ResponseId
+    public Integer getResponseId() {
+        return responseId;
+    }
+
+    public void setResponseId(Integer responseId) {
+        this.responseId = responseId;
     }
 
     // Content

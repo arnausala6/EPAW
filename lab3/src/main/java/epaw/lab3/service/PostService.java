@@ -34,6 +34,9 @@ public class PostService {
         if(!userRepository.checkUserInGroup(post.getUserId(), post.getGroupId())){
             errors.put("group_id", "user is not part of the group");
         }
+        if(post.getResponseId() != null && !postRepository.postExistsById(post.getResponseId())){
+            errors.put("response_id", "response post does not exist");
+        }
 
         postRepository.publishPost(post);
         return errors;

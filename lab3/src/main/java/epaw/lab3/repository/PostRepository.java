@@ -25,14 +25,35 @@ public class PostRepository extends BaseRepository {
     }
 
     public void publishPost(Post post) {
-        String query = "INSERT INTO Post (content, user_id, group_id) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Post (content, user_id, group_id, response_id) VALUES (?, ?, ?, ?)";
+
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setString(1, post.getContent());
             statement.setInt(2, post.getUserId());
             statement.setInt(3, post.getGroupId());
+            if(post.getResponseId() != null){
+                statement.setInt(4, post.getResponseId());
+            }
+            else{
+                statement.setNull(4, java.sql.Types.INTEGER);
+            }
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean postExistsById(Integer id){
+        String query = "SELECT post_id FROM Post WHERE post_id = ?";
+        try(PreparedStatement statement = db.prepareStatement(query)){
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }
