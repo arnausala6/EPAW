@@ -1,0 +1,158 @@
+/* =====================================================================
+   [NOMBRE] — Mock-ups (Seminario 4)
+   Hoja de estilo compartida por feed.html, grupo.html y registro.html.
+   EDITAR AQUÍ: cambia los valores de :root para tocar toda la maqueta.
+   Tipografía: Fraunces (títulos) + Inter (texto) · Google Fonts.
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  /* ---- Paleta terracota (editad estos hex) ---- */
+  --pri:#A8432A;        /* principal */
+  --pri-dark:#7E2F1D;   /* oscuro / hover */
+  --acc:#E0922F;        /* acento ámbar */
+  --tint:#FBEFE4;       /* tinte suave */
+  --bg:#FBF6EF;         /* fondo app */
+  --surface:#FFFFFF;    /* tarjetas */
+  --ink:#2B2018;        /* texto */
+  --muted:#6E5C4E;      /* texto suave */
+  --border:#E7D8C6;     /* bordes */
+  --ok:#2F855A;         /* validación correcta */
+  --err:#C53030;        /* validación error */
+
+  /* ---- Forma y tipografía ---- */
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(43,32,24,.06), 0 8px 22px rgba(43,32,24,.08);
+  --font-title:'Fraunces', Georgia, serif;
+  --font-body:'Inter', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; font-family:var(--font-body); color:var(--ink);
+  background:var(--bg); line-height:1.55;
+}
+h1,h2,h3,h4{font-family:var(--font-title); font-weight:600; letter-spacing:-.01em; margin:0;}
+a{color:var(--pri); text-decoration:none;}
+.ico{width:1.25em; height:1.25em; vertical-align:-.2em;}
+
+/* ---------- Barra superior fija ---------- */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  background:var(--pri); color:#fff;
+  display:flex; align-items:center; gap:6px;
+  padding:0 18px; height:54px;
+  box-shadow:0 2px 8px rgba(43,32,24,.12);
+}
+.brand{display:flex; align-items:center; gap:9px; font-family:var(--font-title);
+  font-weight:700; font-size:21px; margin-right:18px;}
+.brand .ico{width:26px; height:26px;}
+.nav{display:flex; align-items:center; gap:4px;}
+.nav a{color:#fff; padding:8px 13px; border-radius:999px; font-weight:500;
+  display:flex; align-items:center; gap:7px; font-size:14px;}
+.nav a:hover{background:var(--pri-dark);}
+.nav .spacer{flex:1;}
+.nav .right{margin-left:auto;}
+
+/* ---------- Estructura de 3 columnas ---------- */
+.shell{max-width:1100px; margin:24px auto; padding:0 18px;
+  display:grid; grid-template-columns:1fr 2fr 1fr; gap:18px; align-items:start;}
+.col-c{min-width:0;}
+
+/* ---------- Tarjetas ---------- */
+.card{background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); box-shadow:var(--shadow); padding:18px;}
+.card + .card{margin-top:16px;}
+.side-title{font-family:var(--font-title); font-weight:600; font-size:15px;
+  color:var(--pri-dark); margin-bottom:12px;}
+
+/* ---------- Avatares ---------- */
+.avatar{width:44px; height:44px; border-radius:50%; background:var(--tint);
+  border:2px solid var(--pri); flex:none; display:flex; align-items:center;
+  justify-content:center; color:var(--pri);}
+.avatar.lg{width:84px; height:84px;}
+.avatar .ico{width:55%; height:55%;}
+
+/* ---------- Chips / etiquetas ---------- */
+.chip{display:inline-block; background:var(--tint); color:var(--pri-dark);
+  border-radius:999px; padding:4px 11px; font-size:12.5px; font-weight:600; margin:2px;}
+
+/* ---------- Botones ---------- */
+.btn{border:none; cursor:pointer; border-radius:999px; font-weight:600;
+  font-family:var(--font-body); padding:10px 18px; font-size:14px;
+  display:inline-flex; align-items:center; gap:8px;}
+.btn-primary{background:var(--pri); color:#fff;}
+.btn-primary:hover{background:var(--pri-dark);}
+.btn-accent{background:var(--acc); color:var(--ink);}      /* acento: texto oscuro = legible */
+.btn-accent:hover{filter:brightness(.96);}
+.btn-ghost{background:transparent; color:var(--pri); border:1.5px solid var(--border);}
+.btn-block{width:100%; justify-content:center;}
+
+/* ---------- Perfil (columna izquierda) ---------- */
+.profile{text-align:center;}
+.profile .name{font-family:var(--font-title); font-weight:600; font-size:19px; margin-top:10px;}
+.profile .meta{color:var(--muted); font-size:13px;}
+
+/* ---------- Composer ---------- */
+.composer{display:flex; gap:12px; align-items:center;}
+.composer .field{flex:1; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:11px 14px; color:var(--muted); font-size:14px;}
+
+/* ---------- Post ---------- */
+.post-head{display:flex; gap:12px; align-items:center;}
+.post-group{font-family:var(--font-title); font-weight:600; font-size:16px;}
+.post-meta{color:var(--muted); font-size:13px;}
+.post-body{margin:12px 0; font-size:15px;}
+.post-image{background:var(--tint); border-radius:var(--radius-sm);
+  height:160px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); gap:8px; margin:12px 0;}
+.post-actions{display:flex; gap:8px; align-items:center; border-top:1px solid var(--border); padding-top:12px;}
+.act{display:inline-flex; align-items:center; gap:6px; color:var(--muted);
+  font-size:14px; font-weight:500; background:transparent; border:none; cursor:pointer;
+  padding:6px 10px; border-radius:999px;}
+.act:hover{background:var(--tint);}
+.act .ico{width:18px; height:18px;}
+.act.up{color:var(--pri); font-weight:700;}      /* voto activo */
+
+/* ---------- Lista "descubrir" ---------- */
+.disc{display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid var(--border);}
+.disc:last-child{border-bottom:none;}
+.disc .g{font-weight:600; font-size:14px;}
+.disc .members{color:var(--muted); font-size:12px;}
+
+/* ---------- Banner de grupo ---------- */
+.group-banner{background:linear-gradient(135deg,var(--pri),var(--pri-dark));
+  color:#fff; border-radius:var(--radius); padding:26px 24px; margin-bottom:18px;}
+.group-banner h1{color:#fff; font-size:28px; display:flex; align-items:center; gap:12px;}
+.group-banner .sub{opacity:.92; margin:8px 0 16px; font-size:15px;}
+.group-banner .chip{background:rgba(255,255,255,.18); color:#fff;}
+.banner-actions{display:flex; gap:10px; align-items:center;}
+
+/* ---------- Formulario (registro) ---------- */
+.auth{max-width:460px; margin:36px auto;}
+.auth .card{padding:0; overflow:hidden;}
+.auth .card-head{background:var(--pri); color:#fff; padding:18px 22px;
+  font-family:var(--font-title); font-weight:600; font-size:20px;
+  display:flex; align-items:center; gap:10px;}
+.auth .card-body{padding:22px;}
+.form-field{margin-bottom:16px;}
+.form-field label{display:block; font-size:13px; font-weight:600; color:var(--muted); margin-bottom:6px;}
+.input{width:100%; border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:11px 14px; font-size:15px; font-family:var(--font-body); background:#fff; color:var(--ink);}
+.input:focus{outline:none; border-color:var(--pri); box-shadow:0 0 0 3px var(--tint);}
+.input.valid{border-left:4px solid var(--ok);}
+.input.invalid{border-left:4px solid var(--err);}
+.hint{font-size:12.5px; margin-top:5px;}
+.hint.ok{color:var(--ok);} .hint.err{color:var(--err);}
+
+/* ---------- Pie de página ---------- */
+.footer{background:var(--pri); color:#fff; text-align:center; padding:14px; margin-top:30px; font-size:13px;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;}
+  .col-l,.col-r{display:none;}          /* w3-hide-small: se ocultan en móvil */
+  .nav a span{display:none;}
+}

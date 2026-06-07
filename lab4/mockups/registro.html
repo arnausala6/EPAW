@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro — -</title>
+<link rel="stylesheet" href="mockups.css">
+
+</head>
+<body>
+<header class="topbar">
+  <span class="brand"></span>
+  <nav class="nav">
+    <a href="feed.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg><span>Inicio</span></a>
+    <a href="grupo.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-2.5 2.2-4 5-4M21 19c0-2.5-2.2-4-5-4"/><path d="M9.5 11.5a3 3 0 0 0 5 0"/></svg><span>Grupos</span></a>
+    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><span>Buscar</span></a>
+    <a href="#" class="right"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg><span>Perfil</span></a>
+  </nav>
+</header>
+<main class="auth">
+  <div class="card">
+    <div class="card-head"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5"/><circle cx="15" cy="9" r="5"/><circle cx="12" cy="15" r="5"/></svg> Crea tu cuenta</div>
+    <div class="card-body">
+      <div class="form-field">
+        <label for="user">Usuario</label>
+        <input id="user" class="input valid" value="maria_b">
+        <div class="hint ok">✓ Disponible</div>
+      </div>
+      <div class="form-field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" class="input valid" value="maria@upf.edu">
+        <div class="hint ok">✓ Formato correcto</div>
+      </div>
+      <div class="form-field">
+        <label for="pass">Contraseña</label>
+        <input id="pass" class="input invalid" type="password" value="12345">
+        <div class="hint err">La contraseña necesita una mayúscula, un número y mínimo 8 caracteres</div>
+      </div>
+      <div class="form-field">
+        <label for="grupo">Grupo al que unirte (opcional)</label>
+        <select id="grupo" class="input">
+          <option>Observadores de aves de Cataluña</option>
+          <option>Dibujantes urbanos BCN</option>
+          <option>Trail running</option>
+        </select>
+      </div>
+      <button class="btn btn-accent btn-block">Registrarse</button>
+      <p class="post-meta" style="text-align:center; margin-top:14px">
+        ¿Ya tienes cuenta? <a href="#">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
+</main>
+<footer class="footer">Universitat Pompeu Fabra @2026</footer>
+</body>
+</html>
