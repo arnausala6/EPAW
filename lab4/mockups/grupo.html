@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Página de grupo — -</title>
+<title>Group</title>
 <link rel="stylesheet" href="mockups.css">
 
 </head>
@@ -11,67 +11,59 @@
 <header class="topbar">
   <span class="brand"></span>
   <nav class="nav">
-    <a href="feed.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg><span>Inicio</span></a>
-    <a href="grupo.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-2.5 2.2-4 5-4M21 19c0-2.5-2.2-4-5-4"/><path d="M9.5 11.5a3 3 0 0 0 5 0"/></svg><span>Grupos</span></a>
-    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><span>Buscar</span></a>
-    <a href="#" class="right"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg><span>Perfil</span></a>
+    <a href="feed.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg><span>Home</span></a>
+    <a href="grupo.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="9.5" r="2.4"/><path d="M3.5 19c0-2 1.6-3.5 3.5-3.5"/><circle cx="12" cy="8" r="2.8"/><path d="M6.5 19c0-2.8 2.5-5 5.5-5s5.5 2.2 5.5 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17 15.5c1.9 0 3.5 1.6 3.5 3.5"/></svg><span>Groups</span></a>
+    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><span>Search</span></a>
+    <span class="spacer"></span>
+    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg><span>Profile</span></a>
+    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 12H3"/><path d="M7 8l-4 4 4 4"/></svg><span>Log out</span></a>
   </nav>
 </header>
-<main class="shell" style="grid-template-columns:1fr 2.4fr 1fr">
+<main class="shell">
   <aside class="col-l">
-    <div class="card">
-      <div class="side-title">Sobre el grupo</div>
-      <p class="post-meta" style="margin:0 0 12px">Comunidad para avistar, compartir y planear salidas de observación de aves.</p>
-      <div><span class="chip">Público</span><span class="chip">Naturaleza</span></div>
+    <div class="card group-about">
+      <div class="side-title">About the group</div>
+      <div class="group-about-photo"><img src="images/profile_group.jpg" alt="Observadors d'ocells de Catalunya"></div>
+      <p class="post-body" style="margin:0 0 10px; font-size:14px">Comunitat per avistar, compartir i planificar sortides d'observació d'ocells a Catalunya.</p>
+      <p class="post-meta" style="margin:0 0 12px">Compartim avistaments, rutes i llistes de control. Sortides regulars els caps de setmana, obertes a tots els nivells.</p>
+      <div class="group-about-meta">
+        <div class="post-meta">Catalunya · des de 2019</div>
+        <div class="post-meta">Sortides mensuals i censos de primavera</div>
+      </div>
+      <div style="margin-top:12px"><span class="chip">Públic</span><span class="chip">Natura</span><span class="chip">Ornitologia</span></div>
     </div>
   </aside>
 
   <section class="col-c">
     <div class="group-banner">
-      <h1><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-2.5 2.2-4 5-4M21 19c0-2.5-2.2-4-5-4"/><path d="M9.5 11.5a3 3 0 0 0 5 0"/></svg> Observadores de aves de Cataluña</h1>
-      <div class="sub">1.204 miembros · sin jerarquías: aquí todos somos iguales</div>
+      <h1><span class="group-avatar"><img src="images/profile_group.jpg" alt="Observadors d'ocells de Catalunya"></span> Observadors d'ocells de Catalunya</h1>
+      <div class="sub">82 membres · sense jerarquies: aquí tots som iguals</div>
       <div class="banner-actions">
-        <button class="btn btn-accent"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Unirse al grupo</button>
-        <span class="chip">Público</span>
+        <button class="btn btn-accent"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Join group</button>
+        <span class="chip">Públic</span>
       </div>
     </div>
 
     <div class="card" style="border-left:4px solid var(--acc)">
       <div class="post-head">
-        <div class="avatar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-2.5 2.2-4 5-4M21 19c0-2.5-2.2-4-5-4"/><path d="M9.5 11.5a3 3 0 0 0 5 0"/></svg></div>
-        <div><div class="post-group">Fijado · Normas del grupo</div><div class="post-meta">por los moderadores</div></div>
+        <div class="avatar avatar-photo"><img src="images/profile_group.jpg" alt="Observadors d'ocells de Catalunya"></div>
+        <div><div class="post-group">Pinned · Group rules</div><div class="post-meta">by the moderators</div></div>
       </div>
-      <p class="post-body">Sé amable. Nada de spam. Todos los miembros son iguales, incluido quien creó el grupo.</p>
+      <p class="post-body">Sigues amable. Res de spam. Tots els membres són iguals, inclòs qui va crear el grup.</p>
     </div>
 
     <article class="card">
       <div class="post-head">
         <div class="avatar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg></div>
         <div>
-          <div class="post-group">@joan</div>
-          <div class="post-meta">hace 2 h</div>
+          <div class="post-group">@joan_prat_mnts</div>
+          <div class="post-meta">fa 2 h</div>
         </div>
       </div>
-      <p class="post-body">Salida del sábado confirmada: quedamos a las 8:00 en el teleférico de Montserrat. ¡Traed prismáticos!</p>
-      <div class="post-image"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.7"/><path d="M5 17l4.5-4 3 2.5L16 12l3 3.5"/></svg> Imagen adjunta</div>
+      <p class="post-body">Sortida de dissabte confirmada: quedem a les 8:00 al telefèric de Montserrat. Porteu prismàtics!</p>
+      <div class="post-image"><img src="images/montserrat.jpg" alt="Sortida d'observació al telefèric de Montserrat"></div>
       <div class="post-actions">
         <button class="act up"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 11l6-6 6 6"/></svg> 38</button>
-        <button class="act"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 13l6 6 6-6"/></svg></button>
-        <button class="act"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 15V7A1.5 1.5 0 0 1 4 5.5Z"/><path d="M7 9.5h10M7 12.5h6"/></svg> 12</button>
-      </div>
-    </article>
-    <article class="card">
-      <div class="post-head">
-        <div class="avatar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg></div>
-        <div>
-          <div class="post-group">@aina</div>
-          <div class="post-meta">hace 6 h</div>
-        </div>
-      </div>
-      <p class="post-body">Comparto las fotos del último avistamiento. ¡Qué temporada llevamos!</p>
-      
-      <div class="post-actions">
-        <button class="act up"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 11l6-6 6 6"/></svg> 21</button>
         <button class="act"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 13l6 6 6-6"/></svg></button>
         <button class="act"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 15V7A1.5 1.5 0 0 1 4 5.5Z"/><path d="M7 9.5h10M7 12.5h6"/></svg> 12</button>
       </div>
@@ -80,13 +72,18 @@
 
   <aside class="col-r">
     <div class="card">
-      <div class="side-title">Miembros activos</div>
-      <div class="disc"><div class="g">@joan</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Seguir</button></div>
-      <div class="disc"><div class="g">@aina</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Seguir</button></div>
-      <div class="disc"><div class="g">@pau</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Seguir</button></div>
+      <div class="side-title">Active members</div>
+      <div class="disc"><div class="g">@joan_prat_mnts</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@aina_valles22</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@marti_rocabert</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@laia_maspons03</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@oriol_camps_ocells</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@nuria_llorens88</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@carles_pinyol.bcn</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
+      <div class="disc"><div class="g">@pau_ferrer97</div><button class="btn btn-ghost" style="padding:6px 12px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M19 9v6M16 12h6"/></svg> Follow</button></div>
     </div>
   </aside>
 </main>
-<footer class="footer">Universitat Pompeu Fabra @2026</footer>
+<footer class="footer">Groupwise · UPF EPAW</footer>
 </body>
 </html>

@@ -1,56 +1,101 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Registro — -</title>
+<title>Register</title>
 <link rel="stylesheet" href="mockups.css">
 
 </head>
 <body>
-<header class="topbar">
-  <span class="brand"></span>
-  <nav class="nav">
-    <a href="feed.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h5v-5h4v5h5v-9"/></svg><span>Inicio</span></a>
-    <a href="grupo.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-2.5 2.2-4 5-4M21 19c0-2.5-2.2-4-5-4"/><path d="M9.5 11.5a3 3 0 0 0 5 0"/></svg><span>Grupos</span></a>
-    <a href="#"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><span>Buscar</span></a>
-    <a href="#" class="right"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg><span>Perfil</span></a>
+<header class="topbar topbar-tabs">
+  <nav class="nav nav-tabs">
+    <a href="#" class="active">Register</a>
+    <a href="#">Log in</a>
+    <a href="#">Browse</a>
   </nav>
 </header>
-<main class="auth">
+<main class="shell">
+  <aside class="col-l"></aside>
+  <section class="col-c auth">
   <div class="card">
-    <div class="card-head"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5"/><circle cx="15" cy="9" r="5"/><circle cx="12" cy="15" r="5"/></svg> Crea tu cuenta</div>
+    <div class="card-head"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 12H3"/><path d="M13 8l4 4-4 4"/></svg> Register</div>
     <div class="card-body">
       <div class="form-field">
-        <label for="user">Usuario</label>
-        <input id="user" class="input valid" value="maria_b">
-        <div class="hint ok">✓ Disponible</div>
+        <label for="user">Username</label>
+        <input id="user" class="input valid" value="mireia_sole94">
+        <div class="hint ok">✓ Available</div>
       </div>
       <div class="form-field">
-        <label for="email">Correo electrónico</label>
-        <input id="email" class="input valid" value="maria@upf.edu">
-        <div class="hint ok">✓ Formato correcto</div>
+        <label for="email">Email</label>
+        <input id="email" class="input valid" type="email" value="mireia.sole@upf.edu">
+        <div class="hint ok">✓ Valid format</div>
       </div>
       <div class="form-field">
-        <label for="pass">Contraseña</label>
-        <input id="pass" class="input invalid" type="password" value="12345">
-        <div class="hint err">La contraseña necesita una mayúscula, un número y mínimo 8 caracteres</div>
+        <label for="pass">Password</label>
+        <input id="pass" class="input valid" type="password" value="Maria2026!">
+        <div class="hint" style="color:var(--muted)">Minimum requirements: 8 characters, one uppercase letter and one number.</div>
+        <div class="hint ok">✓ Valid password</div>
       </div>
       <div class="form-field">
-        <label for="grupo">Grupo al que unirte (opcional)</label>
-        <select id="grupo" class="input">
-          <option>Observadores de aves de Cataluña</option>
-          <option>Dibujantes urbanos BCN</option>
-          <option>Trail running</option>
+        <label for="pass2">Repeat password</label>
+        <input id="pass2" class="input valid" type="password" value="Maria2026!">
+        <div class="hint ok">✓ Passwords match</div>
+      </div>
+      <div class="form-field">
+        <label for="age">Age</label>
+        <input id="age" class="input valid" type="number" min="1" max="120" value="24">
+        <div class="hint ok">✓ Valid age</div>
+      </div>
+      <div class="form-field">
+        <label for="gender">Gender</label>
+        <select id="gender" class="input valid">
+          <option>—</option>
+          <option selected>Female</option>
+          <option>Male</option>
+          <option>Non-binary</option>
+          <option>Prefer not to say</option>
         </select>
       </div>
-      <button class="btn btn-accent btn-block">Registrarse</button>
+      <div class="form-field">
+        <label for="country">Country (optional)</label>
+        <select id="country" class="input valid">
+          <option>—</option>
+          <option selected>Spain</option>
+          <option>France</option>
+          <option>Italy</option>
+          <option>Portugal</option>
+          <option>United Kingdom</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="desc">Description (optional)</label>
+        <textarea id="desc" class="input valid" rows="3">Apassionada d'ornitologia i senderisme. Sempre buscant noves sortides de cap de setmana.</textarea>
+        <div class="hint ok">✓ Valid description</div>
+      </div>
+      <div class="form-field">
+        <label for="photo">Profile picture (optional, max 2MB)</label>
+        <input id="photo" class="input valid" type="file" accept="image/*">
+        <div class="hint ok">✓ profile_mireia94.jpg (1.2 MB)</div>
+      </div>
+      <div class="form-field">
+        <label for="grupo">Group to join (optional)</label>
+        <select id="grupo" class="input valid">
+          <option>—</option>
+          <option selected>Observadors d'ocells de Catalunya</option>
+          <option>Dibuixants urbans BCN</option>
+          <option>Curses de trail</option>
+        </select>
+      </div>
+      <button class="btn btn-accent btn-block">Register</button>
       <p class="post-meta" style="text-align:center; margin-top:14px">
-        ¿Ya tienes cuenta? <a href="#">Inicia sesión</a>
+        Already have an account? <a href="#">Log in</a>
       </p>
     </div>
   </div>
+  </section>
+  <aside class="col-r"></aside>
 </main>
-<footer class="footer">Universitat Pompeu Fabra @2026</footer>
+<footer class="footer">Groupwise · UPF EPAW</footer>
 </body>
 </html>
