@@ -3,35 +3,68 @@
 
 <c:choose>
 <c:when test="${not empty user}">
-<div id="${user.id}" class="w3-container w3-card w3-round w3-white w3-section w3-center">
-  <h1 class="w3-text-theme">${user.username}</h1>
-  <p><img src="${not empty user.picture ? user.picture : 'assets/default-avatar.svg'}" class="w3-circle" style="height:150px;width:150px" alt="Avatar"></p>
-  <hr>
-  <p class="w3-left-align" title="Name"> <img src="assets/icons/perfil-terracota.png" alt="" class="ico ico-fw">${user.username}</p>
-  <p class="w3-left-align" title="Email"> <img src="assets/icons/mail-terracota.png" alt="" class="ico ico-fw">${user.email}</p>
-  <p class="w3-left-align" title="Age"> <img src="assets/icons/calendar-terracota.png" alt="" class="ico ico-fw">${user.age}</p>
-  <p class="w3-left-align" title="Description"> <img src="assets/icons/description-terracota.png" alt="" class="ico ico-fw">${user.description != null ? user.description : 'No descripción'}</p>
-  <p class="w3-left-align" title="Gender">
-  <c:choose>
-    <c:when test="${user.gender == 'male'}">
-      <img src="assets/icons/gender-terracota.png" alt="" class="ico ico-fw">male
-    </c:when>
-    <c:when test="${user.gender == 'female'}">
-      <img src="assets/icons/gender-terracota.png" alt="" class="ico ico-fw">female
-    </c:when>
-    <c:when test="${user.gender == 'other'}">
-      <img src="assets/icons/gender-terracota.png" alt="" class="ico ico-fw">other
-    </c:when>
-    <c:otherwise>
-      <img src="assets/icons/gender-terracota.png" alt="" class="ico ico-fw">No gender
-    </c:otherwise>
-  </c:choose>
-</p>
-<p class="w3-left-align" title="Country"> <img src="assets/icons/country-terracota.png" alt="" class="ico ico-fw">${user.country != null ? user.country : 'No country'}</p>
-<hr>
-<p class="w3-center" style="margin-bottom:16px"><button class="w3-button w3-theme" onclick="$('#lcolumn').load('EditProfile')"><img src="assets/icons/edit-blanco.png" alt="" class="ico ico-fw">Edit profile</button></p>
+<div id="${user.id}" class="card card-flush profile">
+	<div class="profile-head">
+		<div class="avatar lg avatar-photo">
+			<img src="${not empty user.picture ? user.picture : 'assets/default-avatar.svg'}" alt="Avatar">
+		</div>
+		<div class="name">@${user.username}</div>
+	</div>
+	<div class="profile-fields">
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/perfil-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Name</div>
+				<div class="profile-value">${user.username}</div>
+			</div>
+		</div>
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/mail-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Email</div>
+				<div class="profile-value">${user.email}</div>
+			</div>
+		</div>
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/calendar-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Age</div>
+				<div class="profile-value">${user.age}</div>
+			</div>
+		</div>
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/description-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Description</div>
+				<div class="profile-value">${user.description != null ? user.description : 'No descripción'}</div>
+			</div>
+		</div>
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/gender-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Gender</div>
+				<div class="profile-value">
+				<c:choose>
+					<c:when test="${user.gender == 'male'}">male</c:when>
+					<c:when test="${user.gender == 'female'}">female</c:when>
+					<c:when test="${user.gender == 'other'}">other</c:when>
+					<c:otherwise>No gender</c:otherwise>
+				</c:choose>
+				</div>
+			</div>
+		</div>
+		<div class="profile-row">
+			<span class="profile-icon"><img src="assets/icons/country-terracota.png" alt="" class="ico"></span>
+			<div>
+				<div class="profile-label">Country</div>
+				<div class="profile-value">${user.country != null ? user.country : 'No country'}</div>
+			</div>
+		</div>
+	</div>
+	<button type="button" class="btn btn-ghost btn-block" onclick="$('#lcolumn').load('EditProfile')">
+		<img src="assets/icons/edit-suave.png" alt="" class="ico"> Edit profile
+	</button>
 </div>
-<br>
 </c:when>
 <c:otherwise>
 <p/>

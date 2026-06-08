@@ -1,65 +1,52 @@
-<div class="w3-card w3-white">
-	<header class="w3-container w3-theme">
-		<h3><img src="assets/icons/grupos-blanco.png" alt="" class="ico ico-fw"> Groups</h3>
-	</header>
-
-	<div class="w3-container w3-padding">
-		<div class="w3-card w3-margin-bottom">
-			<div class="w3-container w3-padding">
-				<h4>Create group</h4>
-				<div class="w3-section">
-					<label for="groupName" class="w3-text-grey">Group name</label>
-					<input class="w3-input w3-border" type="text" id="groupName" placeholder="Example: Web Engineering Lab 3">
-				</div>
-				<div class="w3-section">
-					<label for="groupDescription" class="w3-text-grey">Description</label>
-					<textarea class="w3-input w3-border" id="groupDescription" style="height: 80px;" placeholder="What is this group about?"></textarea>
-				</div>
-				<button type="button" class="w3-button w3-theme"><img src="assets/icons/publicar-blanco.png" alt="" class="ico ico-fw"> Create group</button>
+<div class="card card-flush page-head">
+	<div class="card-head">
+		<h3><img src="assets/icons/grupos-blanco.png" alt="" class="ico"> Groups</h3>
+	</div>
+	<div class="card-body">
+		<div class="card">
+			<h4>Create group</h4>
+			<div class="form-field">
+				<label for="groupName">Group name</label>
+				<input class="input" type="text" id="groupName" placeholder="Example: Web Engineering Lab 3">
 			</div>
+			<div class="form-field">
+				<label for="groupDescription">Description</label>
+				<textarea class="input" id="groupDescription" style="height: 80px;" placeholder="What is this group about?"></textarea>
+			</div>
+			<button type="button" class="btn btn-primary"><img src="assets/icons/publicar-blanco.png" alt="" class="ico"> Create group</button>
 		</div>
 
-		<div class="w3-card w3-margin-bottom">
-			<div class="w3-container w3-padding">
-				<h4>Available groups</h4>
-				<ul class="w3-ul w3-border">
-					<li>
-						<div style="display:flex; justify-content:space-between; align-items:center">
-							<div>
-								<strong>Web Engineering</strong>
-								<span class="w3-small w3-text-grey"> · 5 members</span>
-							</div>
-							<div>
-								<button type="button" class="w3-button w3-small w3-light-grey"><img src="assets/icons/unirse-terracota.png" alt="" class="ico ico-fw"> Join</button>
-								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="carlos,laura,miguel,emma,jordi"><img src="assets/icons/block-error.png" alt="" class="ico ico-fw"> Block</button>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div style="display:flex; justify-content:space-between; align-items:center">
-							<div>
-								<strong>AI Projects</strong>
-								<span class="w3-small w3-text-grey"> · 4 members · Joined</span>
-							</div>
-							<div>
-								<button type="button" class="w3-button w3-small w3-light-grey"><img src="assets/icons/log-out-suave.png" alt="" class="ico ico-fw"> Leave</button>
-								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="pau,alice,marc,sofia"><img src="assets/icons/block-error.png" alt="" class="ico ico-fw"> Block</button>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div style="display:flex; justify-content:space-between; align-items:center">
-							<div>
-								<strong>Campus Events</strong>
-								<span class="w3-small w3-text-grey"> · 7 members</span>
-							</div>
-							<div>
-								<button type="button" class="w3-button w3-small w3-light-grey"><img src="assets/icons/unirse-terracota.png" alt="" class="ico ico-fw"> Join</button>
-								<button type="button" class="w3-button w3-small w3-pale-red btn-block-group" data-users="daniel,marta,tom,anna,pere,james,lucia"><img src="assets/icons/block-error.png" alt="" class="ico ico-fw"> Block</button>
-							</div>
-						</div>
-					</li>
-				</ul>
+		<div class="card">
+			<div class="side-title">Available groups</div>
+			<div class="disc">
+				<div>
+					<div class="g">Web Engineering</div>
+					<div class="members">5 members</div>
+				</div>
+				<div class="btn-row" style="margin-top:0">
+					<button type="button" class="btn btn-muted btn-sm"><img src="assets/icons/unirse-terracota.png" alt="" class="ico"> Join</button>
+					<button type="button" class="btn btn-err btn-sm btn-block-group" data-users="carlos,laura,miguel,emma,jordi"><img src="assets/icons/block-error.png" alt="" class="ico"> Block</button>
+				</div>
+			</div>
+			<div class="disc">
+				<div>
+					<div class="g">AI Projects</div>
+					<div class="members">4 members · Joined</div>
+				</div>
+				<div class="btn-row" style="margin-top:0">
+					<button type="button" class="btn btn-muted btn-sm"><img src="assets/icons/log-out-suave.png" alt="" class="ico"> Leave</button>
+					<button type="button" class="btn btn-err btn-sm btn-block-group" data-users="pau,alice,marc,sofia"><img src="assets/icons/block-error.png" alt="" class="ico"> Block</button>
+				</div>
+			</div>
+			<div class="disc">
+				<div>
+					<div class="g">Campus Events</div>
+					<div class="members">7 members</div>
+				</div>
+				<div class="btn-row" style="margin-top:0">
+					<button type="button" class="btn btn-muted btn-sm"><img src="assets/icons/unirse-terracota.png" alt="" class="ico"> Join</button>
+					<button type="button" class="btn btn-err btn-sm btn-block-group" data-users="daniel,marta,tom,anna,pere,james,lucia"><img src="assets/icons/block-error.png" alt="" class="ico"> Block</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -70,32 +57,32 @@ document.querySelectorAll('.btn-block-group').forEach(function(btn) {
 	btn.addEventListener('click', function() {
 		var users = btn.getAttribute('data-users').split(',');
 		var checkboxes = users.map(function(u) {
-			return '<label class="w3-block w3-margin-bottom"><input type="checkbox" class="w3-check"> ' + u + '</label>';
+			return '<label class="form-field" style="margin-bottom:8px"><input type="checkbox"> ' + u + '</label>';
 		}).join('');
 
 		$('#rcolumn').html(
-			'<div class="w3-card w3-white">' +
-				'<header class="w3-container w3-theme">' +
-					'<span onclick="$(\'#rcolumn\').html(\'<p/>\')" class="w3-button w3-display-topright">&times;</span>' +
-					'<h5><img src="assets/icons/block-blanco.png" alt="" class="ico ico-fw"> Block group</h5>' +
-				'</header>' +
-				'<div class="w3-container w3-padding">' +
+			'<div class="card card-flush">' +
+				'<div class="card-head panel-head">' +
+					'<h5><img src="assets/icons/block-blanco.png" alt="" class="ico"> Block group</h5>' +
+					'<button type="button" class="panel-close" onclick="$(\'#rcolumn\').html(\'<p/>\')">&times;</button>' +
+				'</div>' +
+				'<div class="card-body">' +
 					'<form>' +
-						'<div class="w3-section">' +
-							'<label class="w3-text-grey">Reason</label>' +
-							'<textarea class="w3-input w3-border" style="height:80px" placeholder="Explain why this group violates the rules..."></textarea>' +
+						'<div class="form-field">' +
+							'<label>Reason</label>' +
+							'<textarea class="input" style="height:80px" placeholder="Explain why this group violates the rules..."></textarea>' +
 						'</div>' +
-						'<div class="w3-section">' +
-							'<label class="w3-text-grey">Also block these members</label>' +
-							'<div class="w3-card w3-padding" style="max-height:350px; overflow-y:auto">' + checkboxes + '</div>' +
+						'<div class="form-field">' +
+							'<label>Also block these members</label>' +
+							'<div class="card" style="max-height:350px; overflow-y:auto; padding:12px">' + checkboxes + '</div>' +
 						'</div>' +
-						'<div class="w3-section">' +
-							'<label class="w3-text-grey">Your password</label>' +
-							'<input type="password" class="w3-input w3-border">' +
+						'<div class="form-field">' +
+							'<label>Your password</label>' +
+							'<input type="password" class="input">' +
 						'</div>' +
-						'<button type="button" class="w3-button w3-theme w3-block"><img src="assets/icons/block-blanco.png" alt="" class="ico ico-fw"> Confirm block</button>' +
-						'<button type="button" class="w3-button w3-light-grey w3-block w3-margin-top" onclick="$(\'#rcolumn\').html(\'<p/>\')">Cancel</button>' +
-						'<p class="w3-small w3-text-grey w3-margin-top">Mockup only.</p>' +
+						'<button type="button" class="btn btn-primary btn-block"><img src="assets/icons/block-blanco.png" alt="" class="ico"> Confirm block</button>' +
+						'<button type="button" class="btn btn-muted btn-block" style="margin-top:8px" onclick="$(\'#rcolumn\').html(\'<p/>\')">Cancel</button>' +
+						'<p class="hint">Mockup only.</p>' +
 					'</form>' +
 				'</div>' +
 			'</div>'

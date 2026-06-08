@@ -1,70 +1,60 @@
-<div class="w3-card w3-white">
-	<header class="w3-container w3-theme">
-		<h3><img src="assets/icons/admin-blanco.png" alt="" class="ico ico-fw"> Admin Panel</h3>
-	</header>
-
-	<div class="w3-container w3-padding">
-
-		<div class="w3-row-padding w3-margin-top w3-margin-bottom">
-			<div class="w3-col s4">
-				<div class="w3-card w3-padding w3-center">
-					<h2>3</h2>
-					<p class="w3-text-grey">Total users</p>
-				</div>
+<div class="card card-flush page-head">
+	<div class="card-head">
+		<h3><img src="assets/icons/admin-blanco.png" alt="" class="ico"> Admin Panel</h3>
+	</div>
+	<div class="card-body">
+		<div class="stat-grid">
+			<div class="card stat-card">
+				<h2>3</h2>
+				<p class="text-muted">Total users</p>
 			</div>
-			<div class="w3-col s4">
-				<div class="w3-card w3-padding w3-center">
-					<h2>1</h2>
-					<p class="w3-text-grey">Blocked users</p>
-				</div>
+			<div class="card stat-card">
+				<h2>1</h2>
+				<p class="text-muted">Blocked users</p>
 			</div>
-			<div class="w3-col s4">
-				<div class="w3-card w3-padding w3-center">
-					<h2>2</h2>
-					<p class="w3-text-grey">Active groups</p>
-				</div>
+			<div class="card stat-card">
+				<h2>2</h2>
+				<p class="text-muted">Active groups</p>
 			</div>
 		</div>
 
-		<div class="w3-card w3-margin-top w3-margin-bottom">
-			<div class="w3-container w3-padding">
-				<h4><img src="assets/icons/grupos-terracota.png" alt="" class="ico ico-fw"> User management</h4>
-				<table class="w3-table w3-bordered w3-border">
-					<thead>
-						<tr class="w3-light-grey">
-							<th>Username</th>
-							<th>Role</th>
-							<th>Status</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>admin</td>
-							<td><span class="w3-tag-white">admin</span></td>
-							<td><span class="w3-tag-white">active</span></td>
-						</tr>
-						<tr>
-							<td>arnau</td>
-							<td><span class="w3-tag-white">user</span></td>
-							<td><span class="w3-tag-white">active</span></td>
-							<td>
-								<button type="button" class="w3-button w3-tiny w3-pale-red"><img src="assets/icons/block-error.png" alt="" class="ico ico-fw"> Block</button>
-							</td>
-						</tr>
-						<tr>
-							<td>marti</td>
-							<td><span class="w3-tag-white">user</span></td>
-							<td><span class="w3-tag-white">blocked</span></td>
-							<td>
-								<button type="button" class="w3-button w3-tiny w3-light-grey"><img src="assets/icons/unblock-ok.png" alt="" class="ico ico-fw"> Unblock</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p class="w3-small w3-text-grey w3-margin-top">Mockup only: user list is not yet loaded from the database.</p>
-			</div>
+		<div class="card">
+			<h4><img src="assets/icons/grupos-terracota.png" alt="" class="ico"> User management</h4>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th>Username</th>
+						<th>Role</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>admin</td>
+						<td><span class="chip">admin</span></td>
+						<td><span class="chip">active</span></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>arnau</td>
+						<td><span class="chip">user</span></td>
+						<td><span class="chip">active</span></td>
+						<td>
+							<button type="button" class="btn btn-err btn-sm"><img src="assets/icons/block-error.png" alt="" class="ico"> Block</button>
+						</td>
+					</tr>
+					<tr>
+						<td>marti</td>
+						<td><span class="chip">user</span></td>
+						<td><span class="chip">blocked</span></td>
+						<td>
+							<button type="button" class="btn btn-muted btn-sm"><img src="assets/icons/unblock-ok.png" alt="" class="ico"> Unblock</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p class="hint">Mockup only: user list is not yet loaded from the database.</p>
 		</div>
-
 	</div>
 </div>

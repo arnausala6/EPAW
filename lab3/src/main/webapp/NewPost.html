@@ -1,38 +1,39 @@
-<div class="w3-card w3-white">
-	<header class="w3-container w3-theme">
-		<h3><img src="assets/icons/publicar-blanco.png" alt="" class="ico ico-fw"> New post</h3>
-	</header>
-
-	<div class="w3-container w3-padding">
+<div class="card card-flush page-head">
+	<div class="card-head">
+		<h3><img src="assets/icons/publicar-blanco.png" alt="" class="ico"> New post</h3>
+	</div>
+	<div class="card-body">
 		<form>
-			<div class="w3-section">
-				<label for="postTitle" class="w3-text-grey">Title</label>
-				<input class="w3-input w3-border" type="text" id="postTitle" name="title" placeholder="What is your post about?">
+			<div class="form-field">
+				<label for="postTitle">Title</label>
+				<input class="input" type="text" id="postTitle" name="title" placeholder="What is your post about?">
 			</div>
 
-			<div class="w3-section">
-				<label for="postBody" class="w3-text-grey">Content</label>
-				<textarea class="w3-input w3-border" id="postBody" name="body" style="height: 140px;" placeholder="Write something for the community..."></textarea>
+			<div class="form-field">
+				<label for="postBody">Content</label>
+				<textarea class="input" id="postBody" name="body" style="height: 140px;" placeholder="Write something for the community..."></textarea>
 			</div>
 
-			<div class="w3-section">
-				<label for="postImage" class="w3-text-grey">Attach image</label>
-				<input class="w3-input w3-border" type="file" id="postImage" name="postImage" accept="image/jpeg,image/png,image/webp,image/gif">
+			<div class="form-field">
+				<label for="postImage">Attach image</label>
+				<input class="input" type="file" id="postImage" name="postImage" accept="image/jpeg,image/png,image/webp,image/gif">
 			</div>
 
-			<div class="w3-section">
-				<label for="postVisibility" class="w3-text-grey">Visibility</label>
-				<select class="w3-input w3-border" id="postVisibility" name="visibility">
+			<div class="form-field">
+				<label for="postVisibility">Visibility</label>
+				<select class="input" id="postVisibility" name="visibility">
 					<option>Public</option>
 					<option>Followers only</option>
 					<option>Group only</option>
 				</select>
 			</div>
 
-			<button type="button" class="w3-button w3-theme">
-				<img src="assets/icons/publicar-blanco.png" alt="" class="ico ico-fw"> Publish post
-			</button>
-			<span class="w3-small w3-text-grey w3-margin-left">Mockup only: no post is created yet.</span>
+			<div class="btn-row">
+				<button type="button" class="btn btn-primary">
+					<img src="assets/icons/publicar-blanco.png" alt="" class="ico"> Publish post
+				</button>
+				<span class="hint">Mockup only: no post is created yet.</span>
+			</div>
 		</form>
 	</div>
 </div>
