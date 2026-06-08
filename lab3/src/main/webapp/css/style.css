@@ -16,7 +16,6 @@
 	--err: #C53030;
 	--radius: 14px;
 	--radius-sm: 10px;
-	--shadow: 0 1px 2px rgba(43, 32, 24, .06), 0 8px 22px rgba(43, 32, 24, .08);
 	--font-title: 'Fraunces', Georgia, serif;
 	--font-body: 'Inter', system-ui, sans-serif;
 }
@@ -63,20 +62,66 @@ a {
 
 .col-c {
 	min-width: 0;
-}
-
-#lcolumn, #content, #rcolumn {
+	height: calc(100vh - 140px);
 	max-height: calc(100vh - 140px);
-	overflow-y: auto;
-	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
 }
 
 #lcolumn, #rcolumn {
+	max-height: calc(100vh - 140px);
+	overflow-y: auto;
+	box-sizing: border-box;
 	padding: 2px 4px 16px 2px;
 }
 
 #content {
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+	box-sizing: border-box;
 	padding: 2px 4px 16px 2px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Centro: cabecera fija, scroll solo en el cuerpo del panel */
+#content > .card.card-flush,
+#content > .auth {
+	flex: 0 1 auto;
+	max-height: 100%;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+#content > .auth > .card.card-flush {
+	flex: 0 1 auto;
+	max-height: 100%;
+	min-height: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+#content .card.card-flush > .card-head {
+	flex-shrink: 0;
+}
+
+#content .card.card-flush > .card-body {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+#content > .card:not(.card-flush) {
+	flex: 0 1 auto;
+	max-height: 100%;
+	min-height: 0;
+	overflow-y: auto;
 }
 
 /* ---------- Topbar ---------- */
@@ -178,7 +223,6 @@ a {
 	background: var(--surface);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
-	box-shadow: var(--shadow);
 	padding: 18px;
 }
 
@@ -266,7 +310,6 @@ a {
 .avatar.lg {
 	width: 96px;
 	height: 96px;
-	box-shadow: 0 4px 14px rgba(43, 32, 24, .12);
 	overflow: hidden;
 	padding: 0;
 }
