@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import epaw.lab3.model.Post;
 import epaw.lab3.model.User;
 

@@ -3,7 +3,7 @@
 
 <div class="w3-card" title="Register">
     <header class="w3-container w3-theme">
-        <h1>Register</h1>
+        <h1><img src="assets/icons/sign-in-blanco.png" alt="" class="ico ico-fw"> Register</h1>
     </header>
     <div class="w3-container w3-padding">
         <form id="registerForm" action="Register" method="POST" enctype="multipart/form-data">

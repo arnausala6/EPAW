@@ -1,11 +1,70 @@
 @charset "UTF-8";
 
+/* Paleta terracota — Seminario 4 (mockups + informe de diseño) */
+:root {
+	--pri: #A8432A;
+	--pri-dark: #7E2F1D;
+	--acc: #E0922F;
+	--tint: #FBEFE4;
+	--bg: #FBF6EF;
+	--surface: #FFFFFF;
+	--ink: #2B2018;
+	--muted: #6E5C4E;
+	--border: #E7D8C6;
+	--ok: #2F855A;
+	--err: #C53030;
+}
+
+body {
+	background-color: var(--bg) !important;
+	color: var(--ink) !important;
+}
+
+/* Sustituye w3-theme-red por la paleta terracota */
+.w3-theme-l5 { color: var(--ink) !important; background-color: var(--bg) !important; }
+.w3-theme-l4 { color: var(--ink) !important; background-color: var(--tint) !important; }
+.w3-theme-l3 { color: var(--ink) !important; background-color: #F0D4C4 !important; }
+.w3-theme-l2 { color: #fff !important; background-color: #D4846E !important; }
+.w3-theme-l1 { color: #fff !important; background-color: #B85A42 !important; }
+.w3-theme-d1 { color: #fff !important; background-color: var(--pri-dark) !important; }
+.w3-theme-d2 { color: #fff !important; background-color: #6B2718 !important; }
+.w3-theme-d3 { color: #fff !important; background-color: #582013 !important; }
+.w3-theme-d4 { color: #fff !important; background-color: #45190F !important; }
+.w3-theme-d5 { color: #fff !important; background-color: #32120B !important; }
+
+.w3-theme-light { color: var(--ink) !important; background-color: var(--bg) !important; }
+.w3-theme-dark { color: #fff !important; background-color: var(--pri-dark) !important; }
+.w3-theme-action { color: #fff !important; background-color: var(--pri-dark) !important; }
+
+.w3-theme { color: #fff !important; background-color: var(--pri) !important; }
+.w3-text-theme { color: var(--pri) !important; }
+.w3-border-theme { border-color: var(--pri) !important; }
+
+.w3-hover-theme:hover { color: #fff !important; background-color: var(--pri) !important; }
+.w3-hover-text-theme:hover { color: var(--pri) !important; }
+.w3-hover-border-theme:hover { border-color: var(--pri) !important; }
+
+.w3-bar .w3-button:hover,
+.w3-bar .w3-bar-item:hover {
+	background-color: var(--pri-dark) !important;
+	color: #fff !important;
+}
+
+.w3-text-grey { color: var(--muted) !important; }
+.w3-border,
+.w3-border-light-grey { border-color: var(--border) !important; }
+.w3-light-grey { background-color: var(--tint) !important; color: var(--ink) !important; }
+
+a:not(.w3-button):not(.menu) {
+	color: var(--pri);
+}
+
 input.w3-input:valid {
-	border-left: 4px solid green !important;
+	border-left: 4px solid var(--ok) !important;
 }
 
 input.w3-input:invalid {
-	border-left: 4px solid red !important;
+	border-left: 4px solid var(--err) !important;
 }
 
 #lcolumn, #content, #rcolumn {
@@ -13,4 +72,25 @@ input.w3-input:invalid {
 	overflow-y: auto;
 	padding: 2px 14px 16px 2px;
 	box-sizing: border-box;
+}
+
+.ico {
+	width: 1.25em;
+	height: 1.25em;
+	vertical-align: -0.2em;
+	object-fit: contain;
+}
+
+.ico-fw {
+	margin-right: 0.35em;
+}
+
+.ico-lg {
+	width: 3em;
+	height: 3em;
+	vertical-align: middle;
+}
+
+.ico-missing {
+	color: #C53030 !important;
 }

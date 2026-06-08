@@ -27,8 +27,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 public class UserService {
 
     private static UserService instance;
@@ -137,10 +135,6 @@ public class UserService {
                 String picturePath = saveProfilePicture(filePart, user.getUsername());
                 user.setPicture(picturePath);
             }
-
-            String plainPassword = user.getPassword();
-            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
-            user.setPassword(hashedPassword);
 
             userRepository.save(user);
         }

@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import epaw.lab3.model.User;
 import epaw.lab3.model.Group;
 
@@ -73,8 +71,8 @@ public class UserRepository extends BaseRepository {
             statement.setString(1, user.getUsername());
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    String storedHash = rs.getString("password");
-                    if (BCrypt.checkpw(user.getPassword(), storedHash)) {
+                    String storedPassword = rs.getString("password");
+                    if (user.getPassword().equals(storedPassword)) {
                         
                         user.setId(rs.getInt("user_id"));
                         user.setUsername(rs.getString("username"));

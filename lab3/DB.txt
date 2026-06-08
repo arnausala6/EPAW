@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS UserInGroup (
     FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
 );
 
-INSERT INTO User (username, email, password, description, profile_picture, country, age, gender, role) VALUES ('Admin', 'Admin@Admin', 'hashed_password(ya miraremos como implementarlo bien)', 'descripction', 'tambien mirar como implementar', 'España', 23, 'other', 'admin');
+INSERT INTO User (username, email, password, description, profile_picture, country, age, gender, role) VALUES ('admin', 'admin@epaw.upf.edu', 'AdminAdmin1', 'Platform administrator. Responsible for content moderation and user management.', NULL, 'United States', 35, 'male', 'admin');
 
 INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Web Engineering', 'We are a group dedicated to web engineering!', 1, 100);
 INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Pompeu Farra', 'We go party and drink a lot. The best thing in the world is a cubata and a birra', 1, 10000);

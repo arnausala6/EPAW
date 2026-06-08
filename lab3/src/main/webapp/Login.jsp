@@ -3,7 +3,7 @@
 
 <div class="w3-card" title="Log In">
 	<header class="w3-container w3-theme">
-        <h1>Log In</h1>
+        <h1><img src="assets/icons/log-in-blanco.png" alt="" class="ico ico-fw"> Log In</h1>
     </header>
 	<div class="w3-container w3-padding">
 		<form id="loginForm" action="Login" method="POST">
