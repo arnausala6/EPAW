@@ -50,7 +50,7 @@
 
 				<div class="form-field">
 					<label for="country">Country (optional)</label>
-					<select class="input" id="country" name="country">
+					<select class="input input-optional" id="country" name="country">
 						<option value="">—</option>
 						<c:forEach var="c" items="${countries}">
 							<option value="${c}" ${user.country == c ? 'selected' : ''}>${c}</option>
@@ -60,14 +60,14 @@
 
 				<div class="form-field">
 					<label for="description">Description (optional)</label>
-					<textarea class="input" id="description" name="description" maxlength="300"
+					<textarea class="input input-optional" id="description" name="description" maxlength="300"
 						style="height: 100px;">${user.description}</textarea>
 				</div>
 
 				<div class="form-field">
 					<label for="profilePicture">Profile picture (optional, max 2MB)</label>
 					<div class="profile-file-row">
-						<input type="file" id="profilePicture" name="profilePicture" class="profile-file-native input"
+						<input type="file" id="profilePicture" name="profilePicture" class="profile-file-native input input-optional"
 							accept="image/jpeg,image/png,image/webp,image/gif" />
 						<button type="button" id="btnRemoveProfile" class="profile-file-remove"
 							style="display: none;">Eliminar imatge</button>
@@ -76,7 +76,7 @@
 
 				<div class="form-field">
 					<label for="groupId">Group to join (optional)</label>
-					<select class="input" id="groupId" name="groupId">
+					<select class="input input-optional" id="groupId" name="groupId">
 						<option value="">—</option>
 						<c:forEach var="g" items="${groups}">
 							<option value="${g.groupId}" ${user.groupId == g.groupId ? 'selected' : ''}>

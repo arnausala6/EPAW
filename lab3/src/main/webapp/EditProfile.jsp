@@ -34,7 +34,7 @@
 
 			<div class="form-field">
 				<label for="country">Country (optional)</label>
-				<select class="input" id="country" name="country">
+				<select class="input input-optional" id="country" name="country">
 					<option value="">—</option>
 					<c:forEach var="c" items="${countries}">
 						<option value="${c}" ${user.country == c ? 'selected' : ''}>${c}</option>
@@ -44,12 +44,12 @@
 
 			<div class="form-field">
 				<label for="editDescription">Description</label>
-				<textarea class="input" id="editDescription" name="description" maxlength="300" style="height:100px">${user.description}</textarea>
+				<textarea class="input input-optional" id="editDescription" name="description" maxlength="300" style="height:100px">${user.description}</textarea>
 			</div>
 
 			<div class="form-field">
 				<label for="editPicture">Profile picture</label>
-				<input class="input" type="file" id="editPicture" name="profilePicture" accept="image/jpeg,image/png,image/webp,image/gif">
+				<input class="input input-optional" type="file" id="editPicture" name="profilePicture" accept="image/jpeg,image/png,image/webp,image/gif">
 			</div>
 
 			<div class="btn-row">
