@@ -418,11 +418,21 @@ textarea.input:focus {
 	box-shadow: 0 0 0 3px var(--tint);
 }
 
-.input:valid {
+#registerForm .input:valid,
+#registerForm select.input:valid,
+#registerForm textarea.input:valid,
+#editProfileForm .input:valid,
+#editProfileForm select.input:valid,
+#editProfileForm textarea.input:valid {
 	border-left: 4px solid var(--ok);
 }
 
-.input:invalid {
+#registerForm .input:invalid,
+#registerForm select.input:invalid,
+#registerForm textarea.input:invalid,
+#editProfileForm .input:invalid,
+#editProfileForm select.input:invalid,
+#editProfileForm textarea.input:invalid {
 	border-left: 4px solid var(--err);
 }
 

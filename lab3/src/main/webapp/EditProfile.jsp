@@ -6,7 +6,7 @@
 		<h3>Edit profile</h3>
 	</div>
 	<div class="card-body">
-		<form>
+		<form id="editProfileForm">
 			<div class="form-field">
 				<label for="editUsername">Username</label>
 				<input class="input" type="text" id="editUsername" name="username" maxlength="30" value="${user.username}">
