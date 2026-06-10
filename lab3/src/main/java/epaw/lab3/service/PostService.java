@@ -38,7 +38,17 @@ public class PostService {
             errors.put("response_id", "response post does not exist");
         }
 
-        postRepository.publishPost(post);
+        if (errors.isEmpty()) {
+            postRepository.publishPost(post);
+        }
+        
         return errors;
+    }
+
+    public static synchronized PostService getInstance() {
+        if (instance == null) {
+            instance = new PostService();
+        }
+        return instance;
     }
 }

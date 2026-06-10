@@ -3,6 +3,8 @@ package epaw.lab3.repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import epaw.lab3.model.User;
@@ -239,5 +241,25 @@ public class UserRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Método para obtener los grupos a los que pertenece un usuario
+    public List<Group> getGroupsByUserId(Integer userId) { 
+        String query = "SELECT g.group_id, g.group_name FROM \"Group\" g JOIN UserInGroup uig ON g.group_id = uig.group_id WHERE uig.user_id = ?";
+        List<Group> groups = new ArrayList<>();
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setObject(1, userId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Group group = new Group();
+                group.setGroupId(rs.getInt("group_id"));
+                group.setGroupName(rs.getString("group_name"));
+                groups.add(group);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groups;
     }
 }

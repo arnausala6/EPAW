@@ -249,4 +249,9 @@ public class UserService {
         }
         return errors;
     }
+
+    public List<Group> getGroupsByUserId(Integer userId) {
+        return userRepository.getGroupsByUserId(userId);
+    }
+
 }
