@@ -16,6 +16,10 @@ public class Post implements Serializable {
     private Integer userId;
     private Integer groupId;
     private Integer responseId;
+    private String username;
+    private String groupName;
+
+
 
     public Post() {
         responseId = null;
@@ -82,6 +86,24 @@ public class Post implements Serializable {
 
     public void setGroupId(Integer group_id) {
         this.groupId = group_id;
+    }
+
+    // Username
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // GroupName
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
 }

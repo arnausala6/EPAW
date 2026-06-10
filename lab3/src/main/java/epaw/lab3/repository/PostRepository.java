@@ -8,6 +8,10 @@ import java.util.Optional;
 import epaw.lab3.model.Post;
 import epaw.lab3.model.User;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.sql.Timestamp;
+
 public class PostRepository extends BaseRepository {
     private static PostRepository instance;
 
@@ -54,4 +58,43 @@ public class PostRepository extends BaseRepository {
         }
         return false;
     }
+
+
+    // Método para obtener el timeline de un usuario
+    public List<Post> getTimelineByUserId(Integer userId) {
+        List<Post> posts = new ArrayList<>();
+        String query = """
+            SELECT p.post_id, p.content, p.votes, p.date_of_creation,
+                p.user_id, p.group_id, u.username, g.group_name
+            FROM Post p
+            JOIN User u ON p.user_id = u.user_id
+            JOIN "Group" g ON p.group_id = g.group_id
+            WHERE p.group_id IN (
+                SELECT group_id FROM UserInGroup WHERE user_id = ?
+            )
+            ORDER BY p.date_of_creation DESC
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Post p = new Post();
+                    p.setPostId(rs.getInt("post_id"));
+                    p.setContent(rs.getString("content"));
+                    p.setVotes(rs.getInt("votes"));
+                    p.setUserId(rs.getInt("user_id"));
+                    p.setGroupId(rs.getInt("group_id"));
+                    p.setUsername(rs.getString("username"));
+                    p.setGroupName(rs.getString("group_name"));
+                    Timestamp ts = rs.getTimestamp("date_of_creation");
+                    if (ts != null) p.setDateOfCreation(ts.toLocalDateTime());
+                    posts.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
 }

@@ -51,4 +51,9 @@ public class PostService {
         }
         return instance;
     }
+
+    public List<Post> getTimelineByUserId(Integer userId) {
+        return postRepository.getTimelineByUserId(userId);
+    }
+
 }
