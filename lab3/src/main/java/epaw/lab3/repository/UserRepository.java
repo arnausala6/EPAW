@@ -312,6 +312,49 @@ public class UserRepository extends BaseRepository {
         }
     }
 
+    public List<User> findRecommendedUsers(Integer currentUserId, String searchTerm) {
+        List<User> users = new ArrayList<>();
+        StringBuilder query = new StringBuilder("""
+            SELECT user_id, username, email, description, profile_picture
+            FROM User
+            WHERE user_id <> ?
+        """);
+
+        String normalized = searchTerm == null ? "" : searchTerm.trim();
+        if (!normalized.isEmpty()) {
+            String likeTerm = "%" + normalized.toLowerCase() + "%";
+            query.append("\n              AND (LOWER(username) LIKE ? OR LOWER(description) LIKE ?)");
+        }
+
+        query.append("\nORDER BY username\nLIMIT 30");
+
+        try (PreparedStatement statement = db.prepareStatement(query.toString())) {
+            statement.setInt(1, currentUserId != null ? currentUserId : -1);
+
+            if (!normalized.isEmpty()) {
+                String likeTerm = "%" + normalized.toLowerCase() + "%";
+                statement.setString(2, likeTerm);
+                statement.setString(3, likeTerm);
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setDescription(rs.getString("description"));
+                    user.setProfilePicturePath(rs.getString("profile_picture"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
     public List<User> findUsersByGroupId(int groupId) {
         String query = """
             SELECT u.user_id, u.username, u.profile_picture
