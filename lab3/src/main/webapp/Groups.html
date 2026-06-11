@@ -1,44 +1,89 @@
 <div class="card card-flush page-head">
-	<div class="card-head">
+	<div class="card-head panel-head">
 		<h3><img src="assets/icons/grupos-blanco.png" alt="" class="ico"> Groups</h3>
+		<button type="button" class="btn btn-accent btn-sm btn-create-group">
+			<img src="assets/icons/publicar-blanco.png" alt="" class="ico"> Create group
+		</button>
 	</div>
 	<div class="card-body">
-		<div class="card">
-			<h4>Create group</h4>
-			<div class="form-field">
-				<label for="groupName">Group name</label>
-				<input class="input" type="text" id="groupName" placeholder="Example: Web Engineering Lab 3">
-			</div>
-			<div class="form-field">
-				<label for="groupDescription">Description</label>
-				<textarea class="input" id="groupDescription" style="height: 80px;" placeholder="What is this group about?"></textarea>
-			</div>
-			<button type="button" class="btn btn-primary"><img src="assets/icons/publicar-blanco.png" alt="" class="ico"> Create group</button>
+		<div class="groups-section">
+			<div class="side-title">Your groups</div>
+
+			<article class="card group-item">
+				<div class="group-item-content">
+					<div class="group-item-photo">
+						<img src="assets/icons/imagen-suave.png" alt="" class="group-photo-default">
+					</div>
+					<div class="group-item-body">
+						<h4>AI Projects</h4>
+						<p class="group-desc">Collaborative AI experiments and semester projects for EPAW students.</p>
+						<div class="group-item-meta">
+							<span>4 members</span>
+							<span>·</span>
+							<img src="assets/icons/privado-terracota.png" alt="Private" class="ico-vis" title="Private">
+						</div>
+					</div>
+				</div>
+				<div class="group-item-actions">
+					<button type="button" class="btn-icon-flat" title="Leave">
+						<img src="assets/icons/log-out-suave.png" alt="Leave" class="ico-act">
+					</button>
+				</div>
+			</article>
 		</div>
 
-		<div class="card">
-			<div class="side-title">Available groups</div>
-			<div class="disc">
-				<div>
-					<div class="g">Web Engineering</div>
-					<div class="members">67 members</div>
+		<div class="groups-section">
+			<div class="side-title">Suggestions</div>
+
+			<article class="card group-item">
+				<div class="group-item-content">
+					<div class="group-item-photo">
+						<img src="assets/icons/imagen-suave.png" alt="" class="group-photo-default">
+					</div>
+					<div class="group-item-body">
+						<h4>Web Engineering</h4>
+						<p class="group-desc">Course projects, lab discussions and resources for the Web Engineering subject.</p>
+						<div class="group-item-meta">
+							<span>67 members</span>
+							<span>·</span>
+							<img src="assets/icons/grupos-terracota.png" alt="Public" class="ico-vis" title="Public">
+						</div>
+					</div>
 				</div>
-				<button type="button" class="btn btn-primary btn-sm">Join</button>
-			</div>
-			<div class="disc">
-				<div>
-					<div class="g">AI Projects</div>
-					<div class="members">12 members</div>
+				<div class="group-item-actions">
+					<button type="button" class="btn-icon-flat" title="Join">
+						<img src="assets/icons/unirse-terracota.png" alt="Join" class="ico-act">
+					</button>
 				</div>
-				<button type="button" class="btn btn-muted btn-sm">Leave</button>
-			</div>
-			<div class="disc">
-				<div>
-					<div class="g">Campus Events</div>
-					<div class="members">31 members</div>
+			</article>
+
+			<article class="card group-item">
+				<div class="group-item-content">
+					<div class="group-item-photo">
+						<img src="assets/icons/imagen-suave.png" alt="" class="group-photo-default">
+					</div>
+					<div class="group-item-body">
+						<h4>Campus Events</h4>
+						<p class="group-desc">Announcements and meetups around the Pompeu Fabra campus.</p>
+						<div class="group-item-meta">
+							<span>31 members</span>
+							<span>·</span>
+							<img src="assets/icons/grupos-terracota.png" alt="Public" class="ico-vis" title="Public">
+						</div>
+					</div>
 				</div>
-				<button type="button" class="btn btn-primary btn-sm">Join</button>
-			</div>
+				<div class="group-item-actions">
+					<button type="button" class="btn-icon-flat" title="Join">
+						<img src="assets/icons/unirse-terracota.png" alt="Join" class="ico-act">
+					</button>
+				</div>
+			</article>
 		</div>
 	</div>
 </div>
+
+<script>
+document.querySelector('.btn-create-group').addEventListener('click', function() {
+	$('#rcolumn').load('CreateGroupPanel.html');
+});
+</script>

@@ -1,0 +1,40 @@
+<div class="card card-flush">
+	<div class="card-head panel-head">
+		<h5><img src="assets/icons/grupos-blanco.png" alt="" class="ico"> Create group</h5>
+		<button type="button" class="panel-close" onclick="$('#rcolumn').html('<p/>')">&times;</button>
+	</div>
+	<div class="card-body">
+		<form id="createGroupForm">
+			<div class="form-field">
+				<label for="groupName">Group name</label>
+				<input class="input" type="text" id="groupName" name="groupName" required maxlength="50"
+					placeholder="Example: Web Engineering Lab 3">
+			</div>
+
+			<div class="form-field">
+				<label for="groupDescription">Description</label>
+				<textarea class="input input-optional" id="groupDescription" name="groupDescription"
+					style="height: 80px;" maxlength="300" placeholder="What is this group about?"></textarea>
+			</div>
+
+			<div class="form-field">
+				<label for="groupImage">Group image</label>
+				<input class="input input-optional" type="file" id="groupImage" name="groupImage"
+					accept="image/jpeg,image/png,image/webp,image/gif">
+			</div>
+
+			<div class="form-field">
+				<label for="groupVisibility">Visibility</label>
+				<select class="input" id="groupVisibility" name="groupVisibility" required>
+					<option value="public" selected>Public</option>
+					<option value="private">Private</option>
+				</select>
+			</div>
+
+			<button type="button" class="btn btn-primary btn-block">
+				<img src="assets/icons/publicar-blanco.png" alt="" class="ico"> Create group
+			</button>
+			<p class="hint">Mockup only: no group is created yet.</p>
+		</form>
+	</div>
+</div>
