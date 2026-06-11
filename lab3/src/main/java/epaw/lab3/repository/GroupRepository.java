@@ -153,7 +153,7 @@ public class GroupRepository extends BaseRepository {
               AND g.group_id NOT IN (
                 SELECT group_id FROM UserInGroup WHERE user_id = ?
             )
-            ORDER BY g.group_name
+            ORDER BY g.participants DESC
         """;
 
         try (PreparedStatement stmt = db.prepareStatement(sql)) {
