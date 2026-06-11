@@ -340,7 +340,14 @@ public class UserRepository extends BaseRepository {
 
     // Método para obtener los grupos a los que pertenece un usuario
     public List<Group> getGroupsByUserId(Integer userId) { 
-        String query = "SELECT g.group_id, g.group_name FROM \"Group\" g JOIN UserInGroup uig ON g.group_id = uig.group_id WHERE uig.user_id = ?";
+        String query = """
+            SELECT g.group_id, g.group_name
+            FROM "Group" g
+            JOIN UserInGroup uig ON g.group_id = uig.group_id
+            WHERE uig.user_id = ?
+              AND COALESCE(g.blocked, 0) = 0
+            ORDER BY g.group_name
+        """;
         List<Group> groups = new ArrayList<>();
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, userId);

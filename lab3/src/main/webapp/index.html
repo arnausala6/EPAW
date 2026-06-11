@@ -40,6 +40,124 @@
 				});
 			});
 
+			App.applyVoteState = function (bar, userVote) {
+				/* userVote: 1 | -1 | null */
+				bar.find(".btn-vote-up").removeClass("act-voted act-voted-down");
+				bar.find(".btn-vote-down").removeClass("act-voted act-voted-down");
+				if (userVote === 1) {
+					bar.find(".btn-vote-up").addClass("act-voted");
+				} else if (userVote === -1) {
+					bar.find(".btn-vote-down").addClass("act-voted-down");
+				}
+			};
+
+			$(document).on("click", ".btn-vote", function () {
+				const btn = $(this);
+				const bar = btn.closest(".post-actions-bar");
+				const allVoteBtns = bar.find(".btn-vote");
+				const postId = btn.attr("data-post-id");
+				const voteType = parseInt(btn.attr("data-vote-type"), 10);
+
+				if (allVoteBtns.prop("disabled")) {
+					return;
+				}
+				allVoteBtns.prop("disabled", true);
+
+				$.ajax({
+					type: "POST",
+					url: "VotePost",
+					data: { postId: postId, voteType: voteType },
+					dataType: "json"
+				}).done(function (res) {
+					if (!res || res.error) {
+						return;
+					}
+					/* Update counts */
+					bar.find(".vote-count-up").text(res.upvotes);
+					bar.find(".vote-count-down").text(res.downvotes);
+					/* Update selected state: res.userVote is 1, -1 or null */
+					const uv = (res.userVote === null || res.userVote === undefined)
+						? null : Number(res.userVote);
+					App.applyVoteState(bar, uv);
+				}).always(function () {
+					allVoteBtns.prop("disabled", false);
+				});
+			});
+
+			/* ── Comments ─────────────────────────────────── */
+
+			function closeCommentThread(thread) {
+				thread.hide();
+				const postId = thread.attr("data-post-id");
+				if ($('#rcolumn').find('[name="postId"][value="' + postId + '"]').length) {
+					$('#rcolumn').html('<p/>');
+				}
+			}
+
+			$(document).on("click", ".btn-toggle-comments", function () {
+				const btn = $(this);
+				const postId = btn.attr("data-post-id");
+				const article = btn.closest("article");
+				const thread = article.find(".comment-thread[data-post-id='" + postId + "']");
+				if (!thread.length) return;
+
+				if (thread.is(":visible")) {
+					closeCommentThread(thread);
+					return;
+				}
+
+				// Close any other open comment thread first
+				$('.comment-thread:visible').each(function () {
+					closeCommentThread($(this));
+				});
+
+				const inner = thread.find(".comment-thread-inner");
+				const doShow = function (html) {
+					if (html !== null) {
+						inner.html(html);
+						inner.data("loaded", true);
+					}
+					thread.show();
+					$('#rcolumn').load("AddComment?postId=" + postId);
+				};
+
+				if (inner.data("loaded")) {
+					doShow(null);
+				} else {
+					$.get("Comments?postId=" + postId, function (html) { doShow(html); });
+				}
+			});
+
+			$(document).on("click", ".btn-collapse-comments", function () {
+				const postId = $(this).attr("data-post-id");
+				const thread = $('.comment-thread[data-post-id="' + postId + '"]');
+				closeCommentThread(thread.length ? thread : $(this).closest(".comment-thread"));
+			});
+
+			$(document).on("click", ".btn-edit-comment", function () {
+				const commentId = $(this).attr("data-comment-id");
+				$('#rcolumn').load("EditComment?commentId=" + commentId);
+			});
+
+			$(document).on("click", ".btn-delete-comment", function () {
+				const commentId = $(this).attr("data-comment-id");
+				$('#rcolumn').load("DeleteComment?commentId=" + commentId);
+			});
+
+			$(document).on("click", ".btn-edit-post", function () {
+				const postId = $(this).attr("data-post-id");
+				const view = $(this).attr("data-view") || "group";
+				$('#rcolumn').load("EditPost?postId=" + postId + "&view=" + view);
+			});
+
+			$(document).on("click", ".btn-delete-post", function () {
+				const postId = $(this).attr("data-post-id");
+				const view = $(this).attr("data-view") || "group";
+				$('#rcolumn').load("DeletePost?postId=" + postId + "&view=" + view);
+			});
+
+			/* ─────────────────────────────────────────────── */
+
 			$(document).on("submit", "form", function (event) {
 				if ($(this).closest('#rcolumn').length) {
 					return;

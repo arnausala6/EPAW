@@ -60,7 +60,7 @@ public class Groups extends HttpServlet {
                     request.setAttribute("hasPendingJoinRequest",
                             groupService.hasPendingJoinRequest(user.getId(), groupId));
                     if (groupService.canViewGroupPosts(group, user)) {
-                        request.setAttribute("posts", postService.getPostsByGroupId(groupId));
+                        request.setAttribute("posts", postService.getPostsByGroupId(groupId, user.getId()));
                     }
                 }
             } catch (NumberFormatException ignored) {

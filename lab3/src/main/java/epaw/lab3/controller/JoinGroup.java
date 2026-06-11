@@ -68,7 +68,7 @@ public class JoinGroup extends HttpServlet {
                 request.setAttribute("isGroupOwner", groupService.isGroupOwner(group, user));
                 request.setAttribute("isGroupMember", isGroupMember);
                 if (groupService.canViewGroupPosts(group, user)) {
-                    request.setAttribute("posts", postService.getPostsByGroupId(groupId));
+                    request.setAttribute("posts", postService.getPostsByGroupId(groupId, user.getId()));
                 }
             }
         }

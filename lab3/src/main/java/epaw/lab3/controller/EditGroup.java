@@ -66,6 +66,10 @@ public class EditGroup extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
+            if (group.isBlocked()) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
             request.setAttribute("group", group);
             request.getRequestDispatcher("EditGroupPanel.jsp").forward(request, response);
         } catch (NumberFormatException e) {
@@ -113,7 +117,7 @@ public class EditGroup extends HttpServlet {
             request.setAttribute("hasPendingJoinRequest",
                     groupService.hasPendingJoinRequest(user.getId(), groupId));
             if (group != null && groupService.canViewGroupPosts(group, user)) {
-                request.setAttribute("posts", postService.getPostsByGroupId(groupId));
+                request.setAttribute("posts", postService.getPostsByGroupId(groupId, user.getId()));
             }
             request.setAttribute("userGroups", groupService.getUserGroups(user.getId()));
             request.setAttribute("suggestedGroups", groupService.getSuggestedGroups(user.getId()));

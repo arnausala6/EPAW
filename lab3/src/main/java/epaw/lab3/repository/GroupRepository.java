@@ -96,6 +96,7 @@ public class GroupRepository extends BaseRepository {
                    g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
+            WHERE COALESCE(g.blocked, 0) = 0
             ORDER BY g.participants DESC
             LIMIT 10
         """;
@@ -116,12 +117,13 @@ public class GroupRepository extends BaseRepository {
         List<Group> groups = new ArrayList<>();
 
         String sql = """
-            SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
+            SELECT DISTINCT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
                    g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
-                   (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
+                   (SELECT COUNT(*) FROM UserInGroup uig2 WHERE uig2.group_id = g.group_id) AS member_count
             FROM "Group" g
-            JOIN UserInGroup uig ON g.group_id = uig.group_id
-            WHERE uig.user_id = ?
+            JOIN User u ON u.user_id = ?
+            LEFT JOIN UserInGroup uig ON g.group_id = uig.group_id AND uig.user_id = u.user_id
+            WHERE uig.user_id IS NOT NULL OR g.owner = u.username
             ORDER BY g.group_name
         """;
 
@@ -147,7 +149,8 @@ public class GroupRepository extends BaseRepository {
                    g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
-            WHERE g.group_id NOT IN (
+            WHERE COALESCE(g.blocked, 0) = 0
+              AND g.group_id NOT IN (
                 SELECT group_id FROM UserInGroup WHERE user_id = ?
             )
             ORDER BY g.group_name
@@ -319,7 +322,8 @@ public class GroupRepository extends BaseRepository {
             g.setOwnerCountry(null);
         }
         try {
-            g.setBlocked(rs.getInt("blocked") == 1);
+            int blocked = rs.getInt("blocked");
+            g.setBlocked(!rs.wasNull() && blocked == 1);
             g.setBlockReason(rs.getString("block_reason"));
         } catch (SQLException ignored) {
             g.setBlocked(false);

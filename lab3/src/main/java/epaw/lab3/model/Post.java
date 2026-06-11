@@ -30,8 +30,8 @@ public class Post implements Serializable {
     private boolean blocked;
     private String blockReason;
     private boolean authorBanned;
-
-
+    private Integer userVote;
+    private boolean edited;
 
     public Post() {
         responseId = null;
@@ -189,6 +189,22 @@ public class Post implements Serializable {
 
     public void setAuthorBanned(boolean authorBanned) {
         this.authorBanned = authorBanned;
+    }
+
+    public Integer getUserVote() {
+        return userVote;
+    }
+
+    public void setUserVote(Integer userVote) {
+        this.userVote = userVote;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 
 }

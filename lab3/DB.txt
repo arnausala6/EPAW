@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS Post (
     blocked INTEGER DEFAULT 0,
     block_reason TEXT,
     author_banned INTEGER DEFAULT 0,
+    edited INTEGER DEFAULT 0,
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,

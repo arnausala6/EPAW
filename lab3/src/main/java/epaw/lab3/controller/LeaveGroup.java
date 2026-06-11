@@ -59,7 +59,7 @@ public class LeaveGroup extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-            if (groupService.isGroupOwner(group, user)) {
+            if (groupService.isGroupOwner(group, user) && !group.isBlocked()) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
@@ -107,7 +107,7 @@ public class LeaveGroup extends HttpServlet {
             Group group = groupService.getGroupById(groupId);
             request.setAttribute("group", group);
             request.setAttribute("errors", errors);
-            if (group != null && groupService.isGroupOwner(group, user)) {
+            if (group != null && groupService.isGroupOwner(group, user) && !group.isBlocked()) {
                 request.getRequestDispatcher("EditGroupPanel.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("LeaveGroupPanel.jsp").forward(request, response);

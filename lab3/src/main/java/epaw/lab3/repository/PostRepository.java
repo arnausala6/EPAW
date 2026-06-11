@@ -19,6 +19,7 @@ public class PostRepository extends BaseRepository {
             SELECT p.post_id, p.content, p.post_picture, p.votes, p.upvotes, p.downvotes,
                    p.comment_count, p.blocked, p.block_reason, p.author_banned,
                    p.date_of_creation, p.user_id, p.group_id, p.response_id,
+                   COALESCE(p.edited, 0) AS edited,
                    u.username, u.profile_picture, g.group_name
         """;
 
@@ -155,7 +156,11 @@ public class PostRepository extends BaseRepository {
         Post p = new Post();
         p.setPostId(rs.getInt("post_id"));
         p.setContent(rs.getString("content"));
-        p.setPostPicture(rs.getString("post_picture"));
+        String postPicture = rs.getString("post_picture");
+        if (postPicture != null && postPicture.isBlank()) {
+            postPicture = null;
+        }
+        p.setPostPicture(postPicture);
         p.setVotes(rs.getInt("votes"));
         p.setUpvotes(rs.getInt("upvotes"));
         p.setDownvotes(rs.getInt("downvotes"));
@@ -176,7 +181,135 @@ public class PostRepository extends BaseRepository {
         if (!rs.wasNull()) {
             p.setResponseId(responseId);
         }
+        p.setEdited(rs.getInt("edited") == 1);
         return p;
+    }
+
+    public List<Post> findCommentsByPostId(int postId) {
+        List<Post> posts = new ArrayList<>();
+        String query = POST_SELECT + """
+            FROM Post p
+            JOIN User u ON p.user_id = u.user_id
+            JOIN "Group" g ON p.group_id = g.group_id
+            WHERE p.response_id = ?
+            ORDER BY p.date_of_creation ASC
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(mapPost(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    public void incrementCommentCount(int postId) {
+        String query = "UPDATE Post SET comment_count = comment_count + 1 WHERE post_id = ?";
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateComment(int commentId, String content) {
+        String query = "UPDATE Post SET content = ?, edited = 1 WHERE post_id = ?";
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setString(1, content);
+            stmt.setInt(2, commentId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePostContent(int postId, String content) {
+        String query = """
+            UPDATE Post SET content = ?, edited = 1
+            WHERE post_id = ? AND response_id IS NULL
+            """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setString(1, content);
+            stmt.setInt(2, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearPostPicture(int postId) {
+        String query = """
+            UPDATE Post SET post_picture = NULL, edited = 1
+            WHERE post_id = ? AND response_id IS NULL
+            """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPostPicture(int postId, String postPicture) {
+        String query = """
+            UPDATE Post SET post_picture = ?, edited = 1
+            WHERE post_id = ? AND response_id IS NULL
+            """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setString(1, postPicture);
+            stmt.setInt(2, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean deletePost(int postId) {
+        try {
+            try (PreparedStatement deleteComments = db.prepareStatement(
+                    "DELETE FROM Post WHERE response_id = ?")) {
+                deleteComments.setInt(1, postId);
+                deleteComments.executeUpdate();
+            }
+            try (PreparedStatement deletePost = db.prepareStatement(
+                    "DELETE FROM Post WHERE post_id = ? AND response_id IS NULL")) {
+                deletePost.setInt(1, postId);
+                return deletePost.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteComment(int commentId) {
+        String query = "DELETE FROM Post WHERE post_id = ? AND response_id IS NOT NULL";
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, commentId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void decrementCommentCount(int postId) {
+        String query = """
+            UPDATE Post
+            SET comment_count = CASE WHEN comment_count > 0 THEN comment_count - 1 ELSE 0 END
+            WHERE post_id = ?
+            """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

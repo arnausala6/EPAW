@@ -202,6 +202,11 @@ public class GroupService {
             return errors;
         }
 
+        if (group.isBlocked()) {
+            errors.put("groupId", "This group has been blocked.");
+            return errors;
+        }
+
         if (!joinRequestRepository.hasPendingRequest(requestUserId, groupId)) {
             errors.put("userId", "Join request not found.");
             return errors;
@@ -228,6 +233,11 @@ public class GroupService {
 
         if (!isGroupOwner(group, owner)) {
             errors.put("groupId", "Only the group owner can reject join requests.");
+            return errors;
+        }
+
+        if (group.isBlocked()) {
+            errors.put("groupId", "This group has been blocked.");
             return errors;
         }
 
@@ -307,6 +317,11 @@ public class GroupService {
 
         if (!isGroupOwner(existing, user)) {
             errors.put("groupId", "Only the group owner can edit this group.");
+            return errors;
+        }
+
+        if (existing.isBlocked()) {
+            errors.put("groupId", "This group has been blocked.");
             return errors;
         }
 

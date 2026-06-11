@@ -119,7 +119,7 @@ public class BlockPost extends HttpServlet {
         request.setAttribute("isGroupMember", isGroupMember);
         request.setAttribute("hasPendingJoinRequest", groupService.hasPendingJoinRequest(user.getId(), groupId));
         if (groupService.canViewGroupPosts(group, user)) {
-            request.setAttribute("posts", postService.getPostsByGroupId(groupId));
+            request.setAttribute("posts", postService.getPostsByGroupId(groupId, user.getId()));
         }
     }
 

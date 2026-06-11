@@ -15,45 +15,61 @@
 		<c:choose>
 			<c:when test="${not empty group}">
 				<div class="groups-head-actions">
-					<c:if test="${isGroupOwner}">
-						<c:if test="${group.privacy == 'private'}">
-							<button type="button" class="btn-icon-flat btn-group-join-requests" data-group-id="${group.groupId}" title="Join requests">
-								<img src="assets/icons/mail-terracota.png" alt="" class="ico-act ico-act-header-invert">
+					<c:choose>
+					<c:when test="${group.blocked}">
+						<c:if test="${isGroupMember}">
+							<button type="button" class="btn-icon-flat btn-leave-group" data-group-id="${group.groupId}" title="Leave group">
+								<img src="assets/icons/log-out-blanco.png" alt="" class="ico-act">
 							</button>
 						</c:if>
-						<button type="button" class="btn-icon-flat btn-edit-group" data-group-id="${group.groupId}" title="Edit group">
-							<img src="assets/icons/edit-blanco.png" alt="" class="ico-act">
-						</button>
-					</c:if>
-					<c:if test="${isGroupMember and not isGroupOwner}">
-						<button type="button" class="btn-icon-flat btn-leave-group" data-group-id="${group.groupId}" title="Leave group">
-							<img src="assets/icons/log-out-blanco.png" alt="" class="ico-act">
-						</button>
-					</c:if>
-					<c:if test="${not isGroupMember and not isGroupOwner and group.privacy != 'private'}">
-						<button type="button" class="btn-icon-flat btn-join-group" data-group-id="${group.groupId}" title="Join group">
-							<img src="assets/icons/unirse-blanco.png" alt="" class="ico-act">
-						</button>
-					</c:if>
-					<c:if test="${not isGroupMember and not isGroupOwner and group.privacy == 'private'}">
-						<c:choose>
-							<c:when test="${hasPendingJoinRequest}">
-								<span class="btn-icon-flat btn-icon-flat-static" title="Join request pending">
-									<img src="assets/icons/clock.png" alt="" class="ico-act ico-act-header-invert">
-								</span>
-							</c:when>
-							<c:otherwise>
-								<button type="button" class="btn-icon-flat btn-request-join" data-group-id="${group.groupId}" title="Request to join">
+					</c:when>
+					<c:otherwise>
+						<c:if test="${isGroupOwner}">
+							<c:if test="${group.privacy == 'private'}">
+								<button type="button" class="btn-icon-flat btn-group-join-requests" data-group-id="${group.groupId}" title="Join requests">
 									<img src="assets/icons/mail-terracota.png" alt="" class="ico-act ico-act-header-invert">
 								</button>
-							</c:otherwise>
-						</c:choose>
-					</c:if>
-					<c:if test="${isAdmin and not group.blocked}">
-						<button type="button" class="btn-icon-flat btn-block-group-admin" data-group-id="${group.groupId}" title="Block group">
-							<img src="assets/icons/block-blanco.png" alt="" class="ico-act">
-						</button>
-					</c:if>
+							</c:if>
+							<button type="button" class="btn-icon-flat btn-edit-group" data-group-id="${group.groupId}" title="Edit group">
+								<img src="assets/icons/edit-blanco.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+						<c:if test="${isGroupMember and not isGroupOwner}">
+							<button type="button" class="btn-icon-flat btn-leave-group" data-group-id="${group.groupId}" title="Leave group">
+								<img src="assets/icons/log-out-blanco.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+						<c:if test="${not isGroupMember and not isGroupOwner and group.privacy != 'private'}">
+							<button type="button" class="btn-icon-flat btn-join-group" data-group-id="${group.groupId}" title="Join group">
+								<img src="assets/icons/unirse-blanco.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+						<c:if test="${not isGroupMember and not isGroupOwner and group.privacy == 'private'}">
+							<c:choose>
+								<c:when test="${hasPendingJoinRequest}">
+									<span class="btn-icon-flat btn-icon-flat-static" title="Join request pending">
+										<img src="assets/icons/clock.png" alt="" class="ico-act ico-act-header-invert">
+									</span>
+								</c:when>
+								<c:otherwise>
+									<button type="button" class="btn-icon-flat btn-request-join" data-group-id="${group.groupId}" title="Request to join">
+										<img src="assets/icons/mail-terracota.png" alt="" class="ico-act ico-act-header-invert">
+									</button>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+						<c:if test="${isGroupMember}">
+							<button type="button" class="btn-icon-flat btn-new-post-group" data-group-id="${group.groupId}" title="New post">
+								<img src="assets/icons/publicar-blanco.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+						<c:if test="${isAdmin}">
+							<button type="button" class="btn-icon-flat btn-block-group-admin" data-group-id="${group.groupId}" title="Block group">
+								<img src="assets/icons/block-blanco.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+					</c:otherwise>
+					</c:choose>
 					<button type="button" class="btn-icon-flat btn-back-groups" title="Back to groups">
 						<img src="assets/icons/back.png" alt="" class="ico-act">
 					</button>
@@ -238,6 +254,12 @@ document.querySelectorAll('.btn-join-group').forEach(function(btn) {
 document.querySelectorAll('.btn-back-groups').forEach(function(btn) {
 	btn.addEventListener('click', function() {
 		$('#content').load('Groups');
+	});
+});
+
+document.querySelectorAll('.btn-new-post-group').forEach(function(btn) {
+	btn.addEventListener('click', function() {
+		$('#content').load('NewPost?groupId=' + btn.dataset.groupId);
 	});
 });
 

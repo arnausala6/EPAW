@@ -93,6 +93,11 @@ public class DBManager {
 			} catch (SQLException ignored) {
 				// column already exists
 			}
+			try {
+				stmt.execute("ALTER TABLE Post ADD COLUMN edited INTEGER DEFAULT 0");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
 		}
 	}
 

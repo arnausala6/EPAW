@@ -7,6 +7,9 @@
 	</div>
 	<div class="card-body">
 		<form action="NewPost" method="POST">
+			<c:if test="${not empty returnGroupId}">
+				<input type="hidden" name="returnGroupId" value="${returnGroupId}">
+			</c:if>
 			<div class="form-field">
 				<label for="postBody">Content</label>
 				<textarea class="input${not empty errors.content ? ' input-error' : ''}" id="postBody" name="content"
@@ -24,6 +27,7 @@
 					</c:when>
 					<c:otherwise>
 						<select class="input${not empty errors.groupId ? ' input-error' : ''}" id="postGroup" name="groupId" required>
+							<option value="" disabled${empty selectedGroupId ? ' selected' : ''}>Select a group…</option>
 							<c:forEach var="g" items="${groups}">
 								<option value="${g.groupId}"${selectedGroupId == g.groupId ? ' selected' : ''}>${g.groupName}</option>
 							</c:forEach>

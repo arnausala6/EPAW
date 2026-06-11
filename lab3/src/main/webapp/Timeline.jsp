@@ -12,19 +12,7 @@
             </c:when>
             <c:otherwise>
                 <c:forEach var="post" items="${posts}">
-                    <article class="card">
-                        <div class="post-head">
-                            <div>
-                                <div class="post-group">${post.groupName}</div>
-                                <div class="post-meta">@${post.username}</div>
-                            </div>
-                        </div>
-                        <p class="post-body">${post.content}</p>
-                        <div class="post-actions">
-                            <button class="act">▲ ${post.votes}</button>
-                            <button class="act">▼</button>
-                        </div>
-                    </article>
+                    <%@ include file="TimelinePostCard.jsp" %>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
