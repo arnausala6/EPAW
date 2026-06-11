@@ -1,6 +1,7 @@
 package epaw.lab3.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +14,10 @@ import epaw.lab3.service.UserService;
 import epaw.lab3.model.Post;
 import epaw.lab3.model.User;
 import epaw.lab3.util.BannedUserGuard;
+import java.util.List;
+import java.util.Map;
 
+@MultipartConfig
 @WebServlet("/NewPost")
 public class NewPost extends HttpServlet {
 
@@ -68,14 +72,17 @@ public class NewPost extends HttpServlet {
         post.setContent(content);
         post.setGroupId(groupId);
 
-        // Llamamos a postService.createPost(post)
-        var errors = postService.createPost(post);
+        Map<String, String> errors = postService.createPost(post);
 
-        // Si no hay errores, redirigimos a Timeline. Si hay errores, los mostramos en NewPost.jsp
         if (errors.isEmpty()) {
-            response.sendRedirect("Timeline");
+            List<Post> posts = postService.getTimelineByUserId(user.getId());
+            request.setAttribute("posts", posts);
+            request.getRequestDispatcher("Timeline.jsp").forward(request, response);
         } else {
-            request.setAttribute("errors", errors); 
+            request.setAttribute("errors", errors);
+            request.setAttribute("groups", userService.getGroupsByUserId(user.getId()));
+            request.setAttribute("content", content);
+            request.setAttribute("selectedGroupId", groupId);
             request.getRequestDispatcher("NewPost.jsp").forward(request, response);
         }
     }

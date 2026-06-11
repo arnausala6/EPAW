@@ -24,19 +24,20 @@ public class PostService {
     public Map<String, String> createPost(Post post){
         Map<String, String> errors = new HashMap<>();
         if (post.getGroupId() == null) {
-            errors.put("group_id", "Post must be part of a group");
+            errors.put("groupId", "Post must be part of a group.");
         }
-        if (post.getUserId() == null) { //MIRAR SEGURIDAD DE ESTO
-            errors.put("user_id", "User cannot be null");
+        if (post.getUserId() == null) {
+            errors.put("userId", "User cannot be null.");
         }
         if (post.getContent() == null || post.getContent().trim().isEmpty()) {
-            errors.put("content", "You cannot publish a post without content");
+            errors.put("content", "You cannot publish a post without content.");
         }
-        if(!userRepository.checkUserInGroup(post.getUserId(), post.getGroupId())){
-            errors.put("group_id", "user is not part of the group");
+        if (post.getGroupId() != null && post.getUserId() != null
+                && !userRepository.checkUserInGroup(post.getUserId(), post.getGroupId())) {
+            errors.put("groupId", "You are not a member of this group.");
         }
-        if(post.getResponseId() != null && !postRepository.postExistsById(post.getResponseId())){
-            errors.put("response_id", "response post does not exist");
+        if (post.getResponseId() != null && !postRepository.postExistsById(post.getResponseId())) {
+            errors.put("responseId", "Response post does not exist.");
         }
 
         if (errors.isEmpty()) {

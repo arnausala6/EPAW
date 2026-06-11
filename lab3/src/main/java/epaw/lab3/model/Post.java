@@ -2,6 +2,8 @@ package epaw.lab3.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.HashSet;
@@ -160,7 +162,9 @@ public class Post implements Serializable {
         if (dateOfCreation == null) {
             return "";
         }
-        return dateOfCreation.format(DateTimeFormatter.ofPattern("MMM d, yyyy · HH:mm", Locale.ENGLISH));
+        return dateOfCreation.atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid"))
+                .format(DateTimeFormatter.ofPattern("d MMM yyyy · HH:mm", Locale.forLanguageTag("es-ES")));
     }
 
     public boolean isBlocked() {

@@ -73,6 +73,7 @@ public class PostRepository extends BaseRepository {
             JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.response_id IS NULL
+              AND p.user_id != ?
               AND p.group_id IN (
                 SELECT group_id FROM UserInGroup WHERE user_id = ?
             )
@@ -80,6 +81,7 @@ public class PostRepository extends BaseRepository {
         """;
         try (PreparedStatement stmt = db.prepareStatement(query)) {
             stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     posts.add(mapPost(rs));
