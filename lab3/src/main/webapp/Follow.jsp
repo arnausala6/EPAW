@@ -59,7 +59,7 @@
                                 : "No description yet." %>
                     </p>
                     <div class="btn-row">
-                        <button type="button" class="btn btn-primary btn-sm">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="followUser('<%= user.getId() %>')">
                             <img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow
                         </button>
                         <button type="button" class="btn btn-muted btn-sm">
@@ -71,5 +71,12 @@
         <% } %>
     </div>
 </div>
+<script>
+    function followUser(userId) {
+        $.post('Follow', { userId: userId }, function(response) {
+            alert('Following ' + userId + '!');
+        });
+    }
+</script>
 </body>
 </html>
