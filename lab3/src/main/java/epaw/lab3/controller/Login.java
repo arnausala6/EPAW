@@ -49,7 +49,14 @@ public class Login extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
 			session.setAttribute("role", user.getRole()); // Guardamos el rol del usuario en la sesión
-			request.getRequestDispatcher("Welcome.jsp").forward(request, response);
+			if (userService.isPlatformBanned(user)) {
+				String reason = userService.getPlatformBanReason(user);
+				request.setAttribute("banReason",
+						reason != null && !reason.isBlank() ? reason : "No reason was provided.");
+				request.getRequestDispatcher("BannedWelcome.jsp").forward(request, response);
+			} else {
+				request.getRequestDispatcher("Welcome.jsp").forward(request, response);
+			}
 		} else {
 			user.setPassword("");
 			request.setAttribute("user", user);

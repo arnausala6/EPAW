@@ -8,6 +8,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/groups-page.css">
+	<link rel="stylesheet" href="css/group-detail.css">
+	<link rel="stylesheet" href="css/banned-user.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
 		window.App = window.App || {};
@@ -38,6 +41,9 @@
 			});
 
 			$(document).on("submit", "form", function (event) {
+				if ($(this).closest('#rcolumn').length) {
+					return;
+				}
 				event.preventDefault();
 				const form = this;
 				const data = new FormData(form);
@@ -54,6 +60,18 @@
 					$("#content").html(html);
 				});
 			});
+
+			App.mountRcolumnPanel = function (html, formId) {
+				if (formId && html.indexOf('id="' + formId + '"') !== -1) {
+					$('#rcolumn').html(html);
+					$('#rcolumn').find('script').each(function () {
+						$.globalEval(this.text || this.textContent || this.innerHTML || '');
+					});
+				} else {
+					$('#rcolumn').html('<p/>');
+					$('#content').html(html);
+				}
+			};
 		};
 
 		App.stack = function () {

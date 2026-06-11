@@ -17,8 +17,13 @@ public class Group implements Serializable {
     private Integer creatorId;
     private Integer participants;
     private String owner;
+    private String ownerCountry;
     private String privacy;
     private Integer memberCount;
+    private Integer postCount;
+    private boolean pendingJoinRequest;
+    private boolean blocked;
+    private String blockReason;
 
     private Set<User> groupParticipants = new HashSet<>();
 
@@ -95,6 +100,14 @@ public class Group implements Serializable {
         this.owner = owner;
     }
 
+    public String getOwnerCountry() {
+        return ownerCountry;
+    }
+
+    public void setOwnerCountry(String ownerCountry) {
+        this.ownerCountry = ownerCountry;
+    }
+
     public String getPrivacy() {
         return privacy;
     }
@@ -109,6 +122,38 @@ public class Group implements Serializable {
 
     public void setMemberCount(Integer memberCount) {
         this.memberCount = memberCount;
+    }
+
+    public Integer getPostCount() {
+        return postCount;
+    }
+
+    public void setPostCount(Integer postCount) {
+        this.postCount = postCount;
+    }
+
+    public boolean isPendingJoinRequest() {
+        return pendingJoinRequest;
+    }
+
+    public void setPendingJoinRequest(boolean pendingJoinRequest) {
+        this.pendingJoinRequest = pendingJoinRequest;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public String getBlockReason() {
+        return blockReason;
+    }
+
+    public void setBlockReason(String blockReason) {
+        this.blockReason = blockReason;
     }
 
     public Set<User> getGroupParticipants() {

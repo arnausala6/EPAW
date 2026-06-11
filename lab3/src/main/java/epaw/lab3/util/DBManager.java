@@ -25,6 +25,8 @@ public class DBManager {
 
 			if (!dbExists) {
 				initDatabase();
+			} else {
+				ensureSchema();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,6 +38,62 @@ public class DBManager {
 			instance = new DBManager();
 		}
 		return instance;
+	}
+
+	private void ensureSchema() throws SQLException {
+		try (Statement stmt = connection.createStatement()) {
+			stmt.execute("""
+				CREATE TABLE IF NOT EXISTS GroupJoinRequest (
+				    user_id INTEGER NOT NULL,
+				    group_id INTEGER NOT NULL,
+				    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				    PRIMARY KEY (user_id, group_id),
+				    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+				    FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
+				)
+			""");
+			stmt.execute("""
+				INSERT INTO UserInGroup (user_id, group_id)
+				SELECT u.user_id, g.group_id
+				FROM "Group" g
+				JOIN User u ON u.username = g.owner
+				WHERE g.owner IS NOT NULL
+				AND NOT EXISTS (
+				    SELECT 1 FROM UserInGroup uig
+				    WHERE uig.user_id = u.user_id AND uig.group_id = g.group_id
+				)
+			""");
+			try {
+				stmt.execute("ALTER TABLE Post ADD COLUMN blocked INTEGER DEFAULT 0");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+			try {
+				stmt.execute("ALTER TABLE Post ADD COLUMN block_reason TEXT");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+			try {
+				stmt.execute("ALTER TABLE Post ADD COLUMN author_banned INTEGER DEFAULT 0");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+			try {
+				stmt.execute("ALTER TABLE Block ADD COLUMN reason TEXT");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+			try {
+				stmt.execute("ALTER TABLE \"Group\" ADD COLUMN blocked INTEGER DEFAULT 0");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+			try {
+				stmt.execute("ALTER TABLE \"Group\" ADD COLUMN block_reason TEXT");
+			} catch (SQLException ignored) {
+				// column already exists
+			}
+		}
 	}
 
 	private void initDatabase() throws Exception {

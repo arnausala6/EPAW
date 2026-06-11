@@ -61,9 +61,11 @@
 			</div>
 		</div>
 	</div>
-	<button type="button" class="btn btn-ghost btn-block" onclick="$('#lcolumn').load('EditProfile')">
-		<img src="assets/icons/edit-suave.png" alt="" class="ico"> Edit profile
-	</button>
+	<c:if test="${not isBanned}">
+		<button type="button" class="btn btn-ghost btn-block" onclick="$('#lcolumn').load('EditProfile')">
+			<img src="assets/icons/edit-suave.png" alt="" class="ico"> Edit profile
+		</button>
+	</c:if>
 </div>
 </c:when>
 <c:otherwise>

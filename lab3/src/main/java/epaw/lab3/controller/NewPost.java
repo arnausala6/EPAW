@@ -12,6 +12,7 @@ import epaw.lab3.service.PostService;
 import epaw.lab3.service.UserService;
 import epaw.lab3.model.Post;
 import epaw.lab3.model.User;
+import epaw.lab3.util.BannedUserGuard;
 
 @WebServlet("/NewPost")
 public class NewPost extends HttpServlet {
@@ -36,6 +37,9 @@ public class NewPost extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
+        if (BannedUserGuard.redirectIfBanned(user, userService, request, response)) {
+            return;
+        }
         request.setAttribute("groups", userService.getGroupsByUserId(user.getId()));
 
         // Forward a NewPost.jsp
@@ -52,6 +56,9 @@ public class NewPost extends HttpServlet {
         }
         
         User user = (User) session.getAttribute("user");
+        if (BannedUserGuard.redirectIfBanned(user, userService, request, response)) {
+            return;
+        }
 
         String content = request.getParameter("content");
         int groupId = Integer.parseInt(request.getParameter("groupId"));

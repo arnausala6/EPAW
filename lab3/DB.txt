@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS "Group" (
     participants INTEGER,
     owner VARCHAR(30),
     privacy TEXT CHECK(privacy IN ('public', 'private')),
+    blocked INTEGER DEFAULT 0,
+    block_reason TEXT,
     FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE SET NULL
 );
 
@@ -29,8 +31,15 @@ CREATE TABLE IF NOT EXISTS Post (
     post_id INTEGER PRIMARY KEY AUTOINCREMENT,
     response_id INTEGER DEFAULT NULL,
     content TEXT NOT NULL,
+    post_picture TEXT,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     votes INTEGER DEFAULT 0,
+    upvotes INTEGER DEFAULT 0,
+    downvotes INTEGER DEFAULT 0,
+    comment_count INTEGER DEFAULT 0,
+    blocked INTEGER DEFAULT 0,
+    block_reason TEXT,
+    author_banned INTEGER DEFAULT 0,
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
@@ -40,6 +49,7 @@ CREATE TABLE IF NOT EXISTS Post (
 CREATE TABLE IF NOT EXISTS Block (
     blocker_id INTEGER,
     blocked_id INTEGER,
+    reason TEXT,
     PRIMARY KEY (blocker_id, blocked_id),
     FOREIGN KEY (blocker_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (blocked_id) REFERENCES User(user_id) ON DELETE CASCADE
@@ -65,6 +75,15 @@ CREATE TABLE IF NOT EXISTS Vote (
 CREATE TABLE IF NOT EXISTS UserInGroup (
     user_id INTEGER,
     group_id INTEGER,
+    PRIMARY KEY (user_id, group_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS GroupJoinRequest (
+    user_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
@@ -108,6 +127,9 @@ INSERT INTO User (username, email, password, description, profile_picture, count
 ('quim_serra', 'quim.serra@upf.edu', 'Password1', 'Weekend climber. I push small fixes and write clear commit messages.', 'assets/users/quim_serra.jpg', 'Switzerland', 22, 'male');
 
 INSERT INTO UserInGroup (user_id, group_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
 (14, 1),
 (15, 1),
 (16, 1),
@@ -140,3 +162,16 @@ INSERT INTO UserInGroup (user_id, group_id) VALUES
 (11, 3),
 (12, 3),
 (13, 3);
+
+-- Mock posts (votes = upvotes - downvotes; upvotes + downvotes <= group members)
+INSERT INTO Post (post_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, user_id, group_id) VALUES
+(1, 'Our semester NLP prototype is ready for demo. Please review the README before Monday.', NULL, '2026-06-09 09:15:00', 6, 8, 2, 5, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
+(2, 'Great progress on the dataset labelling. I added a few edge cases we should discuss.', NULL, '2026-06-08 14:30:00', 4, 5, 1, 3, (SELECT user_id FROM User WHERE username = 'mireia_sole'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
+(3, 'Shared the training notebook in the group drive. Feedback welcome on the evaluation metrics.', NULL, '2026-06-07 11:00:00', 6, 6, 0, 4, (SELECT user_id FROM User WHERE username = 'judit_solsona'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
+(4, 'CI pipeline for model training is green again after fixing the dependency conflict.', NULL, '2026-06-05 16:45:00', 1, 3, 2, 2, (SELECT user_id FROM User WHERE username = 'albert_miro'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
+(5, 'Lab 3 servlet wiring tips: remember to set user attributes before forwarding to the JSP.', NULL, '2026-06-10 08:20:00', 4, 5, 1, 2, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
+(6, 'Accessible forms checklist for our project UI — green borders only on required fields.', NULL, '2026-06-09 13:10:00', 4, 4, 0, 2, (SELECT user_id FROM User WHERE username = 'laia_maspons'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
+(7, 'JUnit tests for PostService are passing. I will open a PR tonight.', NULL, '2026-06-08 18:00:00', 1, 2, 1, 1, (SELECT user_id FROM User WHERE username = 'pol_vidal'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
+(8, 'Saturday outing confirmed: meet at 8:00 at the Montserrat cable car. Bring binoculars!', 'assets/posts/montserrat.jpg', '2026-06-10 07:30:00', 7, 9, 2, 12, (SELECT user_id FROM User WHERE username = 'joan_prat'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
+(9, 'Photo walk next Thursday at the Forum. Open to all skill levels.', NULL, '2026-06-09 10:00:00', 5, 6, 1, 5, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
+(10, 'Reminder: guest lecture on urban planning this Friday at 16:00 in room 52.001.', NULL, '2026-06-07 15:20:00', 4, 4, 0, 3, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events'));

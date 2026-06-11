@@ -42,6 +42,23 @@ public class GroupRepository extends BaseRepository {
         return false;
     }
 
+    public boolean groupNameExistsForOther(String name, int groupId) {
+        String query = "SELECT COUNT(*) FROM \"Group\" WHERE group_name = ? AND group_id != ?";
+
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, name);
+            statement.setInt(2, groupId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean groupIdExists(Integer id) {
         String query = "SELECT COUNT(*) FROM \"Group\" WHERE group_id = ?";
 
@@ -76,7 +93,7 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
             ORDER BY g.participants DESC
@@ -100,7 +117,7 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
             JOIN UserInGroup uig ON g.group_id = uig.group_id
@@ -127,7 +144,7 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
             WHERE g.group_id NOT IN (
@@ -153,9 +170,12 @@ public class GroupRepository extends BaseRepository {
     public Group findById(int id) {
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
-                   (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   ou.country AS owner_country,
+                   (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count,
+                   (SELECT COUNT(*) FROM Post p WHERE p.group_id = g.group_id AND p.response_id IS NULL) AS post_count
             FROM "Group" g
+            LEFT JOIN User ou ON ou.username = g.owner
             WHERE g.group_id = ?
         """;
 
@@ -253,7 +273,7 @@ public class GroupRepository extends BaseRepository {
         List<Group> groups = new ArrayList<>();
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
             WHERE g.group_name LIKE ?
@@ -288,6 +308,38 @@ public class GroupRepository extends BaseRepository {
         g.setOwner(rs.getString("owner"));
         g.setPrivacy(rs.getString("privacy"));
         g.setMemberCount(rs.getInt("member_count"));
+        try {
+            g.setPostCount(rs.getInt("post_count"));
+        } catch (SQLException ignored) {
+            g.setPostCount(0);
+        }
+        try {
+            g.setOwnerCountry(rs.getString("owner_country"));
+        } catch (SQLException ignored) {
+            g.setOwnerCountry(null);
+        }
+        try {
+            g.setBlocked(rs.getInt("blocked") == 1);
+            g.setBlockReason(rs.getString("block_reason"));
+        } catch (SQLException ignored) {
+            g.setBlocked(false);
+            g.setBlockReason(null);
+        }
         return g;
+    }
+
+    public void blockGroup(int groupId, String reason) {
+        String sql = """
+            UPDATE "Group"
+            SET blocked = 1, block_reason = ?
+            WHERE group_id = ?
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(sql)) {
+            stmt.setString(1, reason);
+            stmt.setInt(2, groupId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

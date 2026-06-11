@@ -181,11 +181,29 @@ public class UserService {
     }
 
     public Map<String, String> block(Integer blockerId, Integer blockedId){
+        return block(blockerId, blockedId, null);
+    }
+
+    public Map<String, String> block(Integer blockerId, Integer blockedId, String reason){
         Map<String, String> errors = checkBlock(blockerId, blockedId);
         if(errors.isEmpty()){
-            userRepository.saveBlock(blockerId, blockedId);
+            userRepository.saveBlock(blockerId, blockedId, reason);
         }
         return errors;
+    }
+
+    public boolean isPlatformBanned(User user) {
+        if (user == null || "admin".equals(user.getRole())) {
+            return false;
+        }
+        return userRepository.isPlatformBanned(user.getId());
+    }
+
+    public String getPlatformBanReason(User user) {
+        if (user == null) {
+            return null;
+        }
+        return userRepository.findPlatformBanReason(user.getId());
     }
 
     public Map<String, String> unblock(Integer blockerId, Integer blockedId){

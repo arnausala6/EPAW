@@ -2,6 +2,8 @@ package epaw.lab3.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,11 +15,19 @@ public class Post implements Serializable {
     private String content;
     private LocalDateTime dateOfCreation;
     private Integer votes;
+    private Integer upvotes;
+    private Integer downvotes;
+    private Integer commentCount;
+    private String postPicture;
+    private String profilePicture;
     private Integer userId;
     private Integer groupId;
     private Integer responseId;
     private String username;
     private String groupName;
+    private boolean blocked;
+    private String blockReason;
+    private boolean authorBanned;
 
 
 
@@ -70,6 +80,46 @@ public class Post implements Serializable {
         this.votes = votes;
     }
 
+    public Integer getUpvotes() {
+        return upvotes;
+    }
+
+    public void setUpvotes(Integer upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public Integer getDownvotes() {
+        return downvotes;
+    }
+
+    public void setDownvotes(Integer downvotes) {
+        this.downvotes = downvotes;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public String getPostPicture() {
+        return postPicture;
+    }
+
+    public void setPostPicture(String postPicture) {
+        this.postPicture = postPicture;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     // UserId
     public Integer getUserId() {
         return userId;
@@ -104,6 +154,37 @@ public class Post implements Serializable {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getFormattedDate() {
+        if (dateOfCreation == null) {
+            return "";
+        }
+        return dateOfCreation.format(DateTimeFormatter.ofPattern("MMM d, yyyy · HH:mm", Locale.ENGLISH));
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public String getBlockReason() {
+        return blockReason;
+    }
+
+    public void setBlockReason(String blockReason) {
+        this.blockReason = blockReason;
+    }
+
+    public boolean isAuthorBanned() {
+        return authorBanned;
+    }
+
+    public void setAuthorBanned(boolean authorBanned) {
+        this.authorBanned = authorBanned;
     }
 
 }

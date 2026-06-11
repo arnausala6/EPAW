@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import epaw.lab3.model.User;
+import epaw.lab3.service.UserService;
 
 import java.io.IOException;
 
@@ -17,6 +18,12 @@ import java.io.IOException;
 @WebServlet("/Menu")
 public class Menu extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private UserService userService;
+
+	@Override
+	public void init() throws ServletException {
+		userService = UserService.getInstance();
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -26,10 +33,13 @@ public class Menu extends HttpServlet {
 		if (session != null){ // Si hay una sesión activa	
 			User user = (User) session.getAttribute("user");
 			if (user != null) { // Si hay un usuario en la sesión
-				if (user.getRole().equals("admin")) // Si el usuario es admin
+				if (userService.isPlatformBanned(user)) {
+					view = "MenuBanned.html";
+				} else if (user.getRole().equals("admin")) {
 					view = "MenuAdmin.html";
-				else // Si el usuario es user
+				} else {
 					view = "MenuLogged.html";
+				}
 			}
 		}
 		request.getRequestDispatcher(view).forward(request, response);

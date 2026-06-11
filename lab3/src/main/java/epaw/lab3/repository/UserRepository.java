@@ -67,6 +67,36 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
+    public boolean verifyPassword(int userId, String password) {
+        String query = "SELECT password FROM User WHERE user_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    return storedPassword != null && storedPassword.equals(password);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isUserBlocked(int blockerId, int blockedId) {
+        String query = "SELECT 1 FROM Block WHERE blocker_id = ? AND blocked_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, blockerId);
+            statement.setInt(2, blockedId);
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean checkLogin(User user) {
         String query = "SELECT user_id, username, email, age, gender, description, country, profile_picture, role, password FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
@@ -168,12 +198,13 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
-    public void saveBlock(Integer blockerId, Integer blockedId){
-        String query = "INSERT INTO Block(blocker_id, blocked_id) VALUES (?, ?)";
+    public void saveBlock(Integer blockerId, Integer blockedId, String reason) {
+        String query = "INSERT INTO Block(blocker_id, blocked_id, reason) VALUES (?, ?, ?)";
         String del_query = "DELETE FROM Follows WHERE follower_id = ? AND followed_id = ?";
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, blockerId);
             statement.setObject(2, blockedId);
+            statement.setString(3, reason);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -186,6 +217,44 @@ public class UserRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPlatformBanned(int userId) {
+        String query = """
+            SELECT 1 FROM Block b
+            INNER JOIN User u ON b.blocker_id = u.user_id
+            WHERE b.blocked_id = ? AND u.role = 'admin'
+            LIMIT 1
+        """;
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public String findPlatformBanReason(int userId) {
+        String query = """
+            SELECT b.reason FROM Block b
+            INNER JOIN User u ON b.blocker_id = u.user_id
+            WHERE b.blocked_id = ? AND u.role = 'admin'
+            LIMIT 1
+        """;
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("reason");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void saveUnblock(Integer blockerId, Integer blockedId){
@@ -241,6 +310,32 @@ public class UserRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<User> findUsersByGroupId(int groupId) {
+        String query = """
+            SELECT u.user_id, u.username, u.profile_picture
+            FROM User u
+            JOIN UserInGroup uig ON u.user_id = uig.user_id
+            WHERE uig.group_id = ?
+            ORDER BY u.username
+        """;
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, groupId);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setProfilePicturePath(rs.getString("profile_picture"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     // Método para obtener los grupos a los que pertenece un usuario
