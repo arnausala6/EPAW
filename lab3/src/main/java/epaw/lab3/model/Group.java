@@ -16,6 +16,9 @@ public class Group implements Serializable {
     private LocalDateTime dateOfCreation;
     private Integer creatorId;
     private Integer participants;
+    private String owner;
+    private String privacy;
+    private Integer memberCount;
 
     private Set<User> groupParticipants = new HashSet<>();
 
@@ -82,6 +85,30 @@ public class Group implements Serializable {
 
     public void setParticipants(Integer participants) {
         this.participants = participants;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
+    }
+
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+
+    public void setMemberCount(Integer memberCount) {
+        this.memberCount = memberCount;
     }
 
     public Set<User> getGroupParticipants() {

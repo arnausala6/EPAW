@@ -153,7 +153,7 @@ public class UserRepository extends BaseRepository {
     }
 
     public boolean checkUserInGroup(Integer user_id, Integer group_id){
-        String query = "SELECT 1 FROM userInGroup WHERE user_id = ? AND group_id = ?";
+        String query = "SELECT 1 FROM UserInGroup WHERE user_id = ? AND group_id = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
             statement.setInt(1, user_id);
             statement.setInt(2, group_id);

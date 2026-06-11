@@ -5,7 +5,7 @@
 <c:when test="${not empty user}">
 <div id="${user.id}" class="card card-flush profile">
 	<div class="profile-head">
-		<div class="avatar lg avatar-photo">
+		<div class="avatar lg avatar-photo<c:if test="${not empty user.picture}"> has-image</c:if>">
 			<img src="${not empty user.picture ? user.picture : 'assets/default-avatar.svg'}" alt="Avatar">
 		</div>
 		<div class="name">@${user.username}</div>

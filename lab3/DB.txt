@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS "Group" (
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     creator_id INTEGER,
     participants INTEGER,
+    owner VARCHAR(30),
+    privacy TEXT CHECK(privacy IN ('public', 'private')),
     FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE SET NULL
 );
 
@@ -70,6 +72,8 @@ CREATE TABLE IF NOT EXISTS UserInGroup (
 
 INSERT INTO User (username, email, password, description, profile_picture, country, age, gender, role) VALUES ('admin', 'admin@epaw.upf.edu', 'AdminAdmin1', 'Platform administrator. Responsible for content moderation and user management.', NULL, 'United States', 35, 'male', 'admin');
 
-INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Web Engineering', 'We are a group dedicated to web engineering!', 1, 100);
-INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Pompeu Farra', 'We go party and drink a lot. The best thing in the world is a cubata and a birra', 1, 10000);
-INSERT INTO "Group" (group_name, description, creator_id, participants) VALUES ('Running Nou Barris', 'Apunta''t al nostre grup de Running de Nou Barris', 1, 80);
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (1, 'Campus Events', 'Announcements and meetups around the Pompeu Fabra campus.', 'assets/groups/campus.png', 1, 31, 'admin', 'public');
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (2, 'Web Engineering', 'Course projects, lab discussions and resources for the Web Engineering subject.', 'assets/groups/web.png', 1, 67, 'admin', 'public');
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (3, 'AI Projects', 'Collaborative AI experiments and semester projects for EPAW students.', 'assets/groups/ai.png', 1, 4, 'admin', 'private');
+
+INSERT INTO UserInGroup (user_id, group_id) VALUES (1, 3);
