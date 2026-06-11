@@ -70,10 +70,73 @@ CREATE TABLE IF NOT EXISTS UserInGroup (
     FOREIGN KEY (group_id) REFERENCES "Group"(group_id) ON DELETE CASCADE
 );
 
+-- ==========
+-- Mock data
+-- ==========
+
 INSERT INTO User (username, email, password, description, profile_picture, country, age, gender, role) VALUES ('admin', 'admin@epaw.upf.edu', 'AdminAdmin1', 'Platform administrator. Responsible for content moderation and user management.', NULL, 'United States', 35, 'male', 'admin');
 
-INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (1, 'Campus Events', 'Announcements and meetups around the Pompeu Fabra campus.', 'assets/groups/campus.png', 1, 31, 'admin', 'public');
-INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (2, 'Web Engineering', 'Course projects, lab discussions and resources for the Web Engineering subject.', 'assets/groups/web.png', 1, 67, 'admin', 'public');
-INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (3, 'AI Projects', 'Collaborative AI experiments and semester projects for EPAW students.', 'assets/groups/ai.png', 1, 4, 'admin', 'private');
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (1, 'Campus Events', 'Announcements and meetups around the Pompeu Fabra campus.', 'assets/groups/campus.png', 1, 13, 'admin', 'public');
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (2, 'Web Engineering', 'Course projects, lab discussions and resources for the Web Engineering subject.', 'assets/groups/web.png', 1, 7, 'admin', 'public');
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (3, 'AI Projects', 'Collaborative AI experiments and semester projects for EPAW students.', 'assets/groups/ai.png', 1, 12, 'admin', 'private');
 
-INSERT INTO UserInGroup (user_id, group_id) VALUES (1, 3);
+INSERT INTO User (username, email, password, description, profile_picture, country, age, gender) VALUES
+('mireia_sole', 'mireia.sole@upf.edu', 'Password1', 'EPAW student exploring social interfaces and group collaboration tools.', 'assets/users/mireia_sole.jpg', 'Spain', 24, 'female'),
+('marti_ferrer', 'marti.ferrer@upf.edu', 'Password1', 'Web Engineering student. I like clean APIs and accessible front-ends.', 'assets/users/marti_ferrer.jpg', 'Spain', 22, 'male'),
+('laia_maspons', 'laia.maspons@upf.edu', 'Password1', 'Master''s student at UPF. Coffee, code and castells on weekends.', 'assets/users/laia_maspons.jpg', 'Spain', 23, 'female'),
+('arnau_sala', 'arnau.sala@upf.edu', 'Password1', 'Backend enthusiast from Barcelona. Always up for a hackathon.', 'assets/users/arnau_sala.jpg', 'Andorra', 21, 'male'),
+('joan_prat', 'joan.prat@upf.edu', 'Password1', 'Full-stack developer in training. Montserrat trails and side projects.', 'assets/users/joan_prat.jpg', 'Spain', 25, 'male'),
+('carla_roca', 'carla.roca@upf.edu', 'Password1', 'UX-minded engineer. I sketch wireframes before I write servlets.', 'assets/users/carla_roca.jpg', 'France', 20, 'female'),
+('pol_vidal', 'pol.vidal@upf.edu', 'Password1', 'Lab 3 survivor. I refactor for fun and document for others.', 'assets/users/pol_vidal.jpg', 'Spain', 27, 'male'),
+('anna_grau', 'anna.grau@upf.edu', 'Password1', 'First-year EPAW student from Girona. Learning Java and Catalan typography.', 'assets/users/anna_grau.jpg', 'Spain', 19, 'female'),
+('oscar_puig', 'oscar.puig@upf.edu', 'Password1', 'Data curious developer. I enjoy timelines and recommendation ideas.', 'assets/users/oscar_puig.jpg', 'Portugal', 26, 'male'),
+('silvia_marti', 'silvia.marti@upf.edu', 'Password1', 'Frontend lover. Fraunces font evangelist and terracotta palette fan.', 'assets/users/silvia_marti.jpg', 'Spain', 23, 'female'),
+('gerard_sanz', 'gerard.sanz@upf.edu', 'Password1', 'Computer engineering at UPF. Basketball after class.', 'assets/users/gerard_sanz.jpg', 'Belgium', 22, 'male'),
+('nuria_torrent', 'nuria.torrent@upf.edu', 'Password1', 'Interested in AI ethics and practical machine-learning prototypes.', 'assets/users/nuria_torrent.jpg', 'Spain', 24, 'female'),
+('albert_miro', 'albert.miro@upf.edu', 'Password1', 'DevOps-curious student. Docker, Maven and strong coffee.', 'assets/users/albert_miro.jpg', 'Italy', 28, 'male'),
+('mar_clotet', 'mar.clotet@upf.edu', 'Password1', 'Non-binary dev from Lleida. Inclusive design matters.', 'assets/users/mar_clotet.jpg', 'Spain', 21, 'other'),
+('jordi_bosch', 'jordi.bosch@upf.edu', 'Password1', 'Campus events volunteer and part-time photographer.', 'assets/users/jordi_bosch.jpg', 'Germany', 30, 'male'),
+('montserrat_vila', 'montserrat.vila@upf.edu', 'Password1', 'Project manager apprentice. I keep group chats organised.', 'assets/users/montserrat_vila.jpg', 'Spain', 29, 'female'),
+('xavier_campos', 'xavier.campos@upf.edu', 'Password1', 'Erasmus at UPF from Amsterdam. Bikes and REST APIs.', 'assets/users/xavier_campos.jpg', 'Netherlands', 23, 'male'),
+('elena_font', 'elena.font@upf.edu', 'Password1', 'Software engineering student. Open source contributor when exams allow.', 'assets/users/elena_font.jpg', 'Spain', 22, 'female'),
+('sergi_duran', 'sergi.duran@upf.edu', 'Password1', 'Mobile-first thinker learning server-side patterns this semester.', 'assets/users/sergi_duran.jpg', 'Spain', 24, 'male'),
+('iris_pons', 'iris.pons@upf.edu', 'Password1', 'Design and engineering double interest. Figma by day, JSP by night.', 'assets/users/iris_pons.jpg', 'United Kingdom', 20, 'female'),
+('marc_trias', 'marc.trias@upf.edu', 'Password1', 'Tarragona-born developer. Paella debates in issue threads.', 'assets/users/marc_trias.jpg', 'Spain', 25, 'male'),
+('judit_solsona', 'judit.solsona@upf.edu', 'Password1', 'AI lab assistant. Python notebooks and study groups.', 'assets/users/judit_solsona.jpg', 'Sweden', 23, 'female'),
+('pau_benet', 'pau.benet@upf.edu', 'Password1', 'Junior developer intern. Learning from code reviews.', 'assets/users/pau_benet.jpg', 'Spain', 21, 'male'),
+('carme_rovira', 'carme.rovira@upf.edu', 'Password1', 'Graduate student researching community platforms.', 'assets/users/carme_rovira.jpg', 'Spain', 26, 'female'),
+('quim_serra', 'quim.serra@upf.edu', 'Password1', 'Weekend climber. I push small fixes and write clear commit messages.', 'assets/users/quim_serra.jpg', 'Switzerland', 22, 'male');
+
+INSERT INTO UserInGroup (user_id, group_id) VALUES
+(14, 1),
+(15, 1),
+(16, 1),
+(17, 1),
+(18, 1),
+(19, 1),
+(20, 1),
+(21, 1),
+(22, 1),
+(23, 1),
+(24, 1),
+(25, 1),
+(26, 1),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 2),
+(10, 2),
+(2, 3),
+(3, 3),
+(4, 3),
+(5, 3),
+(6, 3),
+(7, 3),
+(8, 3),
+(9, 3),
+(10, 3),
+(11, 3),
+(12, 3),
+(13, 3);
