@@ -66,6 +66,16 @@
                         </div>
                     </div>
                 </div>
+
+                    <hr class="separator" style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--border-color, #eee);">
+
+                    <div id="userPostsContainer"></div>
+
+                    <div id="loadMoreContainer" style="text-align: center; margin-top: 1rem;">
+                        <button type="button" id="btnLoadPosts" class="btn btn-muted btn-block" data-page="0" onclick="loadUserPosts('${profileUser.id}')">
+                            Load posts
+                        </button>
+                </div>
             </c:when>
             <c:otherwise>
                 <article class="card">
@@ -106,5 +116,27 @@
                     window.goBackAjax ? window.goBackAjax() : window.history.back();
                 });
             }
+        }
+
+        function loadUserPosts(userId) {
+            var btn = document.getElementById('btnLoadPosts');
+            var container = document.getElementById('userPostsContainer');
+            var currentPage = parseInt(btn.getAttribute('data-page'));
+
+            btn.innerText = "Loading...";
+            btn.disabled = true;
+
+            $.get('GetUserPosts', { userId: userId, page: currentPage }, function(htmlResponse) {
+                var trimmedResponse = htmlResponse.trim();
+
+                if (trimmedResponse === "" || trimmedResponse.includes("NO_MORE_POSTS")) {
+                    document.getElementById('loadMoreContainer').innerHTML = '<p class="post-meta" style="text-align:center; margin-top:1rem;">No more tweets</p>';
+                } else {
+                    $(container).append(trimmedResponse);
+                    btn.setAttribute('data-page', currentPage + 1);
+                    btn.innerText = "Load more posts";
+                    btn.disabled = false;
+                }
+            });
         }
     </script>

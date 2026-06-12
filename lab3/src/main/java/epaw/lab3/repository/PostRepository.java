@@ -312,4 +312,29 @@ public class PostRepository extends BaseRepository {
         }
     }
 
+    public List<Post> findPostsByUserIdPaginated(int userId, int limit, int offset) {
+        List<Post> posts = new ArrayList<>();
+        String query = "SELECT post_id, content, date_of_creation FROM Post WHERE user_id = ? ORDER BY date_of_creation DESC LIMIT ? OFFSET ?";
+        
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
+            
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    Post post = new Post();
+                    post.setPostId(rs.getInt("post_id"));
+                    post.setContent(rs.getString("content"));
+                    
+                    post.setDateOfCreation(rs.getObject("date_of_creation", java.time.LocalDateTime.class)); 
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
 }
