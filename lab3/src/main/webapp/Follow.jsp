@@ -17,13 +17,6 @@
     <title>Follow users</title>
 </head>
 <body>
-<script>
-    function searchFollow() {
-        var q = document.getElementById('followSearch').value;
-        $('#content').load('Follow?q=' + encodeURIComponent(q));
-        return false;
-    }
-</script>
 <div class="card card-flush page-head">
     <div class="card-head">
         <h3><img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow users</h3>
@@ -62,7 +55,7 @@
                         <button type="button" class="btn btn-primary btn-sm" onclick="followUser('<%= user.getId() %>')">
                             <img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow
                         </button>
-                        <button type="button" class="btn btn-muted btn-sm">
+                        <button type="button" class="btn btn-muted btn-sm" onclick="window.loadContent('PublicProfile?userId=<%= user.getId() %>');">
                             <i class="fa fa-id-card-o ico-missing"></i> View public profile
                         </button>
                     </div>
@@ -72,11 +65,24 @@
     </div>
 </div>
 <script>
+    function searchFollow() {
+        var q = document.getElementById('followSearch').value;
+        window.loadContent('Follow?q=' + encodeURIComponent(q));
+        return false;
+    }
     function followUser(userId) {
         $.post('Follow', { userId: userId }, function(response) {
             alert('Following ' + userId + '!');
         });
     }
+    $(document).ready(function() {
+        $('#followSearch').on('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                $('#btnSearch').click();
+            }
+        });
+    });
 </script>
 </body>
 </html>

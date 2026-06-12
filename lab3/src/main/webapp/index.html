@@ -15,29 +15,51 @@
 	<script>
 		window.App = window.App || {};
 		App.Errors = App.Errors || {};
+		window.ajaxHistory = [];
 	</script>
 	<script src="js/LoginValidation.js"></script>
 	<script src="js/RegisterValidation.js"></script>
 
 	<script>
-		App.init = function () {
+		window.loadContent = function (url, saveInHistory = true) {
+			if (saveInHistory) {
+				var currentUrl = $('#content').data('current-url');
+				if (currentUrl && currentUrl !== url && (window.ajaxHistory.length === 0 || window.ajaxHistory[window.ajaxHistory.length - 1] !== currentUrl)) {
+					window.ajaxHistory.push(currentUrl);
+				}
+			}
+			$('#content').data('current-url', url);
+			$('#content').load(url, function () {
+				$('#navigation').load("Menu");
+			});
+		};
 
+		window.goBackAjax = function () {
+			if (window.ajaxHistory.length > 0) {
+				var previousUrl = window.ajaxHistory.pop();
+				window.loadContent(previousUrl, false);
+			} else {
+				window.loadContent("Content", false);
+			}
+		};
+
+		App.init = function () {
 			$.ajaxSetup({ cache: false });
 			$('#navigation').load("Menu");
+			$('#content').data('current-url', "Content");
+			window.loadContent("Content", false);
 			$('#content').load("Content");
 			$('#lcolumn').html("<p/>");
 			$('#rcolumn').html("<p/>");
 			App.bindEvents();
-
 		};
 
 		App.bindEvents = function () {
 
 			$(document).on("click", ".menu", function (event) {
 				event.preventDefault();
-				$('#content').load($(this).attr('href'), function () {
-					$('#navigation').load("Menu");
-				});
+				window.ajaxHistory = [];
+				window.loadContent($(this).attr('href'));
 			});
 
 			App.applyVoteState = function (bar, userVote) {

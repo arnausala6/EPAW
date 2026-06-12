@@ -157,6 +157,31 @@ public class UserRepository extends BaseRepository {
         }
     }
 
+    public Optional<User> findById(int userId) {
+        String query = "SELECT user_id, username, email, age, gender, description, country, profile_picture, role FROM User WHERE user_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setAge(rs.getInt("age"));
+                    user.setGender(rs.getString("gender"));
+                    user.setDescription(rs.getString("description"));
+                    user.setCountry(rs.getString("country"));
+                    user.setPicture(rs.getString("profile_picture"));
+                    user.setRole(rs.getString("role"));
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
     public Optional<User> findByName(String name) {
         String query = "SELECT user_id, username, email, age, gender, description, country, password, profile_picture, role FROM User WHERE name = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
@@ -269,7 +294,7 @@ public class UserRepository extends BaseRepository {
     }
 
     public void saveFollow(Integer followerId, Integer followedId){
-        String query = "INSERT INTO Follows(follower_id, followed_id) VALUES (?, ?)";
+        String query = "INSERT OR IGNORE INTO Follows(follower_id, followed_id) VALUES (?, ?)";
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, followerId);
             statement.setObject(2, followedId);
