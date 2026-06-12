@@ -174,7 +174,7 @@ public class UserService {
         if(!userRepository.existsById(blockedId)){
             errors.put("blocked_id", "Blocked user does not exist");
         }
-        if(!userRepository.existsById(blockerId)){ //MIRAR SEGURIDAD DE ESTO
+        if(!userRepository.existsById(blockerId)){
             errors.put("blocker_id", "Blocker user does not exist");
         }
         return errors;
@@ -227,7 +227,7 @@ public class UserService {
         if(!userRepository.existsById(followedId)){
             errors.put("blocked_id", "Followed user does not exist");
         }
-        if(!userRepository.existsById(followerId)){ //MIRAR SEGURIDAD DE ESTO
+        if(!userRepository.existsById(followerId)){
             errors.put("blocker_id", "Follower user does not exist");
         }
         return errors;
@@ -251,7 +251,7 @@ public class UserService {
 
     public Map<String, String> checkUserInGroup(Integer userId, Integer groupId){
         Map<String, String> errors = new HashMap<>();
-        if(!userRepository.existsById(userId)){ //MIRAR SEGURIDAD DE ESTO
+        if(!userRepository.existsById(userId)){
             errors.put("user_id", "User does not exist");
         }
         if(!groupRepository.groupIdExists(groupId)){ 
