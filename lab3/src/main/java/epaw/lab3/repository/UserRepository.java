@@ -340,18 +340,24 @@ public class UserRepository extends BaseRepository {
     public List<User> findRecommendedUsers(Integer currentUserId, String searchTerm) {
         List<User> users = new ArrayList<>();
         StringBuilder query = new StringBuilder("""
-            SELECT user_id, username, email, description, profile_picture
-            FROM User
+            SELECT u.user_id, u.username, u.email, u.description, u.profile_picture, COUNT(f.follower_id) AS followers_count
+            FROM User u
+            LEFT JOIN Follows f ON u.user_id = f.followed_id
             WHERE user_id <> ?
         """);
 
         String normalized = searchTerm == null ? "" : searchTerm.trim();
         if (!normalized.isEmpty()) {
             String likeTerm = "%" + normalized.toLowerCase() + "%";
-            query.append("\n              AND (LOWER(username) LIKE ? OR LOWER(description) LIKE ?)");
+            query.append("\n    AND (LOWER(u.username) LIKE ? OR LOWER(u.description) LIKE ?)");
         }
 
-        query.append("\nORDER BY username\nLIMIT 30");
+        query.append("""
+            
+            GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture
+            ORDER BY followers_count DESC, u.username ASC
+            LIMIT 30
+        """);
 
         try (PreparedStatement statement = db.prepareStatement(query.toString())) {
             statement.setInt(1, currentUserId != null ? currentUserId : -1);
@@ -370,6 +376,7 @@ public class UserRepository extends BaseRepository {
                     user.setEmail(rs.getString("email"));
                     user.setDescription(rs.getString("description"));
                     user.setProfilePicturePath(rs.getString("profile_picture"));
+                    user.setFollowersCount(rs.getInt("followers_count"));
                     users.add(user);
                 }
             }
