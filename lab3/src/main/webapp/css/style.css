@@ -124,6 +124,27 @@ a {
 	overflow-y: auto;
 }
 
+/* ---------- Cajones laterales (solo móvil) ---------- */
+.col-handle {
+	display: none;
+	position: absolute;
+	width: 26px;
+	height: 52px;
+	align-items: center;
+	justify-content: center;
+	background: var(--pri);
+	color: #fff;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	line-height: 1;
+	padding: 0;
+	z-index: 2;
+	box-shadow: 0 2px 8px rgba(43, 32, 24, .25);
+}
+.col-handle-l { right: -26px; border-radius: 0 10px 10px 0; }
+.col-handle-r { left: -26px; border-radius: 10px 0 0 10px; }
+
 /* ---------- Topbar ---------- */
 .topbar {
 	position: sticky;
@@ -198,8 +219,14 @@ a {
 
 .nav-stack {
 	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
 	background: var(--pri-dark);
 	padding: 8px;
+	z-index: 20;
+	box-shadow: 0 8px 16px rgba(43, 32, 24, .18);
 }
 
 .nav-stack a, .nav-stack .menu {
@@ -1081,10 +1108,68 @@ textarea.input.input-error {
 	.shell {
 		grid-template-columns: 1fr;
 		padding: 0 16px;
+		gap: 16px;
 	}
 
+	.col-c {
+		height: auto;
+		max-height: none;
+	}
+	#content {
+		height: auto;
+		overflow: visible;
+	}
+	#content > .card.card-flush,
+	#content > .auth,
+	#content > .auth > .card.card-flush {
+		max-height: none;
+		overflow: visible;
+	}
+	#content .card.card-flush > .card-body {
+		overflow-y: visible;
+	}
+
+	/* Las columnas laterales se convierten en cajones deslizantes*/
 	.col-l, .col-r {
-		display: none;
+		display: block;
+		position: fixed;
+		top: 54px;
+		bottom: 0;
+		width: min(86vw, 360px);
+		z-index: 55;
+		background: var(--bg);
+		transition: transform .25s ease;
+	}
+	.col-l { left: 0; transform: translateX(-100%); }
+	.col-r { right: 0; transform: translateX(100%); }
+	.col-l.col-open,
+	.col-r.col-open { transform: translateX(0); }
+
+	/* Velo oscuro detrás del cajón abierto */
+	body:has(.col-open)::after {
+		content: '';
+		position: fixed;
+		inset: 54px 0 0 0;
+		background: rgba(43, 32, 24, .42);
+		z-index: 54;
+	}
+
+	/* La flecha gira para indicar que ahora cierra. */
+	.col-open .col-handle { transform: rotate(180deg); }
+
+	#lcolumn, #rcolumn {
+		height: 100%;
+		max-height: none;
+		overflow-y: auto;
+		padding: 14px;
+		box-sizing: border-box;
+		box-shadow: 0 0 24px rgba(43, 32, 24, .25);
+	}
+
+	/* Mostrar las pestañas/flechas en móvil. */
+	.col-handle {
+		display: flex;
+		top: 40px;
 	}
 
 	.nav a span, .nav .menu span {
