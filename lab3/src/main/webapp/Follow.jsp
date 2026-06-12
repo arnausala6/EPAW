@@ -52,8 +52,12 @@
                                 : "No description yet." %>
                     </p>
                     <div class="btn-row">
-                        <button type="button" id="followBtn<%= user.getId() %>" class="btn btn-primary btn-sm" data-following="<%= user.isFollowing() %>" onclick="toggleFollow('<%= user.getId() %>', this.getAttribute('data-following') === 'true');">
-                            <img src="assets/icons/seguir-blanco.png" alt="" class="ico"> <%= user.isFollowing() ? "Following" : "Follow" %>
+                        <button type="button" id="followBtn<%= user.getId() %>" 
+                                class="btn <%= user.isFollowing() ? "btn-muted" : "btn-primary" %> btn-sm" 
+                                data-following="<%= user.isFollowing() %>" 
+                                onclick="toggleFollow('<%= user.getId() %>', this.getAttribute('data-following') === 'true');">
+                            <img src="<%= user.isFollowing() ? "assets/icons/unfollow-error.png" : "assets/icons/seguir-blanco.png" %>" alt="" class="ico"> 
+                            <%= user.isFollowing() ? "Following" : "Follow" %>
                         </button>
                         <button type="button" class="btn btn-muted btn-sm" onclick="window.loadContent('PublicProfile?userId=<%= user.getId() %>');">
                             <i class="fa fa-id-card-o ico-missing"></i> View public profile
@@ -77,7 +81,13 @@
         $.post('Follow', { userId: userId, action: action }, function(response) {
             var following = response && response.following === true;
             btn.setAttribute('data-following', following ? 'true' : 'false');
-            btn.innerHTML = '<img src="assets/icons/seguir-blanco.png" alt="" class="ico"> ' + (following ? 'Following' : 'Follow');
+            if (following) {
+                btn.className = "btn btn-muted btn-sm";
+                btn.innerHTML = '<img src="assets/icons/unfollow-error.png" alt="" class="ico"> Following';
+            } else {
+                btn.className = "btn btn-primary btn-sm";
+                btn.innerHTML = '<img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow';
+            }
             btn.onclick = function () {
                 toggleFollow(userId, following);
             };
