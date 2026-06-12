@@ -39,7 +39,6 @@ public class Block extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         int blockedId = Integer.parseInt(userIdToBlock);
 
-        System.out.println("hola");
         userService.block(currentUser.getId(), blockedId);
 
         response.setStatus(HttpServletResponse.SC_OK);
