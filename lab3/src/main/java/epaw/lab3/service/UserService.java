@@ -272,4 +272,39 @@ public class UserService {
         return userRepository.getGroupsByUserId(userId);
     }
 
+    public Map<String, String> updateProfile(User sessionUser, User updatedUser, Part filePart){
+        Map<String, String> errors = new HashMap<>();
+
+        String username = updatedUser.getUsername();
+        if (username == null || username.trim().isEmpty()) {
+            errors.put("username", "Username is required.");
+        } else if (username.length() > 30) {
+            errors.put("username", "Username must have less than 30 characters.");
+        } else if (!username.equals(sessionUser.getUsername()) && userRepository.existsByUsername(username)) {
+            errors.put("username", "Username already exists.");
+        }
+
+        String description = updatedUser.getDescription();
+        if (description != null && description.length() > 300) {
+            errors.put("description", "Maximum length is 300 characters.");
+        }
+
+        if (filePart != null && filePart.getSize() > 0 && filePart.getSize() > 2 * 1024 * 1024) {
+            errors.put("profilePicture", "The profile picture cannot exceed 2MB.");
+        }
+
+        if (errors.isEmpty()) {
+            if (filePart != null && filePart.getSize() > 0) {
+                String picturePath = saveProfilePicture(filePart, updatedUser.getUsername());
+                updatedUser.setPicture(picturePath);
+            }
+            else {
+                updatedUser.setPicture(sessionUser.getPicture());
+            }
+            userRepository.updateUser(updatedUser);
+        }
+        return errors;
+    }
+
+
 }

@@ -187,6 +187,9 @@
 				event.preventDefault();
 				const form = this;
 				const data = new FormData(form);
+				// Si el formulario vive en la columna izquierda, la respuesta vuelve ahí
+				// (no al centro), para no sacar al usuario de la vista actual.
+				const target = $(form).closest('#lcolumn').length ? '#lcolumn' : '#content';
 
 				$.ajax({
 					type: 'POST',
@@ -197,7 +200,7 @@
 					contentType: false
 				}).done(function (html) {
 					$('#navigation').load("Menu");
-					$("#content").html(html);
+					$(target).html(html);
 				});
 			});
 

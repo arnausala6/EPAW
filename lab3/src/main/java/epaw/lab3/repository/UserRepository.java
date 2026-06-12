@@ -477,4 +477,19 @@ public class UserRepository extends BaseRepository {
         }
         return false;
     }
+
+    // Método para editar el perfil de un usuario
+    public void updateUser(User user) {
+        String query = "UPDATE User SET username = ?, description = ?, profile_picture = ? WHERE user_id = ?";
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getDescription());
+            stmt.setString(3, user.getPicture());
+            stmt.setInt(4, user.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
