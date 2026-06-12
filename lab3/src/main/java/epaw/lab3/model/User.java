@@ -21,6 +21,7 @@ public class User implements Serializable {
 	private String password;
 	private String confirmPassword;
 	private String role;
+	private boolean following;
 	private Integer followersCount;
 
 	public User() {
@@ -129,6 +130,14 @@ public class User implements Serializable {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public boolean isFollowing() {
+		return following;
+	}
+
+	public void setFollowing(boolean following) {
+		this.following = following;
 	}
 
 	public Integer getFollowersCount() {

@@ -340,10 +340,22 @@ public class UserRepository extends BaseRepository {
     public List<User> findRecommendedUsers(Integer currentUserId, String searchTerm) {
         List<User> users = new ArrayList<>();
         StringBuilder query = new StringBuilder("""
-            SELECT u.user_id, u.username, u.email, u.description, u.profile_picture, COUNT(f.follower_id) AS followers_count
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                u.description,
+                u.profile_picture,
+                EXISTS (
+                    SELECT 1
+                    FROM Follows f2
+                    WHERE f2.follower_id = ?
+                      AND f2.followed_id = u.user_id
+                ) AS is_following,
+                COUNT(f.follower_id) AS followers_count
             FROM User u
             LEFT JOIN Follows f ON u.user_id = f.followed_id
-            WHERE user_id <> ?
+            WHERE u.user_id <> ?
         """);
 
         String normalized = searchTerm == null ? "" : searchTerm.trim();
@@ -353,19 +365,21 @@ public class UserRepository extends BaseRepository {
         }
 
         query.append("""
-            
+
             GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture
             ORDER BY followers_count DESC, u.username ASC
             LIMIT 30
         """);
 
         try (PreparedStatement statement = db.prepareStatement(query.toString())) {
-            statement.setInt(1, currentUserId != null ? currentUserId : -1);
+            int index = 1;
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
 
             if (!normalized.isEmpty()) {
                 String likeTerm = "%" + normalized.toLowerCase() + "%";
-                statement.setString(2, likeTerm);
-                statement.setString(3, likeTerm);
+                statement.setString(index++, likeTerm);
+                statement.setString(index++, likeTerm);
             }
 
             try (ResultSet rs = statement.executeQuery()) {
@@ -376,6 +390,7 @@ public class UserRepository extends BaseRepository {
                     user.setEmail(rs.getString("email"));
                     user.setDescription(rs.getString("description"));
                     user.setProfilePicturePath(rs.getString("profile_picture"));
+                    user.setFollowing(rs.getBoolean("is_following"));
                     user.setFollowersCount(rs.getInt("followers_count"));
                     users.add(user);
                 }

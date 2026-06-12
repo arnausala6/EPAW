@@ -52,17 +52,29 @@ public class Follow extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String userIdToFollow = request.getParameter("userId");
+        String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("Login.jsp");
             return;
         }
-        User currentUser = (User) session.getAttribute("user");
-        userService.follow(currentUser.getId(), Integer.parseInt(userIdToFollow));
-        if (userIdToFollow != null) {
-            response.getWriter().write("Success");
+        if (userIdToFollow == null || userIdToFollow.isBlank()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing userId parameter.");
             return;
         }
-        doGet(request, response);
+
+        User currentUser = (User) session.getAttribute("user");
+        int followedId = Integer.parseInt(userIdToFollow);
+        boolean shouldUnfollow = "unfollow".equalsIgnoreCase(action);
+
+        if (shouldUnfollow) {
+            userService.unfollow(currentUser.getId(), followedId);
+        } else {
+            userService.follow(currentUser.getId(), followedId);
+        }
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"following\":" + (!shouldUnfollow) + "}");
     }
 }
