@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/PublicProfile")
 public class PublicProfile extends HttpServlet {
@@ -40,7 +41,17 @@ public class PublicProfile extends HttpServlet {
                 return;
             }
 
-            request.setAttribute("profileUser", userOpt.get());
+            User profileUser = userOpt.get();
+
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("user") != null) {
+                User currentUser = (User) session.getAttribute("user");
+                
+                boolean isFollowing = userRepository.isFollowing(currentUser.getId(), profileUser.getId());
+                profileUser.setFollowing(isFollowing);
+            }
+
+            request.setAttribute("profileUser", profileUser);
             request.getRequestDispatcher("/PublicProfile.jsp").forward(request, response);
         } catch (NumberFormatException ex) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid userId parameter.");

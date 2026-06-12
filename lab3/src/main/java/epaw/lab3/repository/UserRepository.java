@@ -356,6 +356,11 @@ public class UserRepository extends BaseRepository {
             FROM User u
             LEFT JOIN Follows f ON u.user_id = f.followed_id
             WHERE u.user_id <> ?
+            AND NOT EXISTS (
+                SELECT 1 FROM Block b 
+                WHERE (b.blocker_id = ? AND b.blocked_id = u.user_id)
+                OR (b.blocker_id = u.user_id AND b.blocked_id = ?)
+            )
         """);
 
         String normalized = searchTerm == null ? "" : searchTerm.trim();
@@ -366,13 +371,15 @@ public class UserRepository extends BaseRepository {
 
         query.append("""
 
-            GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture
+            GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture, is_following
             ORDER BY followers_count DESC, u.username ASC
             LIMIT 30
         """);
 
         try (PreparedStatement statement = db.prepareStatement(query.toString())) {
             int index = 1;
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
             statement.setInt(index++, currentUserId != null ? currentUserId : -1);
             statement.setInt(index++, currentUserId != null ? currentUserId : -1);
 
@@ -453,5 +460,21 @@ public class UserRepository extends BaseRepository {
             e.printStackTrace();
         }
         return groups;
+    }
+
+    public boolean isFollowing(int followerId, int followedId) {
+        String query = "SELECT 1 FROM Follows WHERE follower_id = ? AND followed_id = ?";
+        
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, followerId);
+            statement.setInt(2, followedId);
+            
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
