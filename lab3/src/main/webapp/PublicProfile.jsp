@@ -2,8 +2,17 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <div class="card card-flush profile">
-    <div class="card-head">
+    <div class="card-head panel-head">
         <h3><img src="assets/icons/perfil-terracota.png" alt="" class="ico"> Public profile</h3>
+        
+        <c:if test="${not empty profileUser}">
+            <div class="groups-head-actions">
+                <button type="button" class="btn-icon-flat" title="Go back" 
+                        onclick="window.goBackAjax ? window.goBackAjax() : window.history.back();">
+                    <img src="assets/icons/back.png" alt="Back" class="ico-act">
+                </button>
+            </div>
+        </c:if>
     </div>
     <div class="card-body">
         <c:choose>
@@ -68,12 +77,6 @@
                             <div class="profile-value">${not empty profileUser.country ? profileUser.country : 'No country'}</div>
                         </div>
                     </div>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn btn-muted" onclick="if (window.goBackAjax) { window.goBackAjax(); } else { window.history.back(); }">
-                        <img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Go back
-                    </button>
                 </div>
             </c:when>
             <c:otherwise>
