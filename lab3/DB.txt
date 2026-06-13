@@ -160,6 +160,14 @@ INSERT INTO UserInGroup (user_id, group_id) VALUES
 (12, 3),
 (13, 3);
 
+INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES
+(4, 'Tech & Coding', 'Tips, tools and debate around software development and computer science. Open to everyone.', NULL, 1, 16, 'admin', 'public'),
+(5, 'Student Life', 'Everything from campus hacks to exam stress and city life in Barcelona.', NULL, 1, 12, 'admin', 'public');
+
+INSERT INTO UserInGroup (user_id, group_id) VALUES
+(2, 4), (3, 4), (4, 4), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4), (10, 4), (11, 4), (12, 4), (13, 4), (14, 4), (15, 4), (16, 4), (17, 4),
+(2, 5), (3, 5), (4, 5), (5, 5), (14, 5), (15, 5), (16, 5), (17, 5), (18, 5), (19, 5), (20, 5), (21, 5);
+
 INSERT INTO Post (post_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, user_id, group_id) VALUES
 (1, 'Our semester NLP prototype is ready for demo. Please review the README before Monday.', NULL, '2026-06-09 09:15:00', 6, 8, 2, 5, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
 (2, 'Great progress on the dataset labelling. I added a few edge cases we should discuss.', NULL, '2026-06-08 14:30:00', 4, 5, 1, 3, (SELECT user_id FROM User WHERE username = 'mireia_sole'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
@@ -170,4 +178,31 @@ INSERT INTO Post (post_id, content, post_picture, date_of_creation, votes, upvot
 (7, 'JUnit tests for PostService are passing. I will open a PR tonight.', NULL, '2026-06-08 18:00:00', 1, 2, 1, 1, (SELECT user_id FROM User WHERE username = 'pol_vidal'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
 (8, 'Saturday outing confirmed: meet at 8:00 at the Montserrat cable car. Bring binoculars!', 'assets/posts/montserrat.jpg', '2026-06-10 07:30:00', 7, 9, 2, 12, (SELECT user_id FROM User WHERE username = 'joan_prat'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
 (9, 'Photo walk next Thursday at the Forum. Open to all skill levels.', NULL, '2026-06-09 10:00:00', 5, 6, 1, 5, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
-(10, 'Reminder: guest lecture on urban planning this Friday at 16:00 in room 52.001.', NULL, '2026-06-07 15:20:00', 4, 4, 0, 3, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events'));
+(10, 'Reminder: guest lecture on urban planning this Friday at 16:00 in room 52.001.', NULL, '2026-06-07 15:20:00', 4, 4, 0, 3, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
+-- Tech & Coding trending posts
+(11, 'Hot take: learning SQL properly is more valuable than knowing the latest JS framework. Change my mind.', NULL, '2026-06-10 10:00:00', 41, 44, 3, 18, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 4),
+(12, 'Just discovered that adding an index to a single column cut our query time from 4s to 40ms. Never skip database indexes.', NULL, '2026-06-09 16:30:00', 37, 39, 2, 14, (SELECT user_id FROM User WHERE username = 'arnau_sala'), 4),
+(13, 'Free resources to learn system design that I wish I had found earlier: Designing Data-Intensive Applications + the ByteByteGo newsletter. Both free online.', NULL, '2026-06-08 09:00:00', 33, 35, 2, 11, (SELECT user_id FROM User WHERE username = 'oscar_puig'), 4),
+(14, 'Reminder: commit messages are documentation. "fix stuff" is not a commit message.', NULL, '2026-06-07 14:00:00', 29, 31, 2, 9, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), 4),
+(15, 'Docker tip: add a .dockerignore file before building your image. Went from a 1.2GB image to 180MB by ignoring node_modules and target/.', NULL, '2026-06-06 11:45:00', 26, 28, 2, 7, (SELECT user_id FROM User WHERE username = 'albert_miro'), 4),
+(16, 'The best debugging skill is learning to read stack traces top to bottom without panicking. It took me two years to stop scrolling straight to the bottom.', NULL, '2026-06-05 17:20:00', 22, 24, 2, 8, (SELECT user_id FROM User WHERE username = 'laia_maspons'), 4),
+-- Student Life trending posts
+(17, 'Unpopular opinion: the library at 7am before everyone arrives is the best study spot on campus. Empty, silent, perfect.', NULL, '2026-06-10 07:15:00', 38, 40, 2, 16, (SELECT user_id FROM User WHERE username = 'anna_grau'), 5),
+(18, 'Passed the algorithms exam by making hand-drawn diagrams instead of re-reading slides. Visual notes are underrated.', NULL, '2026-06-09 20:00:00', 34, 36, 2, 13, (SELECT user_id FROM User WHERE username = 'carla_roca'), 5),
+(19, 'Hostal Gat Raval has decent beds and is walkable from UPF. Good option if friends visit for a weekend and hotels are too expensive.', NULL, '2026-06-08 12:30:00', 19, 21, 2, 6, (SELECT user_id FROM User WHERE username = 'xavier_campos'), 5),
+(20, 'If you are doing a final project demo, test it on the projector 30 minutes before. The cable situation in room 40.007 is a nightmare.', NULL, '2026-06-06 10:00:00', 28, 30, 2, 10, (SELECT user_id FROM User WHERE username = 'iris_pons'), 5),
+-- Campus Events trending
+(21, 'The rooftop terrace on the Ciutadella campus is open until 22:00 during exam season. Best kept secret for group study.', NULL, '2026-06-10 09:00:00', 31, 33, 2, 12, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
+-- Web Engineering trending
+(22, 'Accessibility tip for our lab projects: every form input needs an associated label element, not just a placeholder. Screen readers cannot read placeholders.', NULL, '2026-06-09 11:30:00', 24, 25, 1, 7, (SELECT user_id FROM User WHERE username = 'silvia_marti'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
+-- Extra global/trending posts
+(23, 'Barcelona dev tip: if your local environment breaks every Monday, script your full setup and run it from scratch once a week.', NULL, '2026-06-11 08:40:00', 63, 67, 4, 21, (SELECT user_id FROM User WHERE username = 'quim_serra'), 4),
+(24, 'Thread: 7 mistakes we made in our first servlet app and how we fixed each one. #1: not validating ownership in edit/delete actions.', NULL, '2026-06-11 10:15:00', 59, 62, 3, 19, (SELECT user_id FROM User WHERE username = 'elena_font'), 4),
+(25, 'Public speaking hack for project demos: do one dry run with a 5-minute timer and one with a 3-minute timer. You will sound much sharper.', NULL, '2026-06-11 12:05:00', 52, 55, 3, 17, (SELECT user_id FROM User WHERE username = 'carme_rovira'), 5),
+(26, 'UPF exam-season map: these are the least crowded study corners by time slot. 8-10am library north wing is undefeated.', NULL, '2026-06-11 13:20:00', 48, 50, 2, 15, (SELECT user_id FROM User WHERE username = 'mar_clotet'), 5),
+(27, 'PSA: stop forcing microservices into student projects. A clean monolith with tests beats distributed chaos every single time.', NULL, '2026-06-11 14:45:00', 57, 61, 4, 20, (SELECT user_id FROM User WHERE username = 'sergi_duran'), 4),
+(28, 'Campus running club opened a beginner 3km loop on Tuesdays at 19:00. Friendly pace and no registration needed.', NULL, '2026-06-11 17:05:00', 44, 46, 2, 12, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), (SELECT group_id FROM "Group" WHERE group_name = 'Campus Events')),
+(29, 'Cheat sheet idea: one page with SQL JOIN patterns (inner/left/self) solved 80% of our database lab issues.', NULL, '2026-06-11 18:10:00', 46, 49, 3, 13, (SELECT user_id FROM User WHERE username = 'pau_benet'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
+(30, 'Simple productivity stack for finals: 45/10 pomodoro blocks, notifications off, and one checklist for the day. Nothing fancy, works great.', NULL, '2026-06-11 19:30:00', 42, 45, 3, 11, (SELECT user_id FROM User WHERE username = 'anna_grau'), 5),
+(31, 'Opinion: code reviews should include one positive note and one risk note. Teams improve faster when both are explicit.', NULL, '2026-06-11 20:15:00', 54, 58, 4, 18, (SELECT user_id FROM User WHERE username = 'joan_prat'), 4),
+(32, 'Low-cost student meal list around Ciutadella (under 8 euro) with distance/time from campus. Added vegan options too.', NULL, '2026-06-11 21:00:00', 40, 43, 3, 14, (SELECT user_id FROM User WHERE username = 'iris_pons'), 5);

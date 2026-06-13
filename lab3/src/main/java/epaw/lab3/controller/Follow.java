@@ -38,12 +38,22 @@ public class Follow extends HttpServlet {
 
         User currentUser = (User) session.getAttribute("user");
         String searchTerm = request.getParameter("q");
+        String mode = request.getParameter("mode");
+        if (mode == null || (!"following".equals(mode) && !"discover".equals(mode))) {
+            mode = "following";
+        }
 
-        List<User> users = userRepository.findRecommendedUsers(currentUser.getId(), searchTerm);
+        List<User> users;
+        if ("discover".equals(mode)) {
+            users = userRepository.findRecommendedUsers(currentUser.getId(), searchTerm);
+        } else {
+            users = userRepository.findFollowingUsers(currentUser.getId(), searchTerm);
+        }
 
         request.setAttribute("query", searchTerm != null ? searchTerm.trim() : "");
         request.setAttribute("users", users);
         request.setAttribute("hasQuery", searchTerm != null && !searchTerm.trim().isEmpty());
+        request.setAttribute("followMode", mode);
 
         request.getRequestDispatcher("/Follow.jsp").forward(request, response);
     }

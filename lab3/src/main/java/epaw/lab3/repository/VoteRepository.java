@@ -120,6 +120,33 @@ public class VoteRepository extends BaseRepository {
         }
     }
 
+    public void applyVoteDeltas(int postId, int upvotesDelta, int downvotesDelta, int votesDelta) {
+        String query = """
+            UPDATE Post
+            SET upvotes = CASE
+                    WHEN upvotes + ? < 0 THEN 0
+                    ELSE upvotes + ?
+                END,
+                downvotes = CASE
+                    WHEN downvotes + ? < 0 THEN 0
+                    ELSE downvotes + ?
+                END,
+                votes = votes + ?
+            WHERE post_id = ?
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, upvotesDelta);
+            stmt.setInt(2, upvotesDelta);
+            stmt.setInt(3, downvotesDelta);
+            stmt.setInt(4, downvotesDelta);
+            stmt.setInt(5, votesDelta);
+            stmt.setInt(6, postId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int[] getPostCounts(int postId) {
         String query = "SELECT upvotes, downvotes, votes FROM Post WHERE post_id = ?";
         try (PreparedStatement stmt = db.prepareStatement(query)) {

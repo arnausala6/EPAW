@@ -1112,6 +1112,49 @@ textarea.input.input-error {
 	color: var(--err) !important;
 }
 
+/* ---------- Timeline tabs ---------- */
+.timeline-tabs-bar {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid var(--border);
+	background: var(--surface);
+	padding: 0 18px;
+}
+
+.timeline-tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 12px 18px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--muted);
+	text-decoration: none;
+	border-bottom: 3px solid transparent;
+	margin-bottom: -1px;
+	transition: color .15s, border-color .15s;
+}
+
+.timeline-tab:hover {
+	color: var(--pri);
+}
+
+.timeline-tab-active {
+	color: var(--pri);
+	border-bottom-color: var(--pri);
+}
+
+.timeline-tab-ico {
+	width: 1.15em;
+	height: 1.15em;
+	object-fit: contain;
+	opacity: .65;
+}
+
+.timeline-tab-active .timeline-tab-ico {
+	opacity: 1;
+}
+
 /* ---------- Footer ---------- */
 .footer {
 	margin-top: auto;

@@ -82,6 +82,14 @@ public class PostService {
         return posts;
     }
 
+    public List<Post> getTrendingPosts(Integer userId) {
+        List<Post> posts = postRepository.getTrendingPosts(userId);
+        if (userId != null) {
+            attachUserVotes(posts, userId);
+        }
+        return posts;
+    }
+
     public List<Post> getPostsByGroupId(int groupId) {
         return postRepository.findByGroupId(groupId);
     }
@@ -122,21 +130,47 @@ public class PostService {
 
         Optional<Integer> currentVote = voteRepository.findUserVote(userId, postId);
         Integer resultingVote;
+        int upvotesDelta = 0;
+        int downvotesDelta = 0;
+        int votesDelta = 0;
         if (currentVote.isEmpty()) {
             // no vote yet → insert
             voteRepository.insertVote(userId, postId, voteType);
             resultingVote = voteType;
+            if (voteType == 1) {
+                upvotesDelta = 1;
+                votesDelta = 1;
+            } else {
+                downvotesDelta = 1;
+                votesDelta = -1;
+            }
         } else if (currentVote.get().intValue() == voteType) {
             // same vote clicked → toggle off
             voteRepository.deleteVote(userId, postId);
             resultingVote = null;
+            if (voteType == 1) {
+                upvotesDelta = -1;
+                votesDelta = -1;
+            } else {
+                downvotesDelta = -1;
+                votesDelta = 1;
+            }
         } else {
             // opposite vote clicked → switch
             voteRepository.updateVote(userId, postId, voteType);
             resultingVote = voteType;
+            if (voteType == 1) {
+                upvotesDelta = 1;
+                downvotesDelta = -1;
+                votesDelta = 2;
+            } else {
+                upvotesDelta = -1;
+                downvotesDelta = 1;
+                votesDelta = -2;
+            }
         }
 
-        voteRepository.refreshPostCounts(postId);
+        voteRepository.applyVoteDeltas(postId, upvotesDelta, downvotesDelta, votesDelta);
         int[] counts = voteRepository.getPostCounts(postId);
         return VoteResult.ok(counts[0], counts[1], counts[2], resultingVote);
     }

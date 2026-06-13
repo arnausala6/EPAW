@@ -40,9 +40,20 @@ public class Timeline extends HttpServlet {
             return;
         }
 
-        // Llamamos a postService.getTimelineByUserId con su id
-        List<Post> posts = postService.getTimelineByUserId(user.getId());
+        String mode = request.getParameter("mode");
+        if (mode == null || (!mode.equals("following") && !mode.equals("trending"))) {
+            mode = "following";
+        }
+
+        List<Post> posts;
+        if ("trending".equals(mode)) {
+            posts = postService.getTrendingPosts(user.getId());
+        } else {
+            posts = postService.getTimelineByUserId(user.getId());
+        }
+
         request.setAttribute("posts", posts);
+        request.setAttribute("timelineMode", mode);
         request.getRequestDispatcher("Timeline.jsp").forward(request, response);
     }
 }

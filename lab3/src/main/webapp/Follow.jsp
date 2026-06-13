@@ -5,8 +5,12 @@
     String query = (String) request.getAttribute("query");
     List<User> users = (List<User>) request.getAttribute("users");
     boolean hasQuery = Boolean.TRUE.equals(request.getAttribute("hasQuery"));
+    String followMode = (String) request.getAttribute("followMode");
     if (query == null) {
         query = "";
+    }
+    if (followMode == null || (!"following".equals(followMode) && !"discover".equals(followMode))) {
+        followMode = "following";
     }
 %>
 <!DOCTYPE html>
@@ -21,6 +25,20 @@
     <div class="card-head">
         <h3><img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow users</h3>
     </div>
+    <div class="timeline-tabs-bar">
+        <a href="Follow?mode=following"
+           class="timeline-tab <%= "following".equals(followMode) ? "timeline-tab-active" : "" %>"
+           onclick="event.preventDefault(); window.loadContent('Follow?mode=following');">
+            <img src="assets/icons/seguir-terracota.png" alt="" class="timeline-tab-ico">
+            Following
+        </a>
+        <a href="Follow?mode=discover"
+           class="timeline-tab <%= "discover".equals(followMode) ? "timeline-tab-active" : "" %>"
+           onclick="event.preventDefault(); window.loadContent('Follow?mode=discover');">
+            <img src="assets/icons/buscar-blanco.png" alt="" class="timeline-tab-ico">
+            Discover
+        </a>
+    </div>
     <div class="card-body">
         <div class="search-row">
             <input id="followSearch" class="input" type="text" value="<%= query %>" placeholder="Search by username, email or description"
@@ -34,13 +52,17 @@
             <% if (hasQuery) { %>
                 Showing results for “<%= query %>”.
             <% } else { %>
-                Recommended users for you.
+                <%= "discover".equals(followMode)
+                        ? "Users you are not following yet."
+                        : "People you currently follow." %>
             <% } %>
         </p>
 
         <% if (users == null || users.isEmpty()) { %>
             <article class="card">
-                <p class="post-body">No users to recommend</p>
+                <p class="post-body"><%= "discover".equals(followMode)
+                        ? "No users to discover."
+                        : "You are not following anyone yet." %></p>
             </article>
         <% } else { %>
             <% for (User user : users) { %>
@@ -71,7 +93,8 @@
 <script>
     function searchFollow() {
         var q = document.getElementById('followSearch').value;
-        window.loadContent('Follow?q=' + encodeURIComponent(q));
+        var activeMode = '<%= followMode %>';
+        window.loadContent('Follow?mode=' + encodeURIComponent(activeMode) + '&q=' + encodeURIComponent(q));
         return false;
     }
     function toggleFollow(userId, currentlyFollowing) {

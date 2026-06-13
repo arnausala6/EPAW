@@ -375,12 +375,7 @@ public class UserRepository extends BaseRepository {
                 u.email,
                 u.description,
                 u.profile_picture,
-                EXISTS (
-                    SELECT 1
-                    FROM Follows f2
-                    WHERE f2.follower_id = ?
-                      AND f2.followed_id = u.user_id
-                ) AS is_following,
+                0 AS is_following,
                 COUNT(f.follower_id) AS followers_count
             FROM User u
             LEFT JOIN Follows f ON u.user_id = f.followed_id
@@ -390,11 +385,85 @@ public class UserRepository extends BaseRepository {
                 WHERE (b.blocker_id = ? AND b.blocked_id = u.user_id)
                 OR (b.blocker_id = u.user_id AND b.blocked_id = ?)
             )
+            AND NOT EXISTS (
+                SELECT 1 FROM Follows f3
+                WHERE f3.follower_id = ?
+                  AND f3.followed_id = u.user_id
+            )
         """);
 
         String normalized = searchTerm == null ? "" : searchTerm.trim();
         if (!normalized.isEmpty()) {
             String likeTerm = "%" + normalized.toLowerCase() + "%";
+            query.append("\n    AND (LOWER(u.username) LIKE ? OR LOWER(u.description) LIKE ?)");
+        }
+
+        query.append("""
+
+            GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture, is_following
+            ORDER BY followers_count DESC, u.username ASC
+            LIMIT 30
+        """);
+
+        try (PreparedStatement statement = db.prepareStatement(query.toString())) {
+            int index = 1;
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+            statement.setInt(index++, currentUserId != null ? currentUserId : -1);
+
+            if (!normalized.isEmpty()) {
+                String likeTerm = "%" + normalized.toLowerCase() + "%";
+                statement.setString(index++, likeTerm);
+                statement.setString(index++, likeTerm);
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setDescription(rs.getString("description"));
+                    user.setProfilePicturePath(rs.getString("profile_picture"));
+                    user.setFollowing(rs.getBoolean("is_following"));
+                    user.setFollowersCount(rs.getInt("followers_count"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public List<User> findFollowingUsers(Integer currentUserId, String searchTerm) {
+        List<User> users = new ArrayList<>();
+        StringBuilder query = new StringBuilder("""
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                u.description,
+                u.profile_picture,
+                1 AS is_following,
+                COUNT(f_all.follower_id) AS followers_count
+            FROM User u
+            JOIN Follows ff
+                ON ff.followed_id = u.user_id
+               AND ff.follower_id = ?
+            LEFT JOIN Follows f_all ON u.user_id = f_all.followed_id
+            WHERE u.user_id <> ?
+            AND NOT EXISTS (
+                SELECT 1 FROM Block b
+                WHERE (b.blocker_id = ? AND b.blocked_id = u.user_id)
+                OR (b.blocker_id = u.user_id AND b.blocked_id = ?)
+            )
+        """);
+
+        String normalized = searchTerm == null ? "" : searchTerm.trim();
+        if (!normalized.isEmpty()) {
             query.append("\n    AND (LOWER(u.username) LIKE ? OR LOWER(u.description) LIKE ?)");
         }
 

@@ -74,15 +74,62 @@ public class PostRepository extends BaseRepository {
             JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.response_id IS NULL
+                            AND p.blocked = 0
+                            AND g.blocked = 0
               AND p.user_id != ?
-              AND p.group_id IN (
-                SELECT group_id FROM UserInGroup WHERE user_id = ?
-            )
+              AND (
+                p.group_id IN (
+                  SELECT group_id FROM UserInGroup WHERE user_id = ?
+                )
+                OR (
+                  p.user_id IN (
+                    SELECT followed_id FROM Follows WHERE follower_id = ?
+                  )
+                  AND g.privacy = 'public'
+                )
+              )
             ORDER BY p.date_of_creation DESC
         """;
         try (PreparedStatement stmt = db.prepareStatement(query)) {
             stmt.setInt(1, userId);
             stmt.setInt(2, userId);
+            stmt.setInt(3, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(mapPost(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+        public List<Post> getTrendingPosts(Integer userId) {
+        List<Post> posts = new ArrayList<>();
+        String query = POST_SELECT + """
+            FROM Post p
+            JOIN User u ON p.user_id = u.user_id
+            JOIN "Group" g ON p.group_id = g.group_id
+            WHERE p.response_id IS NULL
+              AND p.blocked = 0
+              AND g.privacy = 'public'
+              AND g.blocked = 0
+                            AND (p.upvotes - p.downvotes) > 10
+                            AND p.group_id NOT IN (
+                                SELECT group_id FROM UserInGroup WHERE user_id = ?
+                            )
+                            AND p.user_id NOT IN (
+                                SELECT followed_id FROM Follows WHERE follower_id = ?
+                            )
+                            AND p.user_id != ?
+                        ORDER BY p.date_of_creation DESC
+            LIMIT 30
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+                        stmt.setInt(1, userId);
+                        stmt.setInt(2, userId);
+                        stmt.setInt(3, userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     posts.add(mapPost(rs));
