@@ -75,8 +75,8 @@
                     <div id="userPostsContainer"></div>
 
                     <div id="loadMoreContainer" style="text-align: center; margin-top: 1rem;">
-                        <button type="button" id="btnLoadPosts" class="btn btn-muted btn-block" data-page="0" onclick="loadUserPosts('${profileUser.id}')">
-                            Load posts
+                        <button type="button" id="btnLoadPosts" class="btn btn-muted btn-block" onclick="toggleUserPosts('${profileUser.id}')">
+                            Show posts
                         </button>
                 </div>
             </c:when>
@@ -140,25 +140,86 @@
                     });
                 }
 
-        function loadUserPosts(userId) {
-            var btn = document.getElementById('btnLoadPosts');
-            var container = document.getElementById('userPostsContainer');
-            var currentPage = parseInt(btn.getAttribute('data-page'));
+        var publicProfilePostsState = {
+            loaded: false,
+            visible: false,
+            hasPosts: false,
+            loading: false
+        };
 
-            btn.innerText = "Loading...";
-            btn.disabled = true;
+        function loadAllUserPosts(userId, page, chunks, onDone) {
+            $.get('GetUserPosts', { userId: userId, page: page }, function(htmlResponse) {
+                var trimmedResponse = (htmlResponse || '').trim();
 
-            $.get('GetUserPosts', { userId: userId, page: currentPage }, function(htmlResponse) {
-                var trimmedResponse = htmlResponse.trim();
-
-                if (trimmedResponse === "" || trimmedResponse.includes("NO_MORE_POSTS")) {
-                    document.getElementById('loadMoreContainer').innerHTML = '<p class="post-meta" style="text-align:center; margin-top:1rem;">No more tweets</p>';
-                } else {
-                    $(container).append(trimmedResponse);
-                    btn.setAttribute('data-page', currentPage + 1);
-                    btn.innerText = "Load more posts";
-                    btn.disabled = false;
+                if (trimmedResponse === '' || trimmedResponse.includes('NO_MORE_POSTS')) {
+                    onDone(chunks.join(''), chunks.length > 0);
+                    return;
                 }
+
+                chunks.push(htmlResponse);
+                loadAllUserPosts(userId, page + 1, chunks, onDone);
             });
         }
+
+        function toggleUserPosts(userId) {
+            var btn = document.getElementById('btnLoadPosts');
+            var container = document.getElementById('userPostsContainer');
+
+            if (publicProfilePostsState.loading) {
+                return;
+            }
+
+            if (!publicProfilePostsState.loaded) {
+                publicProfilePostsState.loading = true;
+                btn.innerText = 'Loading posts...';
+                btn.disabled = true;
+
+                loadAllUserPosts(userId, 0, [], function(allHtml, hasPosts) {
+                    publicProfilePostsState.loaded = true;
+                    publicProfilePostsState.hasPosts = hasPosts;
+                    publicProfilePostsState.loading = false;
+
+                    if (!hasPosts) {
+                        container.innerHTML = '<p class="post-meta" style="text-align:center; margin-top:1rem;">No posts yet</p>';
+                        container.style.display = 'block';
+                        btn.innerText = 'Show posts';
+                        btn.disabled = true;
+                        return;
+                    }
+
+                    container.innerHTML = allHtml;
+                    container.style.display = 'block';
+                    publicProfilePostsState.visible = true;
+                    btn.innerText = 'Hide posts';
+                    btn.disabled = false;
+                });
+                return;
+            }
+
+            if (!publicProfilePostsState.hasPosts) {
+                return;
+            }
+
+            publicProfilePostsState.visible = !publicProfilePostsState.visible;
+            if (publicProfilePostsState.visible) {
+                container.style.display = 'block';
+                btn.innerText = 'Hide posts';
+            } else {
+                container.style.display = 'none';
+                btn.innerText = 'Show posts';
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            var postCard = e.target.closest('.public-profile-post-link');
+            if (!postCard) {
+                return;
+            }
+            var groupId = postCard.getAttribute('data-group-id');
+            var postId = postCard.getAttribute('data-post-id');
+            if (!groupId || !postId) {
+                return;
+            }
+            window.loadContent('Groups?id=' + groupId + '&focusPostId=' + postId);
+        });
     </script>

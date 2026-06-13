@@ -47,6 +47,15 @@ public class Groups extends HttpServlet {
         request.setAttribute("userGroups", groupService.getUserGroups(user.getId()));
         request.setAttribute("suggestedGroups", groupService.getSuggestedGroups(user.getId()));
 
+        String focusPostIdParam = request.getParameter("focusPostId");
+        if (focusPostIdParam != null && !focusPostIdParam.isBlank()) {
+            try {
+                request.setAttribute("focusPostId", Integer.parseInt(focusPostIdParam));
+            } catch (NumberFormatException ignored) {
+                // invalid post focus, ignore gracefully
+            }
+        }
+
         String groupIdParam = request.getParameter("id");
         if (groupIdParam != null && !groupIdParam.isBlank()) {
             try {

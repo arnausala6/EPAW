@@ -274,4 +274,20 @@ document.querySelectorAll('.btn-block-post-admin').forEach(function(btn) {
 		$('#rcolumn').load('BlockPost?id=' + btn.dataset.postId);
 	});
 });
+
+<c:if test="${not empty focusPostId}">
+setTimeout(function() {
+	var target = document.querySelector('.group-post-card[data-post-id="${focusPostId}"]');
+	if (!target) {
+		return;
+	}
+	target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	target.style.outline = '2px solid var(--acc)';
+	target.style.outlineOffset = '2px';
+	setTimeout(function() {
+		target.style.outline = '';
+		target.style.outlineOffset = '';
+	}, 1600);
+}, 60);
+</c:if>
 </script>

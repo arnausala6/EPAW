@@ -384,58 +384,45 @@ public class PostRepository extends BaseRepository {
         }
     }
 
-    public List<Post> findPostsByUserIdPaginated(int userId, int limit, int offset) {
+    public List<Post> findVisiblePostsByUserIdPaginated(int authorUserId, Integer viewerUserId, int limit, int offset) {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT post_id, content, date_of_creation FROM Post WHERE user_id = ? ORDER BY date_of_creation DESC LIMIT ? OFFSET ?";
-        
-        try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setInt(1, userId);
-            statement.setInt(2, limit);
-            statement.setInt(3, offset);
-            
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    Post post = new Post();
-                    post.setPostId(rs.getInt("post_id"));
-                    post.setContent(rs.getString("content"));
-                    
-                    post.setDateOfCreation(rs.getObject("date_of_creation", java.time.LocalDateTime.class)); 
-                    posts.add(post);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return posts;
-    }
-
-    public List<Post> findPublicPostsByUserIdPaginated(int userId, int limit, int offset) {
-        List<Post> posts = new ArrayList<>();
-        String query = """
-            SELECT p.post_id, p.content, p.date_of_creation
+        String query = POST_SELECT + """
             FROM Post p
+            JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.user_id = ?
               AND p.response_id IS NULL
               AND p.blocked = 0
-              AND g.privacy = 'public'
               AND g.blocked = 0
+              AND (
+                    g.privacy = 'public'
+                    OR (
+                        ? IS NOT NULL AND EXISTS (
+                            SELECT 1
+                            FROM UserInGroup uig
+                            WHERE uig.user_id = ? AND uig.group_id = p.group_id
+                        )
+                    )
+              )
             ORDER BY p.date_of_creation DESC
             LIMIT ? OFFSET ?
         """;
 
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setInt(1, userId);
-            statement.setInt(2, limit);
-            statement.setInt(3, offset);
+            statement.setInt(1, authorUserId);
+            if (viewerUserId != null) {
+                statement.setInt(2, viewerUserId);
+                statement.setInt(3, viewerUserId);
+            } else {
+                statement.setNull(2, java.sql.Types.INTEGER);
+                statement.setNull(3, java.sql.Types.INTEGER);
+            }
+            statement.setInt(4, limit);
+            statement.setInt(5, offset);
 
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    Post post = new Post();
-                    post.setPostId(rs.getInt("post_id"));
-                    post.setContent(rs.getString("content"));
-                    post.setDateOfCreation(rs.getObject("date_of_creation", java.time.LocalDateTime.class));
-                    posts.add(post);
+                    posts.add(mapPost(rs));
                 }
             }
         } catch (SQLException e) {

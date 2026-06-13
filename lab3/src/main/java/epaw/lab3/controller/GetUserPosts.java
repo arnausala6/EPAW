@@ -1,7 +1,6 @@
 package epaw.lab3.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import epaw.lab3.model.Post;
 import epaw.lab3.model.User;
@@ -43,27 +42,22 @@ public class GetUserPosts extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         User currentUser = session != null ? (User) session.getAttribute("user") : null;
+        Integer viewerUserId = currentUser != null ? currentUser.getId() : null;
 
-        List<Post> posts;
-        if (currentUser == null) {
-            posts = postRepository.findPublicPostsByUserIdPaginated(userId, limit, offset);
-        } else {
-            posts = postRepository.findPostsByUserIdPaginated(userId, limit, offset);
-        }
+        List<Post> posts = postRepository.findVisiblePostsByUserIdPaginated(userId, viewerUserId, limit, offset);
 
         response.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = response.getWriter();
 
         if (posts.isEmpty()) {
-            out.print("NO_MORE_POSTS");
+            response.getWriter().print("NO_MORE_POSTS");
             return;
         }
 
+        request.setAttribute("readOnlyPublic", true);
         for (Post post : posts) {
-            out.println("<article class='card' style='margin-top: 0.8rem; text-align: left;'>");
-            out.println("  <p class='post-body'>" + post.getContent() + "</p>");
-            out.println("  <span class='post-meta'>" + post.getFormattedDate() + "</span>");
-            out.println("</article>");
+            post.setPostPicture(null);
+            request.setAttribute("post", post);
+            request.getRequestDispatcher("/PublicProfilePostCard.jsp").include(request, response);
         }
     }
 }
