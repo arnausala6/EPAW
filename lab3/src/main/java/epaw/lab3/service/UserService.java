@@ -188,6 +188,7 @@ public class UserService {
         Map<String, String> errors = checkBlock(blockerId, blockedId);
         if(errors.isEmpty()){
             userRepository.saveBlock(blockerId, blockedId, reason);
+            userRepository.saveUnfollow(blockerId, blockedId);
         }
         return errors;
     }
@@ -204,6 +205,13 @@ public class UserService {
             return null;
         }
         return userRepository.findPlatformBanReason(user.getId());
+    }
+
+    public List<User> getBlockedUsers(Integer blockerId) {
+        if (blockerId == null) {
+            return new ArrayList<>();
+        }
+        return userRepository.findBlockedUsers(blockerId);
     }
 
     public Map<String, String> unblock(Integer blockerId, Integer blockedId){

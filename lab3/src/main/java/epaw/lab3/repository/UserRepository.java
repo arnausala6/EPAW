@@ -282,6 +282,35 @@ public class UserRepository extends BaseRepository {
         return null;
     }
 
+    public List<User> findBlockedUsers(int blockerId) {
+        String query = """
+            SELECT u.user_id, u.username, u.email, u.description, u.profile_picture, u.role
+            FROM Block b
+            JOIN User u ON u.user_id = b.blocked_id
+            WHERE b.blocker_id = ?
+            ORDER BY u.username ASC
+            """;
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, blockerId);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setDescription(rs.getString("description"));
+                    user.setPicture(rs.getString("profile_picture"));
+                    user.setRole(rs.getString("role"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     public void saveUnblock(Integer blockerId, Integer blockedId){
         String query = "DELETE FROM Block WHERE blocker_id = ? AND blocked_id = ?";
         try (PreparedStatement statement = db.prepareStatement(query)){
