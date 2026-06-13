@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <c:set var="currentUserId" value="${sessionScope.user.id}" />
+<c:set var="readOnlyPublic" value="${requestScope.readOnlyPublic}" />
 
 <article class="card timeline-post-card" data-post-id="${post.postId}">
     <c:if test="${not empty currentUserId and post.userId == currentUserId and not post.blocked}">
@@ -27,7 +28,14 @@
         </a>
         
         <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 2px !important; flex-grow: 1 !important;">
-            <a href="Groups?id=${post.groupId}" class="menu post-group" style="font-weight: bold !important; line-height: 1.2 !important; margin: 0 !important; text-decoration: none !important; color: inherit !important; display: block !important;">${post.groupName}</a>
+            <c:choose>
+                <c:when test="${readOnlyPublic}">
+                    <span class="post-group" style="font-weight: bold !important; line-height: 1.2 !important; margin: 0 !important; color: inherit !important; display: block !important;">${post.groupName}</span>
+                </c:when>
+                <c:otherwise>
+                    <a href="Groups?id=${post.groupId}" class="menu post-group" style="font-weight: bold !important; line-height: 1.2 !important; margin: 0 !important; text-decoration: none !important; color: inherit !important; display: block !important;">${post.groupName}</a>
+                </c:otherwise>
+            </c:choose>
             
             <span class="post-meta-row" style="display: flex !important; align-items: center !important; gap: 6px !important; flex-wrap: wrap !important; line-height: 1.2 !important;">
                 <a href="PublicProfile?userId=${post.userId}" class="menu post-meta" style="text-decoration: none !important; margin: 0 !important;">
@@ -52,8 +60,10 @@
     
     <c:if test="${not post.blocked}">
         <%@ include file="PostVoteBar.jsp" %>
-        <div class="comment-thread" data-post-id="${post.postId}" style="display:none">
-            <div class="comment-thread-inner"></div>
-        </div>
+        <c:if test="${not readOnlyPublic}">
+            <div class="comment-thread" data-post-id="${post.postId}" style="display:none">
+                <div class="comment-thread-inner"></div>
+            </div>
+        </c:if>
     </c:if>
 </article>

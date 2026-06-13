@@ -141,6 +141,31 @@ public class PostRepository extends BaseRepository {
         return posts;
     }
 
+    public List<Post> getPublicTrendingPosts() {
+        List<Post> posts = new ArrayList<>();
+        String query = POST_SELECT + """
+            FROM Post p
+            JOIN User u ON p.user_id = u.user_id
+            JOIN "Group" g ON p.group_id = g.group_id
+            WHERE p.response_id IS NULL
+              AND p.blocked = 0
+              AND g.privacy = 'public'
+              AND g.blocked = 0
+            ORDER BY p.date_of_creation DESC
+            LIMIT 30
+        """;
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(mapPost(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
     public Optional<Post> findById(int postId) {
         String query = POST_SELECT + """
             FROM Post p
@@ -375,6 +400,41 @@ public class PostRepository extends BaseRepository {
                     post.setContent(rs.getString("content"));
                     
                     post.setDateOfCreation(rs.getObject("date_of_creation", java.time.LocalDateTime.class)); 
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    public List<Post> findPublicPostsByUserIdPaginated(int userId, int limit, int offset) {
+        List<Post> posts = new ArrayList<>();
+        String query = """
+            SELECT p.post_id, p.content, p.date_of_creation
+            FROM Post p
+            JOIN "Group" g ON p.group_id = g.group_id
+            WHERE p.user_id = ?
+              AND p.response_id IS NULL
+              AND p.blocked = 0
+              AND g.privacy = 'public'
+              AND g.blocked = 0
+            ORDER BY p.date_of_creation DESC
+            LIMIT ? OFFSET ?
+        """;
+
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    Post post = new Post();
+                    post.setPostId(rs.getInt("post_id"));
+                    post.setContent(rs.getString("content"));
+                    post.setDateOfCreation(rs.getObject("date_of_creation", java.time.LocalDateTime.class));
                     posts.add(post);
                 }
             }

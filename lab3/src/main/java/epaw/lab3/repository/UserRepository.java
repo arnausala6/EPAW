@@ -507,6 +507,61 @@ public class UserRepository extends BaseRepository {
         return users;
     }
 
+    public List<User> findPublicUsers(String searchTerm) {
+        List<User> users = new ArrayList<>();
+        StringBuilder query = new StringBuilder("""
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                u.description,
+                u.profile_picture,
+                COUNT(f.follower_id) AS followers_count
+            FROM User u
+            LEFT JOIN Follows f ON u.user_id = f.followed_id
+            WHERE COALESCE(u.role, 'user') <> 'admin'
+        """);
+
+        String normalized = searchTerm == null ? "" : searchTerm.trim();
+        if (!normalized.isEmpty()) {
+            query.append("\n    AND (LOWER(u.username) LIKE ? OR LOWER(u.email) LIKE ? OR LOWER(COALESCE(u.description, '')) LIKE ?)");
+        }
+
+        query.append("""
+
+            GROUP BY u.user_id, u.username, u.email, u.description, u.profile_picture
+            ORDER BY followers_count DESC, u.username ASC
+            LIMIT 30
+        """);
+
+        try (PreparedStatement statement = db.prepareStatement(query.toString())) {
+            int index = 1;
+            if (!normalized.isEmpty()) {
+                String likeTerm = "%" + normalized.toLowerCase() + "%";
+                statement.setString(index++, likeTerm);
+                statement.setString(index++, likeTerm);
+                statement.setString(index++, likeTerm);
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setDescription(rs.getString("description"));
+                    user.setProfilePicturePath(rs.getString("profile_picture"));
+                    user.setFollowersCount(rs.getInt("followers_count"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
     public List<User> findUsersByGroupId(int groupId) {
         String query = """
             SELECT u.user_id, u.username, u.profile_picture

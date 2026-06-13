@@ -90,6 +90,10 @@ public class PostService {
         return posts;
     }
 
+    public List<Post> getPublicTrendingPosts() {
+        return postRepository.getPublicTrendingPosts();
+    }
+
     public List<Post> getPostsByGroupId(int groupId) {
         return postRepository.findByGroupId(groupId);
     }

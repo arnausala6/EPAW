@@ -3,10 +3,22 @@
 
 <div class="card card-flush profile">
     <div class="card-head panel-head">
-        <h3><img src="assets/icons/perfil-terracota.png" alt="" class="ico"> Public profile</h3>
+        <h3><img src="assets/icons/perfil-blanco.png" alt="" class="ico"> Public profile</h3>
         
         <c:if test="${not empty profileUser}">
             <div class="groups-head-actions">
+                <c:if test="${canManageRelationship}">
+                    <button type="button" class="btn-icon-flat" id="followIconBtn${profileUser.id}" 
+                            data-following="${profileUser.following}" 
+                            title="${profileUser.following ? 'Unfollow' : 'Follow'}"
+                            onclick="toggleFollow('${profileUser.id}', this.getAttribute('data-following') === 'true');">
+                        <img src="${profileUser.following ? 'assets/icons/unfollow-blanco.png' : 'assets/icons/seguir-blanco.png'}" alt="Follow" class="ico-act">
+                    </button>
+                    <button type="button" class="btn-icon-flat" title="Block user" 
+                            onclick="showBlockConfirmation('${profileUser.id}', '${profileUser.username}');">
+                        <img src="assets/icons/block-blanco.png" alt="Block" class="ico-act">
+                    </button>
+                </c:if>
                 <button type="button" class="btn-icon-flat" title="Go back" 
                         onclick="window.goBackAjax ? window.goBackAjax() : window.history.back();">
                     <img src="assets/icons/back.png" alt="Back" class="ico-act">
@@ -17,29 +29,13 @@
 <div class="card-body">
     <c:choose>
         <c:when test="${not empty profileUser}">
-            <div class="profile-head" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div class="avatar lg avatar-photo<c:if test="${not empty profileUser.picture}"> has-image</c:if>">
-                        <img src="${not empty profileUser.picture ? profileUser.picture : 'assets/default-avatar.svg'}" alt="Avatar">
-                    </div>
-                    <div>
-                        <div class="name">@${profileUser.username}</div>
-                        <p class="post-meta">Viewing a public profile</p>
-                    </div>
+            <div class="profile-head" style="display: flex; gap: 1rem; align-items: center;">
+                <div class="avatar lg avatar-photo<c:if test="${not empty profileUser.picture}"> has-image</c:if>">
+                    <img src="${not empty profileUser.picture ? profileUser.picture : 'assets/default-avatar.svg'}" alt="Avatar">
                 </div>
-
                 <div>
-                    <button type="button" id="followBtn${profileUser.id}" 
-                            class="btn ${profileUser.following ? 'btn-muted' : 'btn-primary'} btn-sm" 
-                            data-following="${profileUser.following}" 
-                            onclick="toggleFollow('${profileUser.id}', this.getAttribute('data-following') === 'true');">
-                        <img src="${profileUser.following ? 'assets/icons/unirse-terracota.png' : 'assets/icons/seguir-blanco.png'}" alt="" class="ico"> 
-                        <span>${profileUser.following ? 'Following' : 'Follow'}</span>
-                    </button>
-                    <button type="button" class="btn btn-muted btn-sm" style="color: #d9534f;"
-                            onclick="executeBlock('${profileUser.id}');">
-                        <i class="fa fa-ban ico"></i> Block
-                    </button>
+                    <div class="name">@${profileUser.username}</div>
+                    <p class="post-meta">Viewing a public profile</p>
                 </div>
             </div>
 
@@ -88,35 +84,54 @@
 
 <script>
         function toggleFollow(userId, currentlyFollowing) {
-            var btn = document.getElementById('followBtn' + userId);
-            var action = currentlyFollowing ? 'unfollow' : 'follow';
+                    var btn = document.getElementById('followIconBtn' + userId);
+                    var action = currentlyFollowing ? 'unfollow' : 'follow';
 
-            $.post('Follow', { userId: userId, action: action }, function(response) {
-                var following = response && response.following === true;
-                btn.setAttribute('data-following', following ? 'true' : 'false');
+                    $.post('Follow', { userId: userId, action: action }, function(response) {
+                        var following = response && response.following === true;
+                        btn.setAttribute('data-following', following ? 'true' : 'false');
 
-                if (following) {
-                    btn.className = "btn btn-muted btn-sm";
-                    btn.innerHTML = '<img src="assets/icons/unirse-terracota.png" alt="" class="ico"> Following';
-                } else {
-                    btn.className = "btn btn-primary btn-sm";
-                    btn.innerHTML = '<img src="assets/icons/seguir-blanco.png" alt="" class="ico"> Follow';
+                        if (following) {
+                            btn.title = 'Unfollow';
+                            btn.querySelector('img').src = 'assets/icons/unfollow-blanco.png';
+                        } else {
+                            btn.title = 'Follow';
+                            btn.querySelector('img').src = 'assets/icons/seguir-blanco.png';
+                        }
+
+                        btn.onclick = function () {
+                            toggleFollow(userId, following);
+                        };
+                    });
                 }
 
-                btn.onclick = function () {
-                    toggleFollow(userId, following);
-                };
-            });
-        }
+                function showBlockConfirmation(userId, username) {
+                    var confirmPanel = '<div class="card card-flush">\n' +
+                        '    <div class="card-head panel-head">\n' +
+                        '        <h5><img src="assets/icons/block-blanco.png" alt="" class="ico"> Block user</h5>\n' +
+                        '        <button type="button" class="panel-close" onclick="$(\'#rcolumn\').html(\'<p/>\')">&times;</button>\n' +
+                        '    </div>\n' +
+                        '    <div class="card-body">\n' +
+                        '        <p class="post-meta" style="margin-bottom: 1rem;">Are you sure you want to block <span id="blockUserConfirmUsername" style="font-weight: bold;"></span>?</p>\n' +
+                        '        <p class="hint" style="margin-bottom: 1rem;">You won\'t see their posts or comments, and they won\'t be able to see your public profile.</p>\n' +
+                        '        <button type="button" class="btn btn-err btn-block" id="blockUserConfirmBtn"><img src="assets/icons/block-error.png" alt="" class="ico"> Confirm block</button>\n' +
+                        '        <button type="button" class="btn btn-muted btn-block" style="margin-top:8px" id="blockUserConfirmCancelBtn">Cancel</button>\n' +
+                        '    </div>\n' +
+                        '</div>';
 
-        function executeBlock(userId) {
-            if (confirm("Are you sure you want to block this user?")) {
-                $.post('Block', { userId: userId }, function() {
+                    $('#rcolumn').html(confirmPanel);
+                    $('#blockUserConfirmUsername').text(username);
 
-                    window.goBackAjax ? window.goBackAjax() : window.history.back();
-                });
-            }
-        }
+                    $('#blockUserConfirmBtn').on('click', function() {
+                        $.post('Block', { userId: userId }, function() {
+                            window.goBackAjax ? window.goBackAjax() : window.history.back();
+                        });
+                    });
+
+                    $('#blockUserConfirmCancelBtn').on('click', function() {
+                        $('#rcolumn').html('<p/>');
+                    });
+                }
 
         function loadUserPosts(userId) {
             var btn = document.getElementById('btnLoadPosts');

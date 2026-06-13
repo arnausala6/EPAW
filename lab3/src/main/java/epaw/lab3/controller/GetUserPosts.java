@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import epaw.lab3.model.Post;
+import epaw.lab3.model.User;
 import epaw.lab3.repository.PostRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/GetUserPosts")
 public class GetUserPosts extends HttpServlet {
@@ -39,7 +41,15 @@ public class GetUserPosts extends HttpServlet {
         int limit = 10;
         int offset = page * limit;
 
-        List<Post> posts = postRepository.findPostsByUserIdPaginated(userId, limit, offset);
+        HttpSession session = request.getSession(false);
+        User currentUser = session != null ? (User) session.getAttribute("user") : null;
+
+        List<Post> posts;
+        if (currentUser == null) {
+            posts = postRepository.findPublicPostsByUserIdPaginated(userId, limit, offset);
+        } else {
+            posts = postRepository.findPostsByUserIdPaginated(userId, limit, offset);
+        }
 
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
