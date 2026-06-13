@@ -25,8 +25,13 @@
 			$('.col-l, .col-r').removeClass('col-open');
 			if (saveInHistory) {
 				var currentUrl = $('#content').data('current-url');
-				if (currentUrl && currentUrl !== url && (window.ajaxHistory.length === 0 || window.ajaxHistory[window.ajaxHistory.length - 1] !== currentUrl)) {
-					window.ajaxHistory.push(currentUrl);
+				if (currentUrl && currentUrl !== url) {
+					var currentBase = currentUrl.split('?')[0];
+					var newBase = url.split('?')[0];
+					
+					if (currentBase !== newBase || window.ajaxHistory.length === 0 || window.ajaxHistory[window.ajaxHistory.length - 1] !== currentUrl) {
+						window.ajaxHistory.push(currentUrl);
+					}
 				}
 			}
 			$('#content').data('current-url', url);
@@ -67,8 +72,11 @@
 
 			$(document).on("click", ".menu", function (event) {
 				event.preventDefault();
-				window.ajaxHistory = [];
-				window.loadContent($(this).attr('href'));
+				var targetUrl = $(this).attr('href');
+				if ($('#content').data('current-url') !== targetUrl) {
+					window.ajaxHistory = []; 
+				}
+				window.loadContent(targetUrl);
 			});
 
 			App.applyVoteState = function (bar, userVote) {

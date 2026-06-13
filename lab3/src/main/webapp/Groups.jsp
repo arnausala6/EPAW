@@ -70,7 +70,7 @@
 						</c:if>
 					</c:otherwise>
 					</c:choose>
-					<button type="button" class="btn-icon-flat btn-back-groups" title="Back to groups">
+					<button type="button" class="btn-icon-flat btn-back-generic" title="Go back">
 						<img src="assets/icons/back.png" alt="" class="ico-act">
 					</button>
 				</div>
@@ -206,10 +206,10 @@ document.querySelectorAll('.btn-create-group').forEach(function(btn) {
 });
 
 document.querySelectorAll('.group-item-clickable').forEach(function(card) {
-	card.addEventListener('click', function(e) {
-		if (e.target.closest('.group-item-actions')) return;
-		$('#content').load('Groups?id=' + card.dataset.groupId);
-	});
+    card.addEventListener('click', function(e) {
+        if (e.target.closest('.group-item-actions')) return;
+        window.loadContent('Groups?id=' + card.dataset.groupId);
+    });
 });
 
 document.querySelectorAll('.btn-group-join-requests').forEach(function(btn) {
@@ -251,16 +251,16 @@ document.querySelectorAll('.btn-join-group').forEach(function(btn) {
 	});
 });
 
-document.querySelectorAll('.btn-back-groups').forEach(function(btn) {
-	btn.addEventListener('click', function() {
-		$('#content').load('Groups');
-	});
+document.querySelectorAll('.btn-back-generic').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        window.goBackAjax ? window.goBackAjax() : window.history.back();
+    });
 });
 
 document.querySelectorAll('.btn-new-post-group').forEach(function(btn) {
-	btn.addEventListener('click', function() {
-		$('#content').load('NewPost?groupId=' + btn.dataset.groupId);
-	});
+    btn.addEventListener('click', function() {
+        window.loadContent('NewPost?groupId=' + btn.dataset.groupId);
+    });
 });
 
 document.querySelectorAll('.btn-block-group-admin').forEach(function(btn) {
