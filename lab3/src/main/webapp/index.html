@@ -23,6 +23,7 @@
 	<script>
 		window.loadContent = function (url, saveInHistory = true) {
 			$('.col-l, .col-r').removeClass('col-open');
+			$('#rcolumn').html('<p/>');
 			if (saveInHistory) {
 				var currentUrl = $('#content').data('current-url');
 				if (currentUrl && currentUrl !== url) {

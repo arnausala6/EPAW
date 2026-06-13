@@ -57,12 +57,10 @@
 					<img src="${post.postPicture}" alt="">
 				</div>
 			</c:if>
+			<%@ include file="PostVoteBar.jsp" %>
+			<div class="comment-thread" data-post-id="${post.postId}" style="display:none">
+				<div class="comment-thread-inner"></div>
+			</div>
 		</c:otherwise>
 	</c:choose>
-	<%@ include file="PostVoteBar.jsp" %>
-	<c:if test="${not post.blocked}">
-		<div class="comment-thread" data-post-id="${post.postId}" style="display:none">
-			<div class="comment-thread-inner"></div>
-		</div>
-	</c:if>
 </article>
