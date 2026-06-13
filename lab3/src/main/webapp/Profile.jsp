@@ -8,16 +8,9 @@
 		<div class="avatar lg avatar-photo<c:if test="${not empty user.picture}"> has-image</c:if>">
 			<img src="${not empty user.picture ? user.picture : 'assets/default-avatar.svg'}" alt="Avatar">
 		</div>
-		<div class="name">@${user.username}</div>
+		<div class="username">@${user.username}</div>
 	</div>
 	<div class="profile-fields">
-		<div class="profile-row">
-			<span class="profile-icon"><img src="assets/icons/perfil-terracota.png" alt="" class="ico"></span>
-			<div>
-				<div class="profile-label">Name</div>
-				<div class="profile-value">${user.username}</div>
-			</div>
-		</div>
 		<div class="profile-row">
 			<span class="profile-icon"><img src="assets/icons/mail-terracota.png" alt="" class="ico"></span>
 			<div>

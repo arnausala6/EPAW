@@ -144,7 +144,7 @@ public class UserService {
     public Map<String, String> login(User user) {
         Map<String, String> errors = new HashMap<>();
         if (!userRepository.checkLogin(user)) {
-            errors.put("password", "The combination of name and password does not match in our database");
+            errors.put("password", "The combination of username and password does not match in our database");
         }
         return errors;
     }

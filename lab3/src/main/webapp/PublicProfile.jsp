@@ -34,24 +34,31 @@
                     <img src="${not empty profileUser.picture ? profileUser.picture : 'assets/default-avatar.svg'}" alt="Avatar">
                 </div>
                 <div>
-                    <div class="name">@${profileUser.username}</div>
+                    <div class="username">@${profileUser.username}</div>
                     <p class="post-meta">Viewing a public profile</p>
                 </div>
             </div>
 
                 <div class="profile-fields">
                     <div class="profile-row">
-                        <span class="profile-icon"><img src="assets/icons/perfil-terracota.png" alt="" class="ico"></span>
-                        <div>
-                            <div class="profile-label">Name</div>
-                            <div class="profile-value">${profileUser.username}</div>
-                        </div>
-                    </div>
-                    <div class="profile-row">
                         <span class="profile-icon"><img src="assets/icons/description-terracota.png" alt="" class="ico"></span>
                         <div>
                             <div class="profile-label">Description</div>
                             <div class="profile-value">${not empty profileUser.description ? profileUser.description : 'No description yet.'}</div>
+                        </div>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-icon"><img src="assets/icons/gender-terracota.png" alt="" class="ico"></span>
+                        <div>
+                            <div class="profile-label">Gender</div>
+                            <div class="profile-value">
+                                <c:choose>
+                                    <c:when test="${profileUser.gender == 'male'}">male</c:when>
+                                    <c:when test="${profileUser.gender == 'female'}">female</c:when>
+                                    <c:when test="${profileUser.gender == 'other'}">other</c:when>
+                                    <c:otherwise>No gender</c:otherwise>
+                                </c:choose>
+                            </div>
                         </div>
                     </div>
                     <div class="profile-row">

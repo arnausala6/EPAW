@@ -320,7 +320,7 @@ a {
 	text-align: center;
 }
 
-.profile .name {
+.profile .username {
 	font-family: var(--font-title);
 	font-weight: 600;
 	font-size: 19px;

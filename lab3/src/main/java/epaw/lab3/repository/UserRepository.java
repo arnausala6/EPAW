@@ -182,10 +182,10 @@ public class UserRepository extends BaseRepository {
         return Optional.empty();
     }
 
-    public Optional<User> findByName(String name) {
-        String query = "SELECT user_id, username, email, age, gender, description, country, password, profile_picture, role FROM User WHERE name = ?";
+    public Optional<User> findByUsername(String username) {
+        String query = "SELECT user_id, username, email, age, gender, description, country, password, profile_picture, role FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setString(1, name);
+            statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 User user = new User();
@@ -197,7 +197,7 @@ public class UserRepository extends BaseRepository {
                 user.setDescription(rs.getString("description"));
                 user.setCountry(rs.getString("country"));
                 user.setPassword(rs.getString("password"));
-                user.setPicture(rs.getString("picture"));
+                user.setPicture(rs.getString("profile_picture"));
                 user.setRole(rs.getString("role"));
                 return Optional.of(user);
             }
