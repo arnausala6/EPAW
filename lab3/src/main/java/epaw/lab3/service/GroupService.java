@@ -107,7 +107,7 @@ public class GroupService {
                     continue;
                 }
                 if (!userRepository.isUserBlocked(admin.getId(), memberId)) {
-                    userRepository.saveBlock(admin.getId(), memberId, reason.trim());
+                    userRepository.saveBlock(admin.getId(), memberId, reason.trim(), true);
                 }
             }
         }

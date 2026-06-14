@@ -39,7 +39,9 @@ public class Block extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         int blockedId = Integer.parseInt(userIdToBlock);
 
-        userService.block(currentUser.getId(), blockedId);
+        boolean is_admin = currentUser.getRole().equals("admin");
+
+        userService.block(currentUser.getId(), blockedId, is_admin);
 
         response.setStatus(HttpServletResponse.SC_OK);
     }

@@ -223,7 +223,7 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
-    public void saveBlock(Integer blockerId, Integer blockedId, String reason) {
+    public void saveBlock(Integer blockerId, Integer blockedId, String reason, boolean is_admin) {
         String query = "INSERT INTO Block(blocker_id, blocked_id, reason) VALUES (?, ?, ?)";
         String del_query = "DELETE FROM Follows WHERE follower_id = ? AND followed_id = ?";
         try (PreparedStatement statement = db.prepareStatement(query)){
@@ -242,6 +242,17 @@ public class UserRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
+        if(is_admin){
+            String query3 = "DELETE FROM Post WHERE user_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(query3)){
+                statement.setObject(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public boolean isPlatformBanned(int userId) {

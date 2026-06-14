@@ -180,14 +180,14 @@ public class UserService {
         return errors;
     }
 
-    public Map<String, String> block(Integer blockerId, Integer blockedId){
-        return block(blockerId, blockedId, null);
+    public Map<String, String> block(Integer blockerId, Integer blockedId, boolean is_admin){
+        return block(blockerId, blockedId, null, is_admin);
     }
 
-    public Map<String, String> block(Integer blockerId, Integer blockedId, String reason){
+    public Map<String, String> block(Integer blockerId, Integer blockedId, String reason, boolean is_admin){
         Map<String, String> errors = checkBlock(blockerId, blockedId);
         if(errors.isEmpty()){
-            userRepository.saveBlock(blockerId, blockedId, reason);
+            userRepository.saveBlock(blockerId, blockedId, reason, is_admin);
             userRepository.saveUnfollow(blockerId, blockedId);
         }
         return errors;

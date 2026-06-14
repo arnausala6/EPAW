@@ -94,12 +94,8 @@ public class PostService {
         return postRepository.getPublicTrendingPosts();
     }
 
-    public List<Post> getPostsByGroupId(int groupId) {
-        return postRepository.findByGroupId(groupId);
-    }
-
     public List<Post> getPostsByGroupId(int groupId, int userId) {
-        List<Post> posts = postRepository.findByGroupId(groupId);
+        List<Post> posts = postRepository.findByGroupId(groupId, userId);
         attachUserVotes(posts, userId);
         return posts;
     }
@@ -475,7 +471,7 @@ public class PostService {
         postRepository.blockPost(postId, reason.trim(), banAuthor);
 
         if (banAuthor && !userRepository.isUserBlocked(admin.getId(), post.getUserId())) {
-            userRepository.saveBlock(admin.getId(), post.getUserId(), reason.trim());
+            userRepository.saveBlock(admin.getId(), post.getUserId(), reason.trim(), true);
         }
 
         return errors;
