@@ -22,11 +22,11 @@
 
 	<script>
 		window.loadContent = function (url, saveInHistory = true) {
-			$('.col-l, .col-r').removeClass('col-open');
-			$('#rcolumn').html('<p/>');
+			$('.col-l, .col-r').removeClass('col-open'); //Clear center
+			$('#rcolumn').html('<p/>'); //Clear right column
 			if (saveInHistory) {
 				var currentUrl = $('#content').data('current-url');
-				if (currentUrl && currentUrl !== url) {
+				if (currentUrl && currentUrl !== url) { //Save in ajax history (buffer) if different urls
 					var currentBase = currentUrl.split('?')[0];
 					var newBase = url.split('?')[0];
 					
@@ -42,7 +42,7 @@
 					console.error("loadContent failed", url, jqXHR.status, jqXHR.statusText);
 					return;
 				}
-				$('#navigation').load("Menu");
+				$('#navigation').load("Menu"); //Refresh menu with new content
 			});
 		};
 
@@ -51,41 +51,41 @@
 				var previousUrl = window.ajaxHistory.pop();
 				window.loadContent(previousUrl, false);
 			} else {
-				window.loadContent("Content", false);
+				window.loadContent("Content", false); //Default starting page
 			}
 		};
 
 		/* Cajones laterales en móvil: abre la columna y cierra la otra. */
 		App.toggleCol = function (side) {
 			var col = document.querySelector('.col-' + side);
-			var other = document.querySelector('.col-' + (side === 'l' ? 'r' : 'l'));
+			var other = document.querySelector('.col-' + (side === 'l' ? 'r' : 'l')); //Closes the other column in case it was open
 			other.classList.remove('col-open');
 			col.classList.toggle('col-open');
 		};
 
 		App.init = function () {
-			$.ajaxSetup({ cache: false });
-			$('#navigation').load("Menu");
-			$('#content').data('current-url', "Content");
-			window.loadContent("Content", false);
-			$('#content').load("Content");
+			$.ajaxSetup({ cache: false }); //Always ask for the server copy
+			$('#navigation').load("Menu"); //Loads Menu Servlet (doGet)
+			$('#content').data('current-url', "Content"); //Saves current url in #content
+			window.loadContent("Content", false); //False: not save in history
+			$('#content').load("Content"); //Redundante pero no quiero tocar a ver si la lio
 			$('#lcolumn').html("<p/>");
-			$('#rcolumn').html("<p/>");
+			$('#rcolumn').html("<p/>"); //Clear columns
 			App.bindEvents();
 		};
 
 		App.bindEvents = function () {
 
 			$(document).on("click", ".menu", function (event) {
-				event.preventDefault();
+				event.preventDefault(); //Does not change url
 				var targetUrl = $(this).attr('href');
-				if ($('#content').data('current-url') !== targetUrl) {
+				if ($('#content').data('current-url') !== targetUrl) { //Only deletes buffer when the url changes. This never happends inside the web
 					window.ajaxHistory = []; 
 				}
 				window.loadContent(targetUrl);
 			});
 
-			App.applyVoteState = function (bar, userVote) {
+			App.applyVoteState = function (bar, userVote) { //Modifies upvote and downvote
 				/* userVote: 1 | -1 | null */
 				bar.find(".btn-vote-up").removeClass("act-voted act-voted-down");
 				bar.find(".btn-vote-down").removeClass("act-voted act-voted-down");
