@@ -43,6 +43,9 @@ public class Block extends HttpServlet {
 
         userService.block(currentUser.getId(), blockedId, is_admin);
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("{\"ok\":true}");
     }
 }

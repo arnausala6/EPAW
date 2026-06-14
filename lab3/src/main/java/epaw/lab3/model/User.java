@@ -22,6 +22,7 @@ public class User implements Serializable {
 	private String confirmPassword;
 	private String role;
 	private boolean following;
+	private boolean blocked;
 	private Integer followersCount;
 
 	public User() {
@@ -138,6 +139,14 @@ public class User implements Serializable {
 
 	public void setFollowing(boolean following) {
 		this.following = following;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}
 
 	public Integer getFollowersCount() {

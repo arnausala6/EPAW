@@ -97,6 +97,65 @@ public class UserRepository extends BaseRepository {
         return false;
     }
 
+    public int countUsers() {
+        String query = "SELECT COUNT(*) FROM User";
+        try (PreparedStatement statement = db.prepareStatement(query);
+            ResultSet rs = statement.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countBlockedUsers(int adminId) {
+        String query = "SELECT COUNT(*) FROM Block WHERE blocker_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, adminId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<User> findAllUsersForAdmin(int adminId) {
+        String query = """
+            SELECT u.user_id, u.username, u.role, u.description,
+                   CASE WHEN b.blocked_id IS NOT NULL THEN 1 ELSE 0 END AS blocked
+            FROM User u
+            LEFT JOIN Block b
+              ON b.blocked_id = u.user_id AND b.blocker_id = ?
+            WHERE u.user_id <> ?
+            ORDER BY u.username ASC
+            """;
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setInt(1, adminId);
+            statement.setInt(2, adminId);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setRole(rs.getString("role"));
+                    user.setDescription(rs.getString("description"));
+                    user.setBlocked(rs.getInt("blocked") == 1);
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     public boolean checkLogin(User user) {
         String query = "SELECT user_id, username, email, age, gender, description, country, profile_picture, role, password FROM User WHERE username = ?";
         try (PreparedStatement statement = db.prepareStatement(query)) {

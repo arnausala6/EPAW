@@ -75,6 +75,19 @@ public class GroupRepository extends BaseRepository {
         return false;
     }
 
+    public int countActiveGroups() {
+        String query = "SELECT COUNT(*) FROM \"Group\" WHERE COALESCE(blocked, 0) = 0";
+        try (PreparedStatement statement = db.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public int getNextGroupId() {
         String sql = "SELECT COALESCE(MAX(group_id), 0) + 1 FROM \"Group\"";
         try (PreparedStatement stmt = db.prepareStatement(sql);
