@@ -14,10 +14,12 @@
                             onclick="toggleFollow('${profileUser.id}', this.getAttribute('data-following') === 'true');">
                         <img src="${profileUser.following ? 'assets/icons/unfollow-blanco.png' : 'assets/icons/seguir-blanco.png'}" alt="Follow" class="ico-act">
                     </button>
+                    <c:if test="${canBlock}">
                     <button type="button" class="btn-icon-flat" title="Block user" 
                             onclick="showBlockConfirmation('${profileUser.id}', '${profileUser.username}');">
                         <img src="assets/icons/block-blanco.png" alt="Block" class="ico-act">
                     </button>
+                    </c:if>
                 </c:if>
                 <button type="button" class="btn-icon-flat" title="Go back" 
                         onclick="window.goBackAjax ? window.goBackAjax() : window.history.back();">

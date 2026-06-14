@@ -14,10 +14,12 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/Block")
 public class Block extends HttpServlet {
     private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         userService = UserService.getInstance();
+        userRepository = UserRepository.getInstance();
     }
 
     @Override
@@ -40,8 +42,30 @@ public class Block extends HttpServlet {
         int blockedId = Integer.parseInt(userIdToBlock);
 
         boolean is_admin = currentUser.getRole().equals("admin");
-
-        userService.block(currentUser.getId(), blockedId, is_admin);
+        if (is_admin) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins cannot do personal blocks. Use the Admin Panel to ban users.");
+            return;
+        }
+        
+        String reason = request.getParameter("reason");
+        String password = request.getParameter("password");
+        
+        if (password != null && !password.isBlank()) {
+            boolean passwordValid = userRepository.verifyPassword(currentUser.getId(), password);
+            if (!passwordValid) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"ok\":false,\"error\":\"Invalid password\"}");
+                return;
+            }
+        }
+        
+        if (reason != null && !reason.isBlank()) {
+            userService.block(currentUser.getId(), blockedId, reason, is_admin);
+        } else {
+            userService.block(currentUser.getId(), blockedId, is_admin);
+        }
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

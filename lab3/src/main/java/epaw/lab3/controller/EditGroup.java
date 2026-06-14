@@ -66,10 +66,6 @@ public class EditGroup extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
-            if (group.isBlocked()) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
             request.setAttribute("group", group);
             request.getRequestDispatcher("EditGroupPanel.jsp").forward(request, response);
         } catch (NumberFormatException e) {

@@ -16,6 +16,7 @@ import epaw.lab3.service.GroupService;
 import epaw.lab3.service.PostService;
 import epaw.lab3.service.UserService;
 import epaw.lab3.util.BannedUserGuard;
+import jakarta.servlet.http.Part;
 import java.util.List;
 import java.util.Map;
 
@@ -70,13 +71,14 @@ public class NewPost extends HttpServlet {
 
         String content = request.getParameter("content");
         int groupId = Integer.parseInt(request.getParameter("groupId"));
+        Part filePart = request.getPart("postPicture");
 
         Post post = new Post();
         post.setUserId(user.getId());
         post.setContent(content);
         post.setGroupId(groupId);
 
-        Map<String, String> errors = postService.createPost(post);
+        Map<String, String> errors = postService.createPost(post, filePart);
 
         if (errors.isEmpty()) {
             String returnGroupIdParam = request.getParameter("returnGroupId");
@@ -112,7 +114,7 @@ public class NewPost extends HttpServlet {
         try {
             int groupId = Integer.parseInt(groupIdParam);
             Group group = groupService.getGroupById(groupId);
-            if (groupService.isGroupMember(user, groupId) && group != null && !group.isBlocked()) {
+            if (groupService.isGroupMember(user, groupId) && group != null) {
                 request.setAttribute("selectedGroupId", groupId);
                 request.setAttribute("returnGroupId", groupId);
             }

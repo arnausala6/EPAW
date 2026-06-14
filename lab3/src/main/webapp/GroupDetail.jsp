@@ -40,18 +40,10 @@
 	</div>
 </div>
 
-<c:set var="canViewPosts" value="${not group.blocked and (isAdmin or group.privacy != 'private' or isGroupMember)}" />
+<c:set var="canViewPosts" value="${isAdmin or group.privacy != 'private' or isGroupMember}" />
 
 <div class="group-post-feed">
 	<c:choose>
-	<c:when test="${group.blocked}">
-		<div class="group-blocked-notice">
-			<img src="assets/icons/block-error.png" alt="" class="group-blocked-notice-icon">
-			<p class="group-blocked-notice-title">This group has been blocked.</p>
-			<p class="group-blocked-notice-reason">${group.blockReason}</p>
-			<p class="hint">Its content is no longer available.</p>
-		</div>
-	</c:when>
 	<c:when test="${canViewPosts}">
 	<c:if test="${empty posts}">
 		<p class="hint">No posts in this group yet.</p>

@@ -44,15 +44,28 @@ public class AdminPanel extends HttpServlet {
             return;
         }
 
+        String mode = request.getParameter("mode");
+        if (mode == null || mode.isBlank()) {
+            mode = "users";
+        }
+
         int totalUsers = userRepository.countUsers();
         int blockedUsers = userRepository.countBlockedUsers(currentUser.getId());
         int activeGroups = groupRepository.countActiveGroups();
-        List<User> users = userRepository.findAllUsersForAdmin(currentUser.getId());
+        
+        List<User> targetList;
+        if ("admins".equalsIgnoreCase(mode)) {
+            targetList = userRepository.findUsersByRoleForAdmin(currentUser.getId(), "admin");
+        } else {
+            targetList = userRepository.findUsersByRoleForAdmin(currentUser.getId(), "user");
+        }
 
         request.setAttribute("totalUsers", totalUsers);
         request.setAttribute("blockedUsers", blockedUsers);
         request.setAttribute("activeGroups", activeGroups);
-        request.setAttribute("users", users);
+        request.setAttribute("users", targetList);
+        request.setAttribute("mode", mode);
+        request.setAttribute("currentUserId", currentUser.getId());
 
         request.getRequestDispatcher("/AdminPanel.jsp").forward(request, response);
     }
@@ -86,7 +99,17 @@ public class AdminPanel extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         if ("block".equals(action)) {
-            userService.block(currentUser.getId(), targetUserId, true);
+            String password = request.getParameter("password");
+            String reason = request.getParameter("reason");
+            if (password == null || password.isBlank()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing admin password.");
+                return;
+            }
+            if (!userRepository.verifyPassword(currentUser.getId(), password)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Incorrect password.");
+                return;
+            }
+            userService.block(currentUser.getId(), targetUserId, reason, true);
             response.getWriter().write("{\"ok\":true,\"action\":\"block\",\"userId\":" + targetUserId + "}");
             return;
         }
@@ -94,6 +117,30 @@ public class AdminPanel extends HttpServlet {
         if ("unblock".equals(action)) {
             userService.unblock(currentUser.getId(), targetUserId);
             response.getWriter().write("{\"ok\":true,\"action\":\"unblock\",\"userId\":" + targetUserId + "}");
+            return;
+        }
+
+        if ("promote".equals(action)) {
+            String password = request.getParameter("password");
+            if (password == null || password.isBlank()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing admin password.");
+                return;
+            }
+
+            if (!userRepository.verifyPassword(currentUser.getId(), password)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Incorrect password.");
+                return;
+            }
+
+            userRepository.updateUserRole(targetUserId, "admin");
+            userRepository.clearPersonalBlocks(targetUserId);
+            response.getWriter().write("{\"ok\":true,\"action\":\"promote\",\"userId\":" + targetUserId + "}");
+            return;
+        }
+
+        if ("demote".equals(action)) {
+            userRepository.updateUserRole(targetUserId, "user");
+            response.getWriter().write("{\"ok\":true,\"action\":\"demote\",\"userId\":" + targetUserId + "}");
             return;
         }
 

@@ -4,12 +4,12 @@
 <c:set var="currentUserId" value="${sessionScope.user.id}" />
 
 <article class="card group-post-card" data-post-id="${post.postId}">
-	<c:if test="${isAdmin and not post.blocked}">
+	<c:if test="${isAdmin}">
 		<button type="button" class="group-post-block-btn btn-block-post-admin" data-post-id="${post.postId}" title="Block post">
 			<img src="assets/icons/block-error.png" alt="" class="ico-act">
 		</button>
 	</c:if>
-	<c:if test="${not empty currentUserId and post.userId == currentUserId and not post.blocked}">
+	<c:if test="${not empty currentUserId and post.userId == currentUserId}">
 		<div class="post-item-actions${isAdmin ? ' post-item-actions-with-admin' : ''}">
 			<button type="button" class="post-action-btn btn-edit-post"
 				data-post-id="${post.postId}" data-view="group" title="Edit post">
@@ -36,31 +36,17 @@
 						</c:if>
 					</span>
 				</div>
-				<c:if test="${post.authorBanned}">
-					<span class="post-ban-badge">User banned</span>
-				</c:if>
 			</div>
 		</div>
 	</div>
-	<c:choose>
-		<c:when test="${post.blocked}">
-			<div class="post-blocked-notice">
-				<img src="assets/icons/block-error.png" alt="" class="post-blocked-notice-icon">
-				<p class="post-blocked-notice-title">This post has been blocked.</p>
-				<p class="post-blocked-notice-reason">${post.blockReason}</p>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<p class="post-body">${post.content}</p>
-			<c:if test="${not empty post.postPicture}">
-				<div class="post-image">
-					<img src="${post.postPicture}" alt="">
-				</div>
-			</c:if>
-			<%@ include file="PostVoteBar.jsp" %>
-			<div class="comment-thread" data-post-id="${post.postId}" style="display:none">
-				<div class="comment-thread-inner"></div>
-			</div>
-		</c:otherwise>
-	</c:choose>
+	<p class="post-body">${post.content}</p>
+	<c:if test="${not empty post.postPicture}">
+		<div class="post-image">
+			<img src="${post.postPicture}" alt="">
+		</div>
+	</c:if>
+	<%@ include file="PostVoteBar.jsp" %>
+	<div class="comment-thread" data-post-id="${post.postId}" style="display:none">
+		<div class="comment-thread-inner"></div>
+	</div>
 </article>

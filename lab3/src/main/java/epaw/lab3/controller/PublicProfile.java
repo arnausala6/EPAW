@@ -45,16 +45,19 @@ public class PublicProfile extends HttpServlet {
 
             HttpSession session = request.getSession(false);
             boolean canManageRelationship = false;
+            boolean canBlock = false;
             if (session != null && session.getAttribute("user") != null) {
                 User currentUser = (User) session.getAttribute("user");
                 
                 boolean isFollowing = userRepository.isFollowing(currentUser.getId(), profileUser.getId());
                 profileUser.setFollowing(isFollowing);
                 canManageRelationship = true;
+                canBlock = !"admin".equalsIgnoreCase(currentUser.getRole());
             }
 
             request.setAttribute("profileUser", profileUser);
             request.setAttribute("canManageRelationship", canManageRelationship);
+            request.setAttribute("canBlock", canBlock);
             request.setAttribute("viewerRole", canManageRelationship ? "user" : "anonymous");
             request.getRequestDispatcher("/PublicProfile.jsp").forward(request, response);
         } catch (NumberFormatException ex) {

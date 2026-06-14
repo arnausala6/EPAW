@@ -37,7 +37,11 @@ public class PostService {
         this.groupService = GroupService.getInstance();
     }
 
-    public Map<String, String> createPost(Post post){
+    public Map<String, String> createPost(Post post) {
+        return createPost(post, null);
+    }
+
+    public Map<String, String> createPost(Post post, Part filePart) {
         Map<String, String> errors = new HashMap<>();
         if (post.getGroupId() == null) {
             errors.put("groupId", "Post must be part of a group.");
@@ -48,12 +52,6 @@ public class PostService {
         if (post.getContent() == null || post.getContent().trim().isEmpty()) {
             errors.put("content", "You cannot publish a post without content.");
         }
-        if (post.getGroupId() != null) {
-            Group group = groupService.getGroupById(post.getGroupId());
-            if (group != null && group.isBlocked()) {
-                errors.put("groupId", "This group has been blocked.");
-            }
-        }
         if (post.getGroupId() != null && post.getUserId() != null
                 && !userRepository.checkUserInGroup(post.getUserId(), post.getGroupId())) {
             errors.put("groupId", "You are not a member of this group.");
@@ -62,10 +60,33 @@ public class PostService {
             errors.put("responseId", "Response post does not exist.");
         }
 
-        if (errors.isEmpty()) {
-            postRepository.publishPost(post);
+        if (filePart != null && filePart.getSize() > 0) {
+            long maxBytes = 2L * 1024 * 1024;
+            if (filePart.getSize() > maxBytes) {
+                errors.put("postPicture", "The post image cannot exceed 2MB.");
+            } else {
+                String fileName = filePart.getSubmittedFileName();
+                if (fileName != null) {
+                    String lower = fileName.toLowerCase();
+                    if (!lower.endsWith(".jpg") && !lower.endsWith(".jpeg")
+                            && !lower.endsWith(".png") && !lower.endsWith(".webp")
+                            && !lower.endsWith(".gif")) {
+                        errors.put("postPicture", "Image must be JPG, PNG, WEBP or GIF.");
+                    }
+                }
+            }
         }
-        
+
+        if (errors.isEmpty()) {
+            int postId = postRepository.publishPost(post);
+            if (postId > 0 && filePart != null && filePart.getSize() > 0) {
+                String picture = savePostPicture(filePart, postId);
+                if (picture != null) {
+                    postRepository.setPostPicture(postId, picture);
+                }
+            }
+        }
+
         return errors;
     }
 
@@ -124,9 +145,6 @@ public class PostService {
         }
 
         Post post = postOpt.get();
-        if (post.isBlocked()) {
-            return VoteResult.error("This post has been blocked.");
-        }
 
         Optional<Integer> currentVote = voteRepository.findUserVote(userId, postId);
         Integer resultingVote;
@@ -198,10 +216,6 @@ public class PostService {
             return errors;
         }
         Post parent = parentOpt.get();
-        if (parent.isBlocked()) {
-            errors.put("postId", "This post has been blocked.");
-            return errors;
-        }
         if (!userRepository.checkUserInGroup(user.getId(), parent.getGroupId())) {
             errors.put("postId", "You are not a member of this group.");
             return errors;
@@ -244,18 +258,9 @@ public class PostService {
             errors.put("commentId", "You can only edit your own comments.");
             return errors;
         }
-        if (comment.isBlocked()) {
-            errors.put("commentId", "This comment has been blocked.");
-            return errors;
-        }
 
         Optional<Post> parentOpt = postRepository.findById(comment.getResponseId());
-        if (parentOpt.isPresent() && parentOpt.get().isBlocked()) {
-            errors.put("commentId", "The parent post has been blocked.");
-            return errors;
-        }
-
-        if (errors.isEmpty()) {
+        if (!errors.isEmpty()) {
             postRepository.updateComment(commentId, content.trim());
         }
 
@@ -312,17 +317,8 @@ public class PostService {
             errors.put("postId", "You can only edit your own posts.");
             return errors;
         }
-        if (post.isBlocked()) {
-            errors.put("postId", "This post has been blocked.");
-            return errors;
-        }
 
         Group group = groupService.getGroupById(post.getGroupId());
-        if (group != null && group.isBlocked()) {
-            errors.put("postId", "This group has been blocked.");
-            return errors;
-        }
-
         boolean hasExistingImage = post.getPostPicture() != null && !post.getPostPicture().isBlank();
         boolean hasNewImage = filePart != null && filePart.getSize() > 0;
 
@@ -460,16 +456,19 @@ public class PostService {
         }
 
         Post post = postOpt.get();
-        if (post.isBlocked()) {
-            errors.put("postId", "This post is already blocked.");
-        }
 
         if (!errors.isEmpty()) {
             return errors;
         }
 
-        postRepository.blockPost(postId, reason.trim(), banAuthor);
+        // Delete the post instead of marking it as blocked
+        boolean deleted = postRepository.deletePost(postId);
+        if (!deleted) {
+            errors.put("postId", "Failed to delete post.");
+            return errors;
+        }
 
+        // If banAuthor is checked, block the author
         if (banAuthor && !userRepository.isUserBlocked(admin.getId(), post.getUserId())) {
             userRepository.saveBlock(admin.getId(), post.getUserId(), reason.trim(), true);
         }

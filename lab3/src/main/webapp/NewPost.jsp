@@ -6,7 +6,7 @@
 		<h3><img src="assets/icons/publicar-blanco.png" alt="" class="ico"> New post</h3>
 	</div>
 	<div class="card-body">
-		<form action="NewPost" method="POST">
+		<form action="NewPost" method="POST" enctype="multipart/form-data">
 			<c:if test="${not empty returnGroupId}">
 				<input type="hidden" name="returnGroupId" value="${returnGroupId}">
 			</c:if>
@@ -20,7 +20,16 @@
 			</div>
 
 			<div class="form-field">
-				<label for="postGroup">Group</label>
+				<label for="newPostPicture">Post image <span class="field-optional">(optional)</span></label>
+				<input class="input input-optional${not empty errors.postPicture ? ' input-error' : ''}"
+					type="file" id="newPostPicture" name="postPicture"
+					accept="image/jpeg,image/png,image/webp,image/gif">
+				<c:if test="${not empty errors.postPicture}">
+					<p class="field-error">${errors.postPicture}</p>
+				</c:if>
+			</div>
+
+			<div class="form-field">
 				<c:choose>
 					<c:when test="${empty groups}">
 						<p class="hint">Join a group before publishing a post.</p>

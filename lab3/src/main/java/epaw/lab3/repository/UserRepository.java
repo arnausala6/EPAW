@@ -111,9 +111,8 @@ public class UserRepository extends BaseRepository {
     }
 
     public int countBlockedUsers(int adminId) {
-        String query = "SELECT COUNT(*) FROM Block WHERE blocker_id = ?";
+        String query = "SELECT COUNT(DISTINCT blocked_id) FROM Block WHERE is_admin_ban = 1";
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setInt(1, adminId);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);
@@ -125,20 +124,21 @@ public class UserRepository extends BaseRepository {
         return 0;
     }
 
-    public List<User> findAllUsersForAdmin(int adminId) {
+    public List<User> findUsersByRoleForAdmin(int adminId, String role) {
         String query = """
-            SELECT u.user_id, u.username, u.role, u.description,
+            SELECT u.user_id, u.username, u.role, u.description, u.profile_picture,
                    CASE WHEN b.blocked_id IS NOT NULL THEN 1 ELSE 0 END AS blocked
             FROM User u
             LEFT JOIN Block b
-              ON b.blocked_id = u.user_id AND b.blocker_id = ?
-            WHERE u.user_id <> ?
-            ORDER BY u.username ASC
+              ON b.blocked_id = u.user_id AND b.is_admin_ban = 1
+            WHERE LOWER(u.role) = LOWER(?)
+            ORDER BY 
+                CASE WHEN b.blocked_id IS NOT NULL THEN 0 ELSE 1 END,
+                u.username ASC
             """;
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setInt(1, adminId);
-            statement.setInt(2, adminId);
+            statement.setString(1, role);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     User user = new User();
@@ -146,6 +146,7 @@ public class UserRepository extends BaseRepository {
                     user.setUsername(rs.getString("username"));
                     user.setRole(rs.getString("role"));
                     user.setDescription(rs.getString("description"));
+                    user.setPicture(rs.getString("profile_picture"));
                     user.setBlocked(rs.getInt("blocked") == 1);
                     users.add(user);
                 }
@@ -154,6 +155,17 @@ public class UserRepository extends BaseRepository {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public void updateUserRole(int userId, String newRole) {
+        String query = "UPDATE User SET role = ? WHERE user_id = ?";
+        try (PreparedStatement statement = db.prepareStatement(query)) {
+            statement.setString(1, newRole);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkLogin(User user) {
@@ -283,42 +295,84 @@ public class UserRepository extends BaseRepository {
     }
 
     public void saveBlock(Integer blockerId, Integer blockedId, String reason, boolean is_admin) {
-        String query = "INSERT INTO Block(blocker_id, blocked_id, reason) VALUES (?, ?, ?)";
-        String del_query = "DELETE FROM Follows WHERE follower_id = ? AND followed_id = ?";
+        String query = """
+            INSERT INTO Block(blocker_id, blocked_id, reason, is_admin_ban)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(blocker_id, blocked_id)
+            DO UPDATE SET
+                reason = excluded.reason,
+                is_admin_ban = excluded.is_admin_ban
+        """;
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, blockerId);
             statement.setObject(2, blockedId);
             statement.setString(3, reason);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //Si el servidor se apaga aqui hay un desync pero no se como hacerlo bien
-        try (PreparedStatement statement = db.prepareStatement(del_query)){
-            statement.setObject(1, blockerId);
-            statement.setObject(2, blockedId);
+            statement.setInt(4, is_admin ? 1 : 0);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
         if(is_admin){
-            String query3 = "DELETE FROM Post WHERE user_id = ?";
-            try(PreparedStatement statement = db.prepareStatement(query3)){
-                statement.setObject(1, blockedId);
+            // Delete all posts by the blocked user (includes comments since they're also Posts)
+            String deletePosts = "DELETE FROM Post WHERE user_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deletePosts)){
+                statement.setInt(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            
+            // Delete all votes by the blocked user
+            String deleteVotes = "DELETE FROM Vote WHERE user_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deleteVotes)){
+                statement.setInt(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            
+            // Remove user from all groups
+            String deleteGroupMemberships = "DELETE FROM UserInGroup WHERE user_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deleteGroupMemberships)){
+                statement.setInt(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            
+            // Delete all follows where user is follower or followed
+            String deleteFollowsAsFollower = "DELETE FROM Follows WHERE follower_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deleteFollowsAsFollower)){
+                statement.setInt(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            
+            String deleteFollowsAsFollowed = "DELETE FROM Follows WHERE followed_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deleteFollowsAsFollowed)){
+                statement.setInt(1, blockedId);
+                statement.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            
+            // Delete all group join requests by the blocked user
+            String deleteJoinRequests = "DELETE FROM GroupJoinRequest WHERE user_id = ?";
+            try(PreparedStatement statement = db.prepareStatement(deleteJoinRequests)){
+                statement.setInt(1, blockedId);
                 statement.executeUpdate();
             } catch (SQLException e){
                 e.printStackTrace();
             }
         }
-
     }
 
     public boolean isPlatformBanned(int userId) {
         String query = """
-            SELECT 1 FROM Block b
-            INNER JOIN User u ON b.blocker_id = u.user_id
-            WHERE b.blocked_id = ? AND u.role = 'admin'
+            SELECT 1 FROM Block
+            WHERE blocked_id = ? AND is_admin_ban = 1
             LIMIT 1
         """;
         try (PreparedStatement statement = db.prepareStatement(query)) {
@@ -334,9 +388,8 @@ public class UserRepository extends BaseRepository {
 
     public String findPlatformBanReason(int userId) {
         String query = """
-            SELECT b.reason FROM Block b
-            INNER JOIN User u ON b.blocker_id = u.user_id
-            WHERE b.blocked_id = ? AND u.role = 'admin'
+            SELECT reason FROM Block
+            WHERE blocked_id = ? AND is_admin_ban = 1
             LIMIT 1
         """;
         try (PreparedStatement statement = db.prepareStatement(query)) {
@@ -386,6 +439,16 @@ public class UserRepository extends BaseRepository {
         try (PreparedStatement statement = db.prepareStatement(query)){
             statement.setObject(1, blockerId);
             statement.setObject(2, blockedId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearPersonalBlocks(int userId) {
+        String query = "DELETE FROM Block WHERE blocker_id = ? AND is_admin_ban = 0";
+        try (PreparedStatement statement = db.prepareStatement(query)){
+            statement.setInt(1, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -589,7 +652,11 @@ public class UserRepository extends BaseRepository {
                 COUNT(f.follower_id) AS followers_count
             FROM User u
             LEFT JOIN Follows f ON u.user_id = f.followed_id
-            WHERE COALESCE(u.role, 'user') <> 'admin'
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM Block b
+                WHERE b.blocked_id = u.user_id AND COALESCE(b.is_admin_ban, 0) = 1
+            )
         """);
 
         String normalized = searchTerm == null ? "" : searchTerm.trim();

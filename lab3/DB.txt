@@ -22,8 +22,6 @@ CREATE TABLE IF NOT EXISTS "Group" (
     participants INTEGER,
     owner VARCHAR(30),
     privacy TEXT CHECK(privacy IN ('public', 'private')),
-    blocked INTEGER DEFAULT 0,
-    block_reason TEXT,
     FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE SET NULL
 );
 
@@ -37,9 +35,6 @@ CREATE TABLE IF NOT EXISTS Post (
     upvotes INTEGER DEFAULT 0,
     downvotes INTEGER DEFAULT 0,
     comment_count INTEGER DEFAULT 0,
-    blocked INTEGER DEFAULT 0,
-    block_reason TEXT,
-    author_banned INTEGER DEFAULT 0,
     edited INTEGER DEFAULT 0,
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
@@ -51,6 +46,7 @@ CREATE TABLE IF NOT EXISTS Block (
     blocker_id INTEGER,
     blocked_id INTEGER,
     reason TEXT,
+    is_admin_ban INTEGER DEFAULT 0,
     PRIMARY KEY (blocker_id, blocked_id),
     FOREIGN KEY (blocker_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (blocked_id) REFERENCES User(user_id) ON DELETE CASCADE
@@ -94,7 +90,6 @@ INSERT INTO User (username, email, password, description, profile_picture, count
 
 INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (1, 'Campus Events', 'Announcements and meetups around the Pompeu Fabra campus.', 'assets/groups/campus.png', 1, 13, 'admin', 'public');
 INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (2, 'Web Engineering', 'Course projects, lab discussions and resources for the Web Engineering subject.', 'assets/groups/web.png', 1, 7, 'admin', 'public');
-INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES (3, 'AI Projects', 'Collaborative AI experiments and semester projects for EPAW students.', 'assets/groups/ai.png', 1, 12, 'admin', 'private');
 
 INSERT INTO User (username, email, password, description, profile_picture, country, age, gender) VALUES
 ('mireia_sole', 'mireia.sole@upf.edu', 'Password1', 'EPAW student exploring social interfaces and group collaboration tools.', 'assets/users/mireia_sole.jpg', 'Spain', 24, 'female'),
@@ -126,7 +121,6 @@ INSERT INTO User (username, email, password, description, profile_picture, count
 INSERT INTO UserInGroup (user_id, group_id) VALUES
 (1, 1),
 (1, 2),
-(1, 3),
 (14, 1),
 (15, 1),
 (16, 1),
@@ -146,19 +140,7 @@ INSERT INTO UserInGroup (user_id, group_id) VALUES
 (7, 2),
 (8, 2),
 (9, 2),
-(10, 2),
-(2, 3),
-(3, 3),
-(4, 3),
-(5, 3),
-(6, 3),
-(7, 3),
-(8, 3),
-(9, 3),
-(10, 3),
-(11, 3),
-(12, 3),
-(13, 3);
+(10, 2);
 
 INSERT INTO "Group" (group_id, group_name, description, group_picture, creator_id, participants, owner, privacy) VALUES
 (4, 'Tech & Coding', 'Tips, tools and debate around software development and computer science. Open to everyone.', NULL, 1, 16, 'admin', 'public'),
@@ -169,10 +151,6 @@ INSERT INTO UserInGroup (user_id, group_id) VALUES
 (2, 5), (3, 5), (4, 5), (5, 5), (14, 5), (15, 5), (16, 5), (17, 5), (18, 5), (19, 5), (20, 5), (21, 5);
 
 INSERT INTO Post (post_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, user_id, group_id) VALUES
-(1, 'Our semester NLP prototype is ready for demo. Please review the README before Monday.', NULL, '2026-06-09 09:15:00', 6, 8, 2, 5, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
-(2, 'Great progress on the dataset labelling. I added a few edge cases we should discuss.', NULL, '2026-06-08 14:30:00', 4, 5, 1, 3, (SELECT user_id FROM User WHERE username = 'mireia_sole'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
-(3, 'Shared the training notebook in the group drive. Feedback welcome on the evaluation metrics.', NULL, '2026-06-07 11:00:00', 6, 6, 0, 4, (SELECT user_id FROM User WHERE username = 'judit_solsona'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
-(4, 'CI pipeline for model training is green again after fixing the dependency conflict.', NULL, '2026-06-05 16:45:00', 1, 3, 2, 2, (SELECT user_id FROM User WHERE username = 'albert_miro'), (SELECT group_id FROM "Group" WHERE group_name = 'AI Projects')),
 (5, 'Lab 3 servlet wiring tips: remember to set user attributes before forwarding to the JSP.', NULL, '2026-06-10 08:20:00', 4, 5, 1, 2, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
 (6, 'Accessible forms checklist for our project UI — green borders only on required fields.', NULL, '2026-06-09 13:10:00', 4, 4, 0, 2, (SELECT user_id FROM User WHERE username = 'laia_maspons'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
 (7, 'JUnit tests for PostService are passing. I will open a PR tonight.', NULL, '2026-06-08 18:00:00', 1, 2, 1, 1, (SELECT user_id FROM User WHERE username = 'pol_vidal'), (SELECT group_id FROM "Group" WHERE group_name = 'Web Engineering')),
@@ -226,36 +204,36 @@ WHERE username IN (
     'pau_benet'
 );
 
-INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, blocked, author_banned, edited, user_id, group_id) VALUES
-(69, NULL, 'What changed my debugging speed the most: writing down assumptions before touching code. Most bugs were wrong assumptions, not syntax.', NULL, '2026-06-13 09:10:00', 30, 34, 4, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mar_clotet'), 7),
-(70, NULL, 'Do not optimize architecture in week 1. Build the happy path first, then profile. Premature abstractions are expensive.', NULL, '2026-06-13 08:45:00', 28, 31, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), 7),
-(71, NULL, 'A tiny SQL index can outperform a week of backend micro-optimizations. Start with the query plan, always.', NULL, '2026-06-13 08:10:00', 27, 30, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), 7),
-(72, NULL, 'If your PR description does not explain why, reviewers will guess. Explain intent, trade-offs and rollout.', NULL, '2026-06-13 07:40:00', 24, 27, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'xavier_campos'), 7),
-(73, NULL, 'Accessible UI check: labels, focus states, keyboard path, contrast. Four checks avoid most regressions.', NULL, '2026-06-13 07:05:00', 22, 25, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'elena_font'), 7),
-(74, NULL, 'Team productivity improved when we made a strict definition of done: tests, docs note and rollback plan.', NULL, '2026-06-13 06:30:00', 21, 24, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'sergi_duran'), 7),
-(75, NULL, 'Small monolith + clear boundaries beats accidental microservices for most student and early-stage projects.', NULL, '2026-06-12 18:20:00', 20, 23, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'iris_pons'), 7),
-(76, NULL, 'Write postmortems for non-failures too. Capturing what went right is reusable engineering knowledge.', NULL, '2026-06-12 16:50:00', 19, 22, 3, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marc_trias'), 7),
-(77, NULL, 'Before shipping any feature, test with a cold browser cache and a slow network preset. Reality check matters.', NULL, '2026-06-12 15:30:00', 20, 22, 2, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'judit_solsona'), 7),
-(78, NULL, 'Fastest way to learn codebase ownership: rotate incident response and share concise repair notes after each fix.', NULL, '2026-06-12 14:10:00', 21, 23, 2, 2, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pau_benet'), 7);
+INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, edited, user_id, group_id) VALUES
+(69, NULL, 'What changed my debugging speed the most: writing down assumptions before touching code. Most bugs were wrong assumptions, not syntax.', NULL, '2026-06-13 09:10:00', 30, 34, 4, 2, 0, (SELECT user_id FROM User WHERE username = 'mar_clotet'), 7),
+(70, NULL, 'Do not optimize architecture in week 1. Build the happy path first, then profile. Premature abstractions are expensive.', NULL, '2026-06-13 08:45:00', 28, 31, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), 7),
+(71, NULL, 'A tiny SQL index can outperform a week of backend micro-optimizations. Start with the query plan, always.', NULL, '2026-06-13 08:10:00', 27, 30, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), 7),
+(72, NULL, 'If your PR description does not explain why, reviewers will guess. Explain intent, trade-offs and rollout.', NULL, '2026-06-13 07:40:00', 24, 27, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'xavier_campos'), 7),
+(73, NULL, 'Accessible UI check: labels, focus states, keyboard path, contrast. Four checks avoid most regressions.', NULL, '2026-06-13 07:05:00', 22, 25, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'elena_font'), 7),
+(74, NULL, 'Team productivity improved when we made a strict definition of done: tests, docs note and rollback plan.', NULL, '2026-06-13 06:30:00', 21, 24, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'sergi_duran'), 7),
+(75, NULL, 'Small monolith + clear boundaries beats accidental microservices for most student and early-stage projects.', NULL, '2026-06-12 18:20:00', 20, 23, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'iris_pons'), 7),
+(76, NULL, 'Write postmortems for non-failures too. Capturing what went right is reusable engineering knowledge.', NULL, '2026-06-12 16:50:00', 19, 22, 3, 2, 0, (SELECT user_id FROM User WHERE username = 'marc_trias'), 7),
+(77, NULL, 'Before shipping any feature, test with a cold browser cache and a slow network preset. Reality check matters.', NULL, '2026-06-12 15:30:00', 20, 22, 2, 2, 0, (SELECT user_id FROM User WHERE username = 'judit_solsona'), 7),
+(78, NULL, 'Fastest way to learn codebase ownership: rotate incident response and share concise repair notes after each fix.', NULL, '2026-06-12 14:10:00', 21, 23, 2, 2, 0, (SELECT user_id FROM User WHERE username = 'pau_benet'), 7);
 
-INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, blocked, author_banned, edited, user_id, group_id) VALUES
-(79, 69, 'Totally agree. Writing assumptions first also makes pair debugging much faster.', NULL, '2026-06-13 09:20:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), 7),
-(80, 69, 'We started doing this in our lab and the number of random fixes dropped a lot.', NULL, '2026-06-13 09:25:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), 7),
-(81, 70, 'This is the advice people skip and then they rewrite everything in week 3.', NULL, '2026-06-13 08:55:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'laia_maspons'), 7),
-(82, 70, 'Happy path first saved us in EPAW, we had a demo before polishing edge cases.', NULL, '2026-06-13 09:00:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), 7),
-(83, 71, 'Query plans should be taught earlier. They explain half the backend mysteries.', NULL, '2026-06-13 08:20:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
-(84, 71, 'Indexing was literally the biggest performance win in our project too.', NULL, '2026-06-13 08:26:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7),
-(85, 72, 'Intent section in PR templates should be mandatory.', NULL, '2026-06-13 07:50:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'anna_grau'), 7),
-(86, 72, 'Review time drops a lot when trade-offs are explicit. Great point.', NULL, '2026-06-13 07:54:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'oscar_puig'), 7),
-(87, 73, 'These four checks are basically our release checklist now.', NULL, '2026-06-13 07:14:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'silvia_marti'), 7),
-(88, 73, 'Keyboard path catches many issues that visual QA misses.', NULL, '2026-06-13 07:18:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'gerard_sanz'), 7),
-(89, 74, 'Definition of done was the biggest maturity jump for our team.', NULL, '2026-06-13 06:38:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), 7),
-(90, 74, 'Rollback plan in student projects sounds overkill until the first bad deploy.', NULL, '2026-06-13 06:42:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'albert_miro'), 7),
-(91, 75, 'Exactly. Distribution adds operational load way too early.', NULL, '2026-06-12 18:28:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carme_rovira'), 7),
-(92, 75, 'Boundary-first monolith gave us clean code without infra pain.', NULL, '2026-06-12 18:34:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'quim_serra'), 7),
-(93, 76, 'Great point, wins should be documented too or we lose good patterns.', NULL, '2026-06-12 16:58:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), 7),
-(94, 76, 'Postmortems for successes are underrated team memory.', NULL, '2026-06-12 17:03:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), 7),
-(95, 77, 'Slow network preset exposed two race conditions in our app.', NULL, '2026-06-12 15:38:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'laia_maspons'), 7),
-(96, 77, 'Cold-cache tests should be in every acceptance checklist.', NULL, '2026-06-12 15:43:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), 7),
-(97, 78, 'Incident notes became onboarding gold in our student team.', NULL, '2026-06-12 14:20:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
-(98, 78, 'This habit also improves handover quality when people rotate.', NULL, '2026-06-12 14:24:00', 0, 0, 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7);
+INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, edited, user_id, group_id) VALUES
+(79, 69, 'Totally agree. Writing assumptions first also makes pair debugging much faster.', NULL, '2026-06-13 09:20:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), 7),
+(80, 69, 'We started doing this in our lab and the number of random fixes dropped a lot.', NULL, '2026-06-13 09:25:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), 7),
+(81, 70, 'This is the advice people skip and then they rewrite everything in week 3.', NULL, '2026-06-13 08:55:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'laia_maspons'), 7),
+(82, 70, 'Happy path first saved us in EPAW, we had a demo before polishing edge cases.', NULL, '2026-06-13 09:00:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), 7),
+(83, 71, 'Query plans should be taught earlier. They explain half the backend mysteries.', NULL, '2026-06-13 08:20:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
+(84, 71, 'Indexing was literally the biggest performance win in our project too.', NULL, '2026-06-13 08:26:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7),
+(85, 72, 'Intent section in PR templates should be mandatory.', NULL, '2026-06-13 07:50:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'anna_grau'), 7),
+(86, 72, 'Review time drops a lot when trade-offs are explicit. Great point.', NULL, '2026-06-13 07:54:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'oscar_puig'), 7),
+(87, 73, 'These four checks are basically our release checklist now.', NULL, '2026-06-13 07:14:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'silvia_marti'), 7),
+(88, 73, 'Keyboard path catches many issues that visual QA misses.', NULL, '2026-06-13 07:18:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'gerard_sanz'), 7),
+(89, 74, 'Definition of done was the biggest maturity jump for our team.', NULL, '2026-06-13 06:38:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), 7),
+(90, 74, 'Rollback plan in student projects sounds overkill until the first bad deploy.', NULL, '2026-06-13 06:42:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'albert_miro'), 7),
+(91, 75, 'Exactly. Distribution adds operational load way too early.', NULL, '2026-06-12 18:28:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carme_rovira'), 7),
+(92, 75, 'Boundary-first monolith gave us clean code without infra pain.', NULL, '2026-06-12 18:34:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'quim_serra'), 7),
+(93, 76, 'Great point, wins should be documented too or we lose good patterns.', NULL, '2026-06-12 16:58:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), 7),
+(94, 76, 'Postmortems for successes are underrated team memory.', NULL, '2026-06-12 17:03:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), 7),
+(95, 77, 'Slow network preset exposed two race conditions in our app.', NULL, '2026-06-12 15:38:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'laia_maspons'), 7),
+(96, 77, 'Cold-cache tests should be in every acceptance checklist.', NULL, '2026-06-12 15:43:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), 7),
+(97, 78, 'Incident notes became onboarding gold in our student team.', NULL, '2026-06-12 14:20:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
+(98, 78, 'This habit also improves handover quality when people rotate.', NULL, '2026-06-12 14:24:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7);

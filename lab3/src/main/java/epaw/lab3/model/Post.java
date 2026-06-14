@@ -27,9 +27,6 @@ public class Post implements Serializable {
     private Integer responseId;
     private String username;
     private String groupName;
-    private boolean blocked;
-    private String blockReason;
-    private boolean authorBanned;
     private Integer userVote;
     private boolean edited;
 
@@ -165,30 +162,6 @@ public class Post implements Serializable {
         return dateOfCreation.atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(ZoneId.of("Europe/Madrid"))
                 .format(DateTimeFormatter.ofPattern("d MMM yyyy · HH:mm", Locale.forLanguageTag("es-ES")));
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-
-    public String getBlockReason() {
-        return blockReason;
-    }
-
-    public void setBlockReason(String blockReason) {
-        this.blockReason = blockReason;
-    }
-
-    public boolean isAuthorBanned() {
-        return authorBanned;
-    }
-
-    public void setAuthorBanned(boolean authorBanned) {
-        this.authorBanned = authorBanned;
     }
 
     public Integer getUserVote() {

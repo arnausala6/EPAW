@@ -36,7 +36,12 @@
 				}
 			}
 			$('#content').data('current-url', url);
-			$('#content').load(url, function () {
+			$('#content').load(url, function (responseText, textStatus, jqXHR) {
+				if (textStatus === "error") {
+					$('#content').html('<div class="card"><div class="card-body"><p class="text-muted">Could not load this section (' + jqXHR.status + '). Please refresh or try again.</p></div></div>');
+					console.error("loadContent failed", url, jqXHR.status, jqXHR.statusText);
+					return;
+				}
 				$('#navigation').load("Menu");
 			});
 		};

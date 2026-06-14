@@ -9,7 +9,7 @@
         <a href="Browse?mode=timeline"
            class="timeline-tab <c:if test="${browseMode != 'search'}">timeline-tab-active</c:if>"
            onclick="event.preventDefault(); window.loadContent('Browse?mode=timeline');">
-            <img src="assets/icons/marketing.png" alt="" class="timeline-tab-ico">
+            <img src="assets/icons/trending-terracota.png" alt="" class="timeline-tab-ico">
             Timeline
         </a>
         <a href="Browse?mode=search"

@@ -33,6 +33,11 @@ public class BlockedUsers extends HttpServlet {
             return;
         }
 
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins do not have personal blocked users.");
+            return;
+        }
+
         List<User> blockedUsers = userService.getBlockedUsers(user.getId());
         request.setAttribute("blockedUsers", blockedUsers);
         request.getRequestDispatcher("BlockedUsers.jsp").forward(request, response);
@@ -46,6 +51,11 @@ public class BlockedUsers extends HttpServlet {
 
         if (user == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins do not have personal blocked users.");
             return;
         }
 

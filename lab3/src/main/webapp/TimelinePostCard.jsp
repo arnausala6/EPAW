@@ -4,7 +4,7 @@
 <c:set var="readOnlyPublic" value="${requestScope.readOnlyPublic}" />
 
 <article class="card timeline-post-card" data-post-id="${post.postId}">
-    <c:if test="${not empty currentUserId and post.userId == currentUserId and not post.blocked}">
+    <c:if test="${not empty currentUserId and post.userId == currentUserId}">
         <div class="post-item-actions">
             <button type="button" class="post-action-btn btn-edit-post"
                 data-post-id="${post.postId}" data-view="timeline" title="Edit post">
@@ -58,12 +58,10 @@
         </div>
     </c:if>
     
-    <c:if test="${not post.blocked}">
-        <%@ include file="PostVoteBar.jsp" %>
-        <c:if test="${not readOnlyPublic}">
+    <%@ include file="PostVoteBar.jsp" %>
+    <c:if test="${not readOnlyPublic}">
             <div class="comment-thread" data-post-id="${post.postId}" style="display:none">
                 <div class="comment-thread-inner"></div>
-            </div>
-        </c:if>
+        </div>
     </c:if>
 </article>

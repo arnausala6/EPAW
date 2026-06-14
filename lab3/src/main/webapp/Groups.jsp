@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <c:set var="isAdmin" value="${not empty sessionScope.user and sessionScope.user.role eq 'admin'}" />
 
-<div class="card card-flush page-head groups-page${not empty group and group.blocked ? ' groups-page-banned' : ''}">
+<div class="card card-flush page-head groups-page">
 	<div class="card-head panel-head">
 		<c:choose>
 			<c:when test="${not empty group}">
@@ -15,17 +15,8 @@
 		<c:choose>
 			<c:when test="${not empty group}">
 				<div class="groups-head-actions">
-					<c:choose>
-					<c:when test="${group.blocked}">
-						<c:if test="${isGroupMember}">
-							<button type="button" class="btn-icon-flat btn-leave-group" data-group-id="${group.groupId}" title="Leave group">
-								<img src="assets/icons/log-out-blanco.png" alt="" class="ico-act">
-							</button>
-						</c:if>
-					</c:when>
-					<c:otherwise>
-						<c:if test="${isGroupOwner}">
-							<c:if test="${group.privacy == 'private'}">
+					<c:if test="${isGroupOwner}">
+						<c:if test="${group.privacy == 'private'}">
 								<button type="button" class="btn-icon-flat btn-group-join-requests" data-group-id="${group.groupId}" title="Join requests">
 									<img src="assets/icons/mail-terracota.png" alt="" class="ico-act ico-act-header-invert">
 								</button>
@@ -68,8 +59,6 @@
 								<img src="assets/icons/block-blanco.png" alt="" class="ico-act">
 							</button>
 						</c:if>
-					</c:otherwise>
-					</c:choose>
 					<button type="button" class="btn-icon-flat btn-back-generic" title="Go back">
 						<img src="assets/icons/back.png" alt="" class="ico-act">
 					</button>
@@ -82,7 +71,7 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
-	<div class="card-body${not empty group and group.blocked ? ' groups-detail-banned' : ''}">
+	<div class="card-body">
 		<c:choose>
 		<c:when test="${not empty group}">
 			<c:if test="${not empty errors.groupId}">
@@ -102,7 +91,7 @@
 				</c:if>
 
 				<c:forEach var="g" items="${userGroups}">
-					<article class="card group-item group-item-clickable${g.blocked ? ' group-item-banned' : ''}" data-group-id="${g.groupId}">
+					<article class="card group-item group-item-clickable" data-group-id="${g.groupId}">
 						<div class="group-item-content">
 							<div class="group-item-photo<c:if test="${not empty g.groupPicture and g.groupPicture ne 'assets/icons/imagen-suave.png'}"> has-image</c:if>">
 								<img src="${not empty g.groupPicture ? g.groupPicture : 'assets/icons/imagen-suave.png'}" alt="">
@@ -124,14 +113,7 @@
 								</div>
 							</div>
 						</div>
-						<c:choose>
-							<c:when test="${g.blocked}">
-								<span class="group-item-banned-label">Banned</span>
-							</c:when>
-							<c:otherwise>
-								<img src="assets/icons/next.png" alt="" class="group-item-enter-ico" width="30" height="30">
-							</c:otherwise>
-						</c:choose>
+						<img src="assets/icons/next.png" alt="" class="group-item-enter-ico" width="30" height="30">
 					</article>
 				</c:forEach>
 			</div>
@@ -144,7 +126,7 @@
 				</c:if>
 
 				<c:forEach var="g" items="${suggestedGroups}">
-					<article class="card group-item group-item-clickable${g.blocked ? ' group-item-banned' : ''}" data-group-id="${g.groupId}">
+					<article class="card group-item group-item-clickable" data-group-id="${g.groupId}">
 						<div class="group-item-content">
 							<div class="group-item-photo<c:if test="${not empty g.groupPicture and g.groupPicture ne 'assets/icons/imagen-suave.png'}"> has-image</c:if>">
 								<img src="${not empty g.groupPicture ? g.groupPicture : 'assets/icons/imagen-suave.png'}" alt="">
@@ -167,9 +149,7 @@
 							</div>
 						</div>
 						<c:choose>
-							<c:when test="${g.blocked}">
-								<span class="group-item-banned-label">Banned</span>
-							</c:when>
+
 							<c:when test="${g.privacy == 'private'}">
 								<c:choose>
 									<c:when test="${g.pendingJoinRequest}">

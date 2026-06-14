@@ -53,11 +53,6 @@ public class GroupJoinRequests extends HttpServlet {
             return;
         }
 
-        if (group.isBlocked()) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-
         forwardPanel(request, response, group, groupService.getPendingJoinRequests(groupId, user));
     }
 
@@ -84,11 +79,6 @@ public class GroupJoinRequests extends HttpServlet {
         }
 
         if (!groupService.isGroupOwner(group, user)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-
-        if (group.isBlocked()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }

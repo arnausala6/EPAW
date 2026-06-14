@@ -6,9 +6,16 @@
     Integer blockedUsers = (Integer) request.getAttribute("blockedUsers");
     Integer activeGroups = (Integer) request.getAttribute("activeGroups");
     List<User> users = (List<User>) request.getAttribute("users");
+    String mode = (String) request.getAttribute("mode");
+    Integer currentUserId = (Integer) request.getAttribute("currentUserId");
+    
     if (totalUsers == null) totalUsers = 0;
     if (blockedUsers == null) blockedUsers = 0;
     if (activeGroups == null) activeGroups = 0;
+    if (mode == null) mode = "users";
+    if (currentUserId == null) currentUserId = -1;
+    
+    boolean isUsersMode = "users".equalsIgnoreCase(mode);
 %>
 <div class="card card-flush page-head">
     <div class="card-head">
@@ -30,119 +37,164 @@
             </div>
         </div>
 
-        <div class="card">
-            <h4><img src="assets/icons/grupos-terracota.png" alt="" class="ico"> User management</h4>
-            <table class="data-table">
+        <div class="timeline-tabs-bar">
+            <a href="AdminPanel?mode=users"
+               class="timeline-tab <%= isUsersMode ? "timeline-tab-active" : "" %>"
+               onclick="event.preventDefault(); window.loadContent('AdminPanel?mode=users');">
+                Users
+            </a>
+            <a href="AdminPanel?mode=admins"
+               class="timeline-tab <%= !isUsersMode ? "timeline-tab-active" : "" %>"
+               onclick="event.preventDefault(); window.loadContent('AdminPanel?mode=admins');">
+                Admins
+            </a>
+        </div>
+
+        <div class="card" style="margin-top: 12px;">
+            <table class="data-table admin-table">
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th style="width: 60px;"></th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th style="width: 120px; text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="admin-user-list">
                     <% if (users != null && !users.isEmpty()) { %>
-                        <% for (User user : users) { %>
-                            <tr id="row-<%= user.getId() %>">
-                                <td>
-                                    <strong><%= user.getUsername() %></strong>
-                                    <% if (user.getDescription() != null && !user.getDescription().isBlank()) { %>
-                                        <div class="post-meta"><%= user.getDescription() %></div>
+                        <% for (User user : users) { 
+                            boolean isCurrentUser = user.getId() == currentUserId;
+                            String rowClass = "";
+                            if (isCurrentUser) {
+                                rowClass = "admin-row-self";
+                            } else if (user.isBlocked()) {
+                                rowClass = "admin-row-blocked";
+                            }
+                        %>
+                            <tr id="row-<%= user.getId() %>" class="<%= rowClass %>" data-user-id="<%= user.getId() %>" data-blocked="<%= user.isBlocked() ? "true" : "false" %>">
+                                <td class="admin-avatar-cell">
+                                    <% if (user.getPicture() != null && !user.getPicture().isBlank()) { %>
+                                        <img src="<%= user.getPicture() %>" alt="<%= user.getUsername() %>" class="admin-avatar">
+                                    <% } else { %>
+                                        <div class="admin-avatar admin-avatar-placeholder">
+                                            <%= user.getUsername().substring(0, 1).toUpperCase() %>
+                                        </div>
                                     <% } %>
                                 </td>
-                                <td><span class="chip"><%= user.getRole() != null ? user.getRole() : "user" %></span></td>
                                 <td>
-                                    <span class="chip <%= user.isBlocked() ? "chip-err" : "chip-ok" %>">
-                                        <%= user.isBlocked() ? "blocked" : "active" %>
-                                    </span>
+                                    <strong><%= user.getUsername() %></strong>
                                 </td>
                                 <td>
-                                    <% if (user.isBlocked()) { %>
-                                        <button type="button" class="btn btn-muted btn-sm btn-unblock-user" data-user-id="<%= user.getId() %>">
-                                            <img src="assets/icons/unblock-ok.png" alt="" class="ico"> Unblock
-                                        </button>
-                                    <% } else { %>
-                                        <button type="button" class="btn btn-err btn-sm btn-block-user" data-user-id="<%= user.getId() %>">
-                                            <img src="assets/icons/block-error.png" alt="" class="ico"> Block
-                                        </button>
+                                    <span class="admin-user-desc"><%= user.getDescription() != null && !user.getDescription().isBlank() ? user.getDescription() : "" %></span>
+                                </td>
+                                <td class="admin-actions-cell">
+                                    <% if (!isCurrentUser) { %>
+                                        <% if (isUsersMode) { %>
+                                            <% if (user.isBlocked()) { %>
+                                                <div class="admin-actions-inner">
+                                                    <button type="button" class="btn-icon btn-unblock-user" data-user-id="<%= user.getId() %>" title="Unblock user">
+                                                        <img src="assets/icons/unblock-ok.png" alt="Unblock" class="ico-action">
+                                                    </button>
+                                                </div>
+                                            <% } else { %>
+                                                <div class="admin-actions-inner">
+                                                    <div class="admin-actions-group">
+                                                        <button type="button" class="btn-icon btn-block-user" data-user-id="<%= user.getId() %>" title="Block user">
+                                                            <img src="assets/icons/block-error.png" alt="Block" class="ico-action">
+                                                        </button>
+                                                        <button type="button" class="btn-icon btn-promote-user" data-user-id="<%= user.getId() %>" title="Promote to admin">
+                                                            <img src="assets/icons/admin-verde.png" alt="Promote" class="ico-action">
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        <% } else { %>
+                                            <div class="admin-actions-inner">
+                                                <button type="button" class="btn-icon btn-demote-user" data-user-id="<%= user.getId() %>" title="Demote to user">
+                                                    <img src="assets/icons/perfil-terracota.png" alt="Demote" class="ico-action">
+                                                </button>
+                                            </div>
+                                        <% } %>
                                     <% } %>
                                 </td>
                             </tr>
                         <% } %>
                     <% } else { %>
                         <tr>
-                            <td colspan="4" class="text-muted">No users available.</td>
+                            <td colspan="4" class="text-muted" style="text-align: center;">No <%= isUsersMode ? "users" : "administrators" %> available.</td>
                         </tr>
                     <% } %>
                 </tbody>
             </table>
-            <p class="hint">Use the block/unblock buttons to manage users directly from this panel.</p>
         </div>
     </div>
 </div>
 
 <script>
-function applyStatusUI(row, action, userId) {
-    const statusCell = row.querySelector('td:nth-child(3) span');
-    const actionCell = row.querySelector('td:nth-child(4)');
-
-    if (action === 'block') {
-        statusCell.textContent = 'blocked';
-        statusCell.className = 'chip chip-err';
-        actionCell.innerHTML = '<button type="button" class="btn btn-muted btn-sm btn-unblock-user" data-user-id="' + userId + '"><img src="assets/icons/unblock-ok.png" alt="" class="ico"> Unblock</button>';
-    } else {
-        statusCell.textContent = 'active';
-        statusCell.className = 'chip chip-ok';
-        actionCell.innerHTML = '<button type="button" class="btn btn-err btn-sm btn-block-user" data-user-id="' + userId + '"><img src="assets/icons/block-error.png" alt="" class="ico"> Block</button>';
-    }
-}
-
-function refreshBlockedCounter(delta) {
-    const counter = document.querySelector('.stat-grid .card:nth-child(2) h2');
-    if (!counter) return;
-    const current = parseInt(counter.textContent, 10) || 0;
-    counter.textContent = Math.max(0, current + delta);
-}
-
-function setAdminStatus(userId, action) {
-    const row = document.getElementById('row-' + userId);
-    if (!row) return;
-
-    const ajaxOptions = {
-        type: 'POST',
-        dataType: 'json'
-    };
-
-    if (action === 'block') {
-        ajaxOptions.url = 'Block';
-        ajaxOptions.data = { userId: userId };
-    } else {
-        ajaxOptions.url = 'AdminPanel';
-        ajaxOptions.data = { userId: userId, action: 'unblock' };
+(function() {
+    function showBlockPanel(userId) {
+        $('#rcolumn').load('BlockUser?userId=' + userId);
     }
 
-    $.ajax(ajaxOptions).done(function (res) {
-        if (!res || res.ok !== true) {
-            return;
-        }
+    function unblockUser(userId) {
+        $.ajax({
+            type: 'POST',
+            url: 'AdminPanel',
+            data: { userId: userId, action: 'unblock' },
+            dataType: 'json'
+        }).done(function (res) {
+            if (res && res.ok) {
+                const row = $('#row-' + userId);
+                row.removeClass('admin-row-blocked');
+                row.attr('data-blocked', 'false');
+                
+                const actionsCell = row.find('.admin-actions-cell');
+                actionsCell.html(
+                    '<div class="admin-actions-inner">' +
+                    '<div class="admin-actions-group">' +
+                    '<button type="button" class="btn-icon btn-block-user" data-user-id="' + userId + '" title="Block user">' +
+                    '<img src="assets/icons/block-error.png" alt="Block" class="ico-action">' +
+                    '</button>' +
+                    '<button type="button" class="btn-icon btn-promote-user" data-user-id="' + userId + '" title="Promote to admin">' +
+                    '<img src="assets/icons/admin-verde.png" alt="Promote" class="ico-action">' +
+                    '</button>' +
+                    '</div>' +
+                    '</div>'
+                );
+                
+                const counter = $('.stat-grid .card:nth-child(2) h2');
+                const current = parseInt(counter.text(), 10) || 0;
+                counter.text(Math.max(0, current - 1));
+            }
+        });
+    }
 
-        applyStatusUI(row, action, userId);
-        if (action === 'block') {
-            refreshBlockedCounter(1);
-        } else {
-            refreshBlockedCounter(-1);
-        }
+    function promoteUser(userId) {
+        $('#rcolumn').load('PromoteUser?userId=' + userId);
+    }
+
+    function demoteUser(userId) {
+        $('#rcolumn').load('DemoteUser?userId=' + userId);
+    }
+
+    $(document).off('click.adminBlock').on('click.adminBlock', '.btn-block-user', function () {
+        const userId = $(this).data('user-id');
+        showBlockPanel(userId);
     });
-}
 
-$(document).off('click.adminPanelBlock').on('click.adminPanelBlock', '.btn-block-user', function () {
-    const userId = $(this).data('user-id');
-    setAdminStatus(userId, 'block');
-});
+    $(document).off('click.adminUnblock').on('click.adminUnblock', '.btn-unblock-user', function () {
+        const userId = $(this).data('user-id');
+        unblockUser(userId);
+    });
 
-$(document).off('click.adminPanelUnblock').on('click.adminPanelUnblock', '.btn-unblock-user', function () {
-    const userId = $(this).data('user-id');
-    setAdminStatus(userId, 'unblock');
-});
+    $(document).off('click.adminPromote').on('click.adminPromote', '.btn-promote-user', function () {
+        const userId = $(this).data('user-id');
+        promoteUser(userId);
+    });
+
+    $(document).off('click.adminDemote').on('click.adminDemote', '.btn-demote-user', function () {
+        const userId = $(this).data('user-id');
+        demoteUser(userId);
+    });
+})();
 </script>

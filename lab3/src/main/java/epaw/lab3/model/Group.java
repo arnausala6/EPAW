@@ -22,8 +22,6 @@ public class Group implements Serializable {
     private Integer memberCount;
     private Integer postCount;
     private boolean pendingJoinRequest;
-    private boolean blocked;
-    private String blockReason;
 
     private Set<User> groupParticipants = new HashSet<>();
 
@@ -138,22 +136,6 @@ public class Group implements Serializable {
 
     public void setPendingJoinRequest(boolean pendingJoinRequest) {
         this.pendingJoinRequest = pendingJoinRequest;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-
-    public String getBlockReason() {
-        return blockReason;
-    }
-
-    public void setBlockReason(String blockReason) {
-        this.blockReason = blockReason;
     }
 
     public Set<User> getGroupParticipants() {

@@ -16,8 +16,11 @@ public class PostRepository extends BaseRepository {
     private static PostRepository instance;
 
     private static final String POST_SELECT = """
-            SELECT p.post_id, p.content, p.post_picture, p.votes, p.upvotes, p.downvotes,
-                   p.comment_count, p.blocked, p.block_reason, p.author_banned,
+            SELECT p.post_id, p.content, p.post_picture,
+                   (SELECT COALESCE(SUM(v.type_of_vote), 0) FROM Vote v WHERE v.post_id = p.post_id) AS votes,
+                   (SELECT COUNT(*) FROM Vote v WHERE v.post_id = p.post_id AND v.type_of_vote = 1) AS upvotes,
+                   (SELECT COUNT(*) FROM Vote v WHERE v.post_id = p.post_id AND v.type_of_vote = -1) AS downvotes,
+                   (SELECT COUNT(*) FROM Post c WHERE c.response_id = p.post_id) AS comment_count,
                    p.date_of_creation, p.user_id, p.group_id, p.response_id,
                    COALESCE(p.edited, 0) AS edited,
                    u.username, u.profile_picture, g.group_name
@@ -34,10 +37,10 @@ public class PostRepository extends BaseRepository {
         return instance;
     }
 
-    public void publishPost(Post post) {
+    public int publishPost(Post post) {
         String query = "INSERT INTO Post (content, user_id, group_id, response_id) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement statement = db.prepareStatement(query)) {
+        try (PreparedStatement statement = db.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getContent());
             statement.setInt(2, post.getUserId());
             statement.setInt(3, post.getGroupId());
@@ -48,9 +51,15 @@ public class PostRepository extends BaseRepository {
                 statement.setNull(4, java.sql.Types.INTEGER);
             }
             statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public boolean postExistsById(Integer id){
@@ -74,8 +83,6 @@ public class PostRepository extends BaseRepository {
             JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.response_id IS NULL
-            AND p.blocked = 0
-            AND g.blocked = 0
             AND p.user_id != ?
             -- 🛡️ Excluir posts de usuarios bloqueados por el usuario actual
             AND p.user_id NOT IN (
@@ -118,9 +125,7 @@ public class PostRepository extends BaseRepository {
             JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.response_id IS NULL
-              AND p.blocked = 0
               AND g.privacy = 'public'
-              AND g.blocked = 0
                             AND (p.upvotes - p.downvotes) > 10
                             AND p.group_id NOT IN (
                                 SELECT group_id FROM UserInGroup WHERE user_id = ?
@@ -154,9 +159,7 @@ public class PostRepository extends BaseRepository {
             JOIN User u ON p.user_id = u.user_id
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.response_id IS NULL
-              AND p.blocked = 0
               AND g.privacy = 'public'
-              AND g.blocked = 0
             ORDER BY p.date_of_creation DESC
             LIMIT 30
         """;
@@ -192,21 +195,6 @@ public class PostRepository extends BaseRepository {
         return Optional.empty();
     }
 
-    public void blockPost(int postId, String reason, boolean authorBanned) {
-        String query = """
-            UPDATE Post
-            SET blocked = 1, block_reason = ?, author_banned = ?
-            WHERE post_id = ?
-        """;
-        try (PreparedStatement statement = db.prepareStatement(query)) {
-            statement.setString(1, reason);
-            statement.setInt(2, authorBanned ? 1 : 0);
-            statement.setInt(3, postId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public List<Post> findByGroupId(int groupId, int user_id) {
         List<Post> posts = new ArrayList<>();
@@ -216,8 +204,6 @@ public class PostRepository extends BaseRepository {
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.group_id = ? 
             AND p.response_id IS NULL
-            AND p.blocked = 0
-            AND g.blocked = 0
             AND p.user_id NOT IN (
                 SELECT blocked_id FROM Block WHERE blocker_id = ?
             )
@@ -250,9 +236,6 @@ public class PostRepository extends BaseRepository {
         p.setUpvotes(rs.getInt("upvotes"));
         p.setDownvotes(rs.getInt("downvotes"));
         p.setCommentCount(rs.getInt("comment_count"));
-        p.setBlocked(rs.getInt("blocked") == 1);
-        p.setBlockReason(rs.getString("block_reason"));
-        p.setAuthorBanned(rs.getInt("author_banned") == 1);
         p.setUserId(rs.getInt("user_id"));
         p.setGroupId(rs.getInt("group_id"));
         p.setUsername(rs.getString("username"));
@@ -405,8 +388,6 @@ public class PostRepository extends BaseRepository {
             JOIN "Group" g ON p.group_id = g.group_id
             WHERE p.user_id = ?
               AND p.response_id IS NULL
-              AND p.blocked = 0
-              AND g.blocked = 0
               AND (
                     g.privacy = 'public'
                     OR (

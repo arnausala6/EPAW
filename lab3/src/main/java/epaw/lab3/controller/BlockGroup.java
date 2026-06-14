@@ -59,11 +59,6 @@ public class BlockGroup extends HttpServlet {
             return;
         }
 
-        if (group.isBlocked()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         request.setAttribute("group", group);
         request.setAttribute("members", membersExceptSelf(groupId, user.getId()));
         request.getRequestDispatcher("BlockGroupPanel.jsp").forward(request, response);

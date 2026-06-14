@@ -64,35 +64,20 @@ public class DBManager {
 				)
 			""");
 			try {
-				stmt.execute("ALTER TABLE Post ADD COLUMN blocked INTEGER DEFAULT 0");
-			} catch (SQLException ignored) {
-				// column already exists
-			}
-			try {
-				stmt.execute("ALTER TABLE Post ADD COLUMN block_reason TEXT");
-			} catch (SQLException ignored) {
-				// column already exists
-			}
-			try {
-				stmt.execute("ALTER TABLE Post ADD COLUMN author_banned INTEGER DEFAULT 0");
-			} catch (SQLException ignored) {
-				// column already exists
-			}
-			try {
 				stmt.execute("ALTER TABLE Block ADD COLUMN reason TEXT");
 			} catch (SQLException ignored) {
 				// column already exists
 			}
 			try {
-				stmt.execute("ALTER TABLE \"Group\" ADD COLUMN blocked INTEGER DEFAULT 0");
+				stmt.execute("ALTER TABLE Block ADD COLUMN is_admin_ban INTEGER DEFAULT 0");
 			} catch (SQLException ignored) {
 				// column already exists
 			}
-			try {
-				stmt.execute("ALTER TABLE \"Group\" ADD COLUMN block_reason TEXT");
-			} catch (SQLException ignored) {
-				// column already exists
-			}
+			stmt.execute("""
+				UPDATE Block
+				SET is_admin_ban = 1
+				WHERE blocker_id IN (SELECT user_id FROM User WHERE LOWER(role) = 'admin')
+			""");
 			try {
 				stmt.execute("ALTER TABLE Post ADD COLUMN edited INTEGER DEFAULT 0");
 			} catch (SQLException ignored) {

@@ -76,7 +76,7 @@ public class GroupRepository extends BaseRepository {
     }
 
     public int countActiveGroups() {
-        String query = "SELECT COUNT(*) FROM \"Group\" WHERE COALESCE(blocked, 0) = 0";
+        String query = "SELECT COUNT(*) FROM \"Group\"";
         try (PreparedStatement statement = db.prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
             if (rs.next()) {
@@ -106,10 +106,10 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
-            WHERE COALESCE(g.blocked, 0) = 0
+            WHERE 1=1
             ORDER BY g.participants DESC
             LIMIT 10
         """;
@@ -131,7 +131,7 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT DISTINCT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
                    (SELECT COUNT(*) FROM UserInGroup uig2 WHERE uig2.group_id = g.group_id) AS member_count
             FROM "Group" g
             JOIN User u ON u.user_id = ?
@@ -159,10 +159,10 @@ public class GroupRepository extends BaseRepository {
 
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
-            WHERE COALESCE(g.blocked, 0) = 0
+            WHERE 1=1
               AND g.group_id NOT IN (
                 SELECT group_id FROM UserInGroup WHERE user_id = ?
             )
@@ -186,7 +186,7 @@ public class GroupRepository extends BaseRepository {
     public Group findById(int id) {
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
                    ou.country AS owner_country,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count,
                    (SELECT COUNT(*) FROM Post p WHERE p.group_id = g.group_id AND p.response_id IS NULL) AS post_count
@@ -289,7 +289,7 @@ public class GroupRepository extends BaseRepository {
         List<Group> groups = new ArrayList<>();
         String sql = """
             SELECT g.group_id, g.group_name, g.description, g.creator_id, g.participants,
-                   g.group_picture, g.date_of_creation, g.owner, g.privacy, g.blocked, g.block_reason,
+                   g.group_picture, g.date_of_creation, g.owner, g.privacy,
                    (SELECT COUNT(*) FROM UserInGroup uig WHERE uig.group_id = g.group_id) AS member_count
             FROM "Group" g
             WHERE g.group_name LIKE ?
@@ -334,29 +334,10 @@ public class GroupRepository extends BaseRepository {
         } catch (SQLException ignored) {
             g.setOwnerCountry(null);
         }
-        try {
-            int blocked = rs.getInt("blocked");
-            g.setBlocked(!rs.wasNull() && blocked == 1);
-            g.setBlockReason(rs.getString("block_reason"));
-        } catch (SQLException ignored) {
-            g.setBlocked(false);
-            g.setBlockReason(null);
-        }
         return g;
     }
 
     public void blockGroup(int groupId, String reason) {
-        String sql = """
-            UPDATE "Group"
-            SET blocked = 1, block_reason = ?
-            WHERE group_id = ?
-        """;
-        try (PreparedStatement stmt = db.prepareStatement(sql)) {
-            stmt.setString(1, reason);
-            stmt.setInt(2, groupId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        delete(groupId);
     }
 }

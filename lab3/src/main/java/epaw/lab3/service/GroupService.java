@@ -53,9 +53,6 @@ public class GroupService {
         if (group == null || user == null) {
             return false;
         }
-        if (group.isBlocked()) {
-            return false;
-        }
         if (isAdmin(user)) {
             return true;
         }
@@ -88,15 +85,11 @@ public class GroupService {
             return errors;
         }
 
-        if (group.isBlocked()) {
-            errors.put("groupId", "This group is already blocked.");
-        }
-
         if (!errors.isEmpty()) {
             return errors;
         }
 
-        groupRepository.blockGroup(groupId, reason.trim());
+        groupRepository.delete(groupId);
 
         if (memberIds != null) {
             for (int memberId : memberIds) {
@@ -164,11 +157,6 @@ public class GroupService {
             return errors;
         }
 
-        if (group.isBlocked()) {
-            errors.put("groupId", "This group has been blocked.");
-            return errors;
-        }
-
         if (!"private".equals(group.getPrivacy())) {
             errors.put("groupId", "Join requests are only available for private groups.");
             return errors;
@@ -202,11 +190,6 @@ public class GroupService {
             return errors;
         }
 
-        if (group.isBlocked()) {
-            errors.put("groupId", "This group has been blocked.");
-            return errors;
-        }
-
         if (!joinRequestRepository.hasPendingRequest(requestUserId, groupId)) {
             errors.put("userId", "Join request not found.");
             return errors;
@@ -233,11 +216,6 @@ public class GroupService {
 
         if (!isGroupOwner(group, owner)) {
             errors.put("groupId", "Only the group owner can reject join requests.");
-            return errors;
-        }
-
-        if (group.isBlocked()) {
-            errors.put("groupId", "This group has been blocked.");
             return errors;
         }
 
@@ -320,11 +298,6 @@ public class GroupService {
             return errors;
         }
 
-        if (existing.isBlocked()) {
-            errors.put("groupId", "This group has been blocked.");
-            return errors;
-        }
-
         if (updates.getGroupName() == null || updates.getGroupName().trim().isEmpty()) {
             errors.put("groupName", "Group name is required.");
         } else if (updates.getGroupName().length() > 50) {
@@ -374,11 +347,6 @@ public class GroupService {
         Group group = groupRepository.findById(groupId);
         if (group == null) {
             errors.put("groupId", "Group not found.");
-            return errors;
-        }
-
-        if (group.isBlocked()) {
-            errors.put("groupId", "This group has been blocked.");
             return errors;
         }
 
