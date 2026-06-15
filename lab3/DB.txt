@@ -237,3 +237,82 @@ INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of
 (96, 77, 'Cold-cache tests should be in every acceptance checklist.', NULL, '2026-06-12 15:43:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), 7),
 (97, 78, 'Incident notes became onboarding gold in our student team.', NULL, '2026-06-12 14:20:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
 (98, 78, 'This habit also improves handover quality when people rotate.', NULL, '2026-06-12 14:24:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7);
+
+WITH mock_votes(post_id, upvotes, downvotes) AS (
+    VALUES
+    (5, 6, 0),
+    (6, 4, 1),
+    (7, 1, 3),
+    (8, 12, 1),
+    (9, 5, 0),
+    (10, 2, 0),
+    (11, 18, 1),
+    (12, 14, 0),
+    (13, 9, 1),
+    (14, 7, 0),
+    (15, 4, 2),
+    (16, 2, 0),
+    (17, 16, 0),
+    (18, 10, 1),
+    (19, 3, 0),
+    (20, 5, 3),
+    (21, 12, 0),
+    (22, 6, 0),
+    (23, 21, 1),
+    (24, 19, 2),
+    (25, 15, 0),
+    (26, 8, 1),
+    (27, 17, 3),
+    (28, 6, 0),
+    (29, 11, 0),
+    (30, 4, 0),
+    (31, 13, 1),
+    (32, 1, 3),
+    (69, 12, 1),
+    (70, 9, 0),
+    (71, 11, 1),
+    (72, 5, 0),
+    (73, 7, 0),
+    (74, 3, 2),
+    (75, 10, 0),
+    (76, 2, 1),
+    (77, 4, 0),
+    (78, 1, 0)
+)
+UPDATE Post
+SET
+    upvotes = COALESCE((SELECT upvotes FROM mock_votes WHERE mock_votes.post_id = Post.post_id), 0),
+    downvotes = COALESCE((SELECT downvotes FROM mock_votes WHERE mock_votes.post_id = Post.post_id), 0),
+    votes = COALESCE((SELECT upvotes - downvotes FROM mock_votes WHERE mock_votes.post_id = Post.post_id), 0);
+
+-- Seed one Vote row per counted upvote/downvote.
+DELETE FROM Vote;
+
+WITH ranked_users AS (
+    SELECT user_id, ROW_NUMBER() OVER (ORDER BY user_id) AS rn
+    FROM User
+),
+user_count AS (
+    SELECT COUNT(*) AS total_users FROM User
+),
+post_counts AS (
+    SELECT post_id, COALESCE(upvotes, 0) AS upvotes, COALESCE(downvotes, 0) AS downvotes
+    FROM Post
+    WHERE COALESCE(upvotes, 0) + COALESCE(downvotes, 0) > 0
+),
+rotated_votes AS (
+    SELECT ranked_users.user_id,
+           post_counts.post_id,
+           post_counts.upvotes,
+           post_counts.downvotes,
+           ((ranked_users.rn + post_counts.post_id - 2) % user_count.total_users) + 1 AS vote_rank
+    FROM post_counts
+    CROSS JOIN user_count
+    JOIN ranked_users
+)
+INSERT OR IGNORE INTO Vote (user_id, post_id, type_of_vote)
+SELECT user_id,
+       post_id,
+       CASE WHEN vote_rank <= upvotes THEN 1 ELSE -1 END
+FROM rotated_votes
+WHERE vote_rank <= upvotes + downvotes;
