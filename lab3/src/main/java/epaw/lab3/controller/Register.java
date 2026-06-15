@@ -45,7 +45,7 @@ public class Register extends HttpServlet {
 		User user = new User();
 
 		try {
-			BeanUtils.populate(user, request.getParameterMap());
+			BeanUtils.populate(user, request.getParameterMap()); // Rellena los atributos del objeto User con los parámetros de la solicitud
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
