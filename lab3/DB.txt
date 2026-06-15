@@ -238,6 +238,49 @@ INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of
 (97, 78, 'Incident notes became onboarding gold in our student team.', NULL, '2026-06-12 14:20:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), 7),
 (98, 78, 'This habit also improves handover quality when people rotate.', NULL, '2026-06-12 14:24:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), 7);
 
+-- Additional comments distributed across regular posts.
+INSERT OR IGNORE INTO Post (post_id, response_id, content, post_picture, date_of_creation, votes, upvotes, downvotes, comment_count, edited, user_id, group_id) VALUES
+(120, 5, 'This tip saved me during the servlet wiring exercise.', NULL, '2026-06-13 10:05:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), (SELECT group_id FROM Post WHERE post_id = 5)),
+(121, 5, 'Forwarding with request attributes is the part I always forget.', NULL, '2026-06-13 10:09:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'laia_maspons'), (SELECT group_id FROM Post WHERE post_id = 5)),
+(122, 6, 'Good reminder. Placeholders are not a substitute for labels.', NULL, '2026-06-13 10:12:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'silvia_marti'), (SELECT group_id FROM Post WHERE post_id = 6)),
+(123, 8, 'I am joining this outing, the timing works perfectly.', NULL, '2026-06-13 10:15:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'anna_grau'), (SELECT group_id FROM Post WHERE post_id = 8)),
+(124, 8, 'I can bring the camera and share photos afterwards.', NULL, '2026-06-13 10:18:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'jordi_bosch'), (SELECT group_id FROM Post WHERE post_id = 8)),
+(125, 9, 'Photo walk sounds great. Is it beginner friendly?', NULL, '2026-06-13 10:21:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'iris_pons'), (SELECT group_id FROM Post WHERE post_id = 9)),
+(126, 10, 'SQL fundamentals really pay off once the app grows.', NULL, '2026-06-13 10:24:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'arnau_sala'), (SELECT group_id FROM Post WHERE post_id = 10)),
+(127, 10, 'Agreed. Bad queries are harder to hide than bad CSS.', NULL, '2026-06-13 10:27:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pol_vidal'), (SELECT group_id FROM Post WHERE post_id = 10)),
+(128, 12, 'Indexes feel like magic until you inspect the query plan.', NULL, '2026-06-13 10:30:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'albert_miro'), (SELECT group_id FROM Post WHERE post_id = 12)),
+(129, 14, 'This should be printed above every commit button.', NULL, '2026-06-13 10:33:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marti_ferrer'), (SELECT group_id FROM Post WHERE post_id = 14)),
+(130, 17, 'Early library sessions are painfully effective.', NULL, '2026-06-13 10:36:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carla_roca'), (SELECT group_id FROM Post WHERE post_id = 17)),
+(131, 18, 'Visual notes helped me a lot with dynamic programming too.', NULL, '2026-06-13 10:39:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mar_clotet'), (SELECT group_id FROM Post WHERE post_id = 18)),
+(132, 20, 'Testing on the projector is not optional after last week.', NULL, '2026-06-13 10:42:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'elena_font'), (SELECT group_id FROM Post WHERE post_id = 20)),
+(133, 21, 'Rooftop study sessions are now officially on my schedule.', NULL, '2026-06-13 10:45:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'montserrat_vila'), (SELECT group_id FROM Post WHERE post_id = 21)),
+(134, 22, 'Accessibility details are easy to miss in a rushed demo.', NULL, '2026-06-13 10:48:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'nuria_torrent'), (SELECT group_id FROM Post WHERE post_id = 22)),
+(135, 23, 'A setup script would have saved my Monday morning.', NULL, '2026-06-13 10:51:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'quim_serra'), (SELECT group_id FROM Post WHERE post_id = 23)),
+(136, 23, 'Cold-starting the project is the best deployment test.', NULL, '2026-06-13 10:54:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'pau_benet'), (SELECT group_id FROM Post WHERE post_id = 23)),
+(137, 24, 'Ownership checks are exactly what our first prototype missed.', NULL, '2026-06-13 10:57:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'sergi_duran'), (SELECT group_id FROM Post WHERE post_id = 24)),
+(138, 24, 'This one is painfully specific and very true.', NULL, '2026-06-13 11:00:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'elena_font'), (SELECT group_id FROM Post WHERE post_id = 24)),
+(139, 25, 'The three-minute version is brutal but useful.', NULL, '2026-06-13 11:03:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'carme_rovira'), (SELECT group_id FROM Post WHERE post_id = 25)),
+(140, 26, 'Please share the map before finals week.', NULL, '2026-06-13 11:06:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'judit_solsona'), (SELECT group_id FROM Post WHERE post_id = 26)),
+(141, 27, 'Clean monolith first is the sane student-project strategy.', NULL, '2026-06-13 11:09:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'marc_trias'), (SELECT group_id FROM Post WHERE post_id = 27)),
+(142, 28, 'Beginner pace makes this much less intimidating.', NULL, '2026-06-13 11:12:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'mireia_sole'), (SELECT group_id FROM Post WHERE post_id = 28)),
+(143, 29, 'A joins cheat sheet would be a perfect seminar handout.', NULL, '2026-06-13 11:15:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'joan_prat'), (SELECT group_id FROM Post WHERE post_id = 29)),
+(144, 30, 'Simple checklists beat fancy productivity tools for me.', NULL, '2026-06-13 11:18:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'anna_grau'), (SELECT group_id FROM Post WHERE post_id = 30)),
+(145, 31, 'Positive note plus risk note is a good review habit.', NULL, '2026-06-13 11:21:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'xavier_campos'), (SELECT group_id FROM Post WHERE post_id = 31)),
+(146, 32, 'Adding vegan options is a nice touch.', NULL, '2026-06-13 11:24:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'iris_pons'), (SELECT group_id FROM Post WHERE post_id = 32)),
+(147, 13, 'System design resources are easier to follow with examples.', NULL, '2026-06-13 11:27:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'oscar_puig'), (SELECT group_id FROM Post WHERE post_id = 13)),
+(148, 16, 'A missing dockerignore is such a classic mistake.', NULL, '2026-06-13 11:30:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'albert_miro'), (SELECT group_id FROM Post WHERE post_id = 16)),
+(149, 16, 'Reading stack traces calmly is underrated.', NULL, '2026-06-13 11:33:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'gerard_sanz'), (SELECT group_id FROM Post WHERE post_id = 16)),
+(150, 19, 'This is useful for visiting friends, thanks.', NULL, '2026-06-13 11:36:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'xavier_campos'), (SELECT group_id FROM Post WHERE post_id = 19)),
+(151, 74, 'Definition of done helped our group avoid vague endings.', NULL, '2026-06-13 11:39:00', 0, 0, 0, 0, 0, (SELECT user_id FROM User WHERE username = 'sergi_duran'), (SELECT group_id FROM Post WHERE post_id = 74));
+
+UPDATE Post
+SET comment_count = (
+    SELECT COUNT(*) FROM Post c WHERE c.response_id = Post.post_id
+)
+WHERE response_id IS NULL;
+
+UPDATE Post SET comment_count = 0 WHERE response_id IS NOT NULL;
+
 WITH mock_votes(post_id, upvotes, downvotes) AS (
     VALUES
     (5, 6, 0),

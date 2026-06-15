@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<c:set var="isAdmin" value="${not empty sessionScope.user and sessionScope.user.role eq 'admin'}" />
 
 <c:choose>
 	<c:when test="${empty comments}">
@@ -8,16 +9,24 @@
 	<c:otherwise>
 		<c:forEach var="comment" items="${comments}">
 			<div class="comment-item">
-				<c:if test="${not empty currentUserId and comment.userId == currentUserId}">
+				<c:if test="${(not empty currentUserId and comment.userId == currentUserId) or isAdmin}">
 					<div class="comment-item-actions">
-						<button type="button" class="comment-action-btn btn-edit-comment"
-							data-comment-id="${comment.postId}" title="Edit comment">
-							<img src="assets/icons/edit-suave.png" alt="" class="ico-act">
-						</button>
-						<button type="button" class="comment-action-btn btn-delete-comment"
-							data-comment-id="${comment.postId}" title="Delete comment">
-							<img src="assets/icons/delete-error.png" alt="" class="ico-act">
-						</button>
+						<c:if test="${not empty currentUserId and comment.userId == currentUserId}">
+							<button type="button" class="comment-action-btn btn-edit-comment"
+								data-comment-id="${comment.postId}" title="Edit comment">
+								<img src="assets/icons/edit-suave.png" alt="" class="ico-act">
+							</button>
+							<button type="button" class="comment-action-btn btn-delete-comment"
+								data-comment-id="${comment.postId}" title="Delete comment">
+								<img src="assets/icons/delete-error.png" alt="" class="ico-act">
+							</button>
+						</c:if>
+						<c:if test="${isAdmin}">
+							<button type="button" class="comment-action-btn btn-block-comment-admin"
+								data-comment-id="${comment.postId}" title="Block comment">
+								<img src="assets/icons/block-error.png" alt="" class="ico-act">
+							</button>
+						</c:if>
 					</div>
 				</c:if>
 				<div class="comment-head">

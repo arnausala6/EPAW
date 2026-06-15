@@ -295,6 +295,51 @@ public class PostService {
         return errors;
     }
 
+    public Map<String, String> blockComment(int commentId, User admin, String password, String reason) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (admin == null || !"admin".equals(admin.getRole())) {
+            errors.put("commentId", "Only administrators can block comments.");
+            return errors;
+        }
+
+        if (reason == null || reason.trim().isEmpty()) {
+            errors.put("reason", "A reason is required.");
+        } else if (reason.length() > 300) {
+            errors.put("reason", "Reason cannot exceed 300 characters.");
+        }
+
+        if (password == null || password.isEmpty()) {
+            errors.put("password", "Password is required.");
+        } else if (!userRepository.verifyPassword(admin.getId(), password)) {
+            errors.put("password", "Incorrect password.");
+        }
+
+        Optional<Post> commentOpt = postRepository.findById(commentId);
+        if (commentOpt.isEmpty()) {
+            errors.put("commentId", "Comment not found.");
+            return errors;
+        }
+
+        Post comment = commentOpt.get();
+        if (comment.getResponseId() == null) {
+            errors.put("commentId", "This post is not a comment.");
+            return errors;
+        }
+
+        if (!errors.isEmpty()) {
+            return errors;
+        }
+
+        if (!postRepository.deleteComment(commentId)) {
+            errors.put("commentId", "Could not block this comment.");
+            return errors;
+        }
+
+        postRepository.decrementCommentCount(comment.getResponseId());
+        return errors;
+    }
+
     public Map<String, String> editPost(int postId, User user, String content, Part filePart, boolean removeImage) {
         Map<String, String> errors = new HashMap<>();
 

@@ -85,10 +85,16 @@ public class BlockPost extends HttpServlet {
         String password = request.getParameter("password");
         boolean banAuthor = "true".equals(request.getParameter("banAuthor"));
 
+        Optional<Post> post = postService.getPostById(postId);
+        if (post.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        int groupId = post.get().getGroupId();
+
         Map<String, String> errors = postService.blockPost(postId, user, password, reason, banAuthor);
 
         if (!errors.isEmpty()) {
-            Optional<Post> post = postService.getPostById(postId);
             request.setAttribute("post", post.orElse(null));
             request.setAttribute("errors", errors);
             request.setAttribute("reason", reason);
@@ -97,13 +103,6 @@ public class BlockPost extends HttpServlet {
             return;
         }
 
-        Optional<Post> post = postService.getPostById(postId);
-        if (post.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        int groupId = post.get().getGroupId();
         forwardGroupDetail(request, user, groupId);
         request.getRequestDispatcher("Groups.jsp").forward(request, response);
     }

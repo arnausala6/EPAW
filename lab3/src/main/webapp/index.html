@@ -189,6 +189,11 @@
 				$('#rcolumn').load("DeleteComment?commentId=" + commentId);
 			});
 
+			$(document).on("click", ".btn-block-comment-admin", function () {
+				const commentId = $(this).attr("data-comment-id");
+				$('#rcolumn').load("BlockComment?commentId=" + commentId);
+			});
+
 			$(document).on("click", ".btn-edit-post", function () {
 				const postId = $(this).attr("data-post-id");
 				const view = $(this).attr("data-view") || "group";
