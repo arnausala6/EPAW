@@ -14,20 +14,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
 		window.App = window.App || {};
-		App.Errors = App.Errors || {};
-		window.ajaxHistory = [];
+		App.Errors = App.Errors || {}; 
+		window.ajaxHistory = []; //Historial de navegación ajax (buffer) para el botón "Atrás" de la web
 	</script>
 	<script src="js/LoginValidation.js"></script>
 	<script src="js/RegisterValidation.js"></script>
 
 	<script>
 		window.loadContent = function (url, saveInHistory = true) {
-			$('.col-l, .col-r').removeClass('col-open'); //Clear center
+			$('.col-l, .col-r').removeClass('col-open'); //Cierra columnas laterales
 			$('#rcolumn').html('<p/>'); //Clear right column
 			if (saveInHistory) {
-				var currentUrl = $('#content').data('current-url');
+				var currentUrl = $('#content').data('current-url'); // guardamos la url actual para poder volver a ella con el botón "Atrás"
 				if (currentUrl && currentUrl !== url) { //Save in ajax history (buffer) if different urls
-					var currentBase = currentUrl.split('?')[0];
+					var currentBase = currentUrl.split('?')[0]; 
 					var newBase = url.split('?')[0];
 					
 					if (currentBase !== newBase || window.ajaxHistory.length === 0 || window.ajaxHistory[window.ajaxHistory.length - 1] !== currentUrl) {
@@ -35,8 +35,8 @@
 					}
 				}
 			}
-			$('#content').data('current-url', url);
-			$('#content').load(url, function (responseText, textStatus, jqXHR) {
+			$('#content').data('current-url', url); // guardamos la url actual
+			$('#content').load(url, function (responseText, textStatus, jqXHR) { // Cargamos el contenido de la url en el div #content
 				if (textStatus === "error") {
 					$('#content').html('<div class="card"><div class="card-body"><p class="text-muted">Could not load this section (' + jqXHR.status + '). Please refresh or try again.</p></div></div>');
 					console.error("loadContent failed", url, jqXHR.status, jqXHR.statusText);
