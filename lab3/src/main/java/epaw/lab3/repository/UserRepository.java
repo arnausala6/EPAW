@@ -732,7 +732,6 @@ public class UserRepository extends BaseRepository {
             FROM "Group" g
             JOIN UserInGroup uig ON g.group_id = uig.group_id
             WHERE uig.user_id = ?
-              AND COALESCE(g.blocked, 0) = 0
             ORDER BY g.group_name
         """;
         List<Group> groups = new ArrayList<>();
