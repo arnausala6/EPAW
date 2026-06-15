@@ -21,7 +21,7 @@
 								<img src="assets/icons/delete-error.png" alt="" class="ico-act">
 							</button>
 						</c:if>
-						<c:if test="${isAdmin}">
+						<c:if test="${isAdmin and comment.userId != currentUserId}">
 							<button type="button" class="comment-action-btn btn-block-comment-admin"
 								data-comment-id="${comment.postId}" title="Block comment">
 								<img src="assets/icons/block-error.png" alt="" class="ico-act">

@@ -54,6 +54,11 @@ public class BlockComment extends HttpServlet {
         }
 
         Post comment = commentOpt.get();
+        if (comment.getUserId().equals(user.getId())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         request.setAttribute("comment", comment);
         request.setAttribute("postId", comment.getResponseId());
         request.getRequestDispatcher("BlockCommentPanel.jsp").forward(request, response);

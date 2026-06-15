@@ -326,6 +326,10 @@ public class PostService {
             errors.put("commentId", "This post is not a comment.");
             return errors;
         }
+        if (comment.getUserId().equals(admin.getId())) {
+            errors.put("commentId", "Administrators cannot block their own comments.");
+            return errors;
+        }
 
         if (!errors.isEmpty()) {
             return errors;
