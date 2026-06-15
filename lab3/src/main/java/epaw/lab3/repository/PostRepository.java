@@ -286,7 +286,10 @@ public class PostRepository extends BaseRepository {
     }
 
     public void updateComment(int commentId, String content) {
-        String query = "UPDATE Post SET content = ?, edited = 1 WHERE post_id = ?";
+        String query = """
+            UPDATE Post SET content = ?, edited = 1
+            WHERE post_id = ? AND response_id IS NOT NULL
+            """;
         try (PreparedStatement stmt = db.prepareStatement(query)) {
             stmt.setString(1, content);
             stmt.setInt(2, commentId);

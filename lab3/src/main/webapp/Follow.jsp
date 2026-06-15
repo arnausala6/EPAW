@@ -35,7 +35,7 @@
         <a href="Follow?mode=discover"
            class="timeline-tab <%= "discover".equals(followMode) ? "timeline-tab-active" : "" %>"
            onclick="event.preventDefault(); window.loadContent('Follow?mode=discover');">
-            <img src="assets/icons/buscar-blanco.png" alt="" class="timeline-tab-ico">
+            <img src="assets/icons/buscar-terracota.png" alt="" class="timeline-tab-ico">
             Discover
         </a>
     </div>

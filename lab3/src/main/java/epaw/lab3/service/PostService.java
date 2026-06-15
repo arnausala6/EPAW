@@ -259,11 +259,11 @@ public class PostService {
             return errors;
         }
 
-        Optional<Post> parentOpt = postRepository.findById(comment.getResponseId());
         if (!errors.isEmpty()) {
-            postRepository.updateComment(commentId, content.trim());
+            return errors;
         }
 
+        postRepository.updateComment(commentId, content.trim());
         return errors;
     }
 
