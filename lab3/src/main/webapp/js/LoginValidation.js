@@ -19,8 +19,8 @@ App.initLoginValidation = function (serverErrors) {
 	form.addEventListener('submit', event => {
 	
 	  if (!form.checkValidity()) {
-	    event.preventDefault();
-	    form.reportValidity();
+	    event.preventDefault(); // Prevent form submission if invalid
+	    form.reportValidity(); // Show validation messages
 	  }
 	});
 
