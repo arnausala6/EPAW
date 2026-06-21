@@ -16,6 +16,6 @@ $(document).ready(function(){
 		<p class="banned-notice-title">Your account has been banned from the platform.</p>
 		<p class="banned-notice-reason-label">Reason</p>
 		<p class="banned-notice-reason">${banReason}</p>
-		<p class="hint">You can stiell view your profile data, but you cannot use any other features.</p>
+		<p class="hint">You can still view your profile data, but you cannot use any other features.</p>
 	</div>
 </div>
